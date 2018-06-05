@@ -19,7 +19,7 @@
 	/* Settings page
 	-------------------------------------------------------- */
 	add_action('admin_menu', function() {
-		add_submenu_page('options-general.php', 'Feature Flags', 'Feature Flags', 'administrator', 'feature-flags', function() {
+		add_submenu_page('tools.php', 'Feature Flags', 'Feature Flags', 'administrator', 'feature-flags', function() {
 			?>
 			<div class="wrap">
 				
