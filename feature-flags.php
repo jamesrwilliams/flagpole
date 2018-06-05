@@ -8,7 +8,7 @@
 	 *
 	 * @wordpress-plugin
 	 * Plugin Name:       Feature Flags
-	 * Description:       Easily register and work with feature flags in your theme
+	 * Description:       Easily register and work with feature flags in your theme.
 	 * Version:           1.0.0
 	 * Author:            James Williams
 	 * Author URI:        https://jamesrwilliams.co.uk/
