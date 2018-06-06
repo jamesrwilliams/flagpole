@@ -21,6 +21,11 @@
 	add_action('admin_menu', function() {
 		add_submenu_page('tools.php', 'Feature Flags', 'Feature Flags', 'administrator', 'feature-flags', function() {
 			?>
+			
+			<?php $output = featureFlags::init()->get_flags(); ?>
+
+			<?php print_a($output); ?>
+
 			<div class="wrap">
 				
 				<h1>Feature Flags</h1>

@@ -1,31 +1,68 @@
 <?php
-
+	
 	class featureFlags {
+		
+		private static $instance;
 
-		protected $flags;
+		public $example;
+		public $flags;
 
-		/* Constructor
-		-------------------------------------------------------- */
-		function __construct() {
-			
-			// Construct
+		/**
+		 * Static function to create an instance if none exists
+		 */
+		public static function init() {
+			if (is_null(self::$instance)) {
+				self::$instance = new self();
+			}
+			return self::$instance;
+		}
+
+		public function __construct() {
+		
+			$this->flags = [];
 
 		}
 
-		public function register($args){
+		function exampleCall(){
 
-			$defaults = array(
-
-				'title' => '',
-				'key' => '',
-				'stable' => false
-
-			);
-
-			$args = wp_parse_args( $args, $defaults );
+			return $this->example;
 
 		}
 
+		function get_flags(){
+
+			return $this->flags;
+
+		}
+
+		function add_flag($flag){
+
+			$this->flags[] = $flag;
+
+		}
+
+	}
+
+	function featureFlags_register($args){
+
+		$defaults = array(
+
+			'title' => '',
+			'key' => '',
+			'status' => 0
+
+		);
+
+		$args = wp_parse_args($args, $defaults);
+
+		featureFlags::init()->add_flag($args);
+		
+	}
+
+	function run_example() {
+
+		return featureFlags::init()->exampleCall();
+	
 	}
 
 
