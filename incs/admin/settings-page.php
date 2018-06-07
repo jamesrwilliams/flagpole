@@ -37,13 +37,9 @@
 
 				}
 
-				pre { margin: 0;  }
+				.status-marker-enabled { background: #3ACC69; }
 
-				.status-marker-enabled { 
-					
-					background: #3ACC69;
-				
-				}
+				pre { margin: 0; }
 
 			</style>
 			
@@ -52,10 +48,8 @@
 			<div class="wrap">
 				
 				<h1>Feature Flags</h1>
-						
-				<?php $flagStatus = isEnabled('mega-menu'); ?>
-
-				<div class="notice notice-info"><p>Testing flag: <strong><?php echo ($flagStatus ? 'ENABLED' : 'DISABLED' ); ?></strong></p></div>
+					
+				<div class="notice-container"></div>
 				
 				<table class="widefat">
 					<thead>
@@ -63,7 +57,7 @@
 							<th class="row-title">Feature</th>
 							<th>Key</th>
 							<th>Description</th>
-							<th>Enable for user</th>
+							<th>Enable</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -72,11 +66,25 @@
 				
 							<?php foreach ($flags as $key => $flag) { ?>
 
+								<?php $enabled = isEnabled($flag->get_key(false)); ?>
+
 								<tr class="<?php echo ($key % 2 == 0 ? 'alternate' : null); ?>">
-									<td class="row-title"><span class="status-marker <?php echo ($flag->get_enforced() ? 'status-marker-enabled' : null ); ?>" title="<?php $flag->get_enforced(); ?>"></span><?php $flag->get_name(); ?></td>
+									<td class="row-title"><span class="status-marker <?php echo ($enabled ? 'status-marker-enabled' : null ); ?>" title="<?php $flag->get_enforced(); ?>"></span><?php $flag->get_name(); ?></td>
 									<td><pre><?php $flag->get_key(); ?></pre></td>
-									<td><?php $flag->get_description(); ?></td>
-									<td><?php submit_button( 'Enable', 'small', 'featureFlags-enable', false, ['id' => 'flagActivateButton']); ?></td>
+									<td></td>
+									<td><?php 
+
+										if($enabled){
+
+											submit_button( 'Disable', 'small', 'featureFlags-disable', false, ['id' => 'flagActivateButton']);
+										
+										} else {
+
+											submit_button( 'Enable', 'small', 'featureFlags-enable', false, ['id' => 'flagActivateButton']);
+
+										} ?>
+						 
+									</td>
 								</tr>
 					
 							<?php } ?>
@@ -86,7 +94,7 @@
 					</tbody>
 				</table>
 								
-				<p class=""><?php echo date('l jS \of F Y @ h:i:s A'); ?></p>
+				<p><?php echo date('l jS \of F Y @ h:i:s A'); ?></p>
 
 				<script>
 
@@ -94,7 +102,28 @@
 
 						$("input#flagActivateButton").on('click', function(e){
 
-							console.log(e);
+							var $button = e.target;
+							var featureKey = $button.parentElement.parentElement.querySelector('pre').innerHTML;
+
+							//*
+
+							$.ajax({
+							
+								type: "POST",
+								url: ajaxurl,
+								data: { action: 'featureFlag_enable' , featureKey: featureKey }
+							
+							}).done(function( msg ) {
+
+								window.location.reload();
+							
+							}).fail(function(error) {
+
+								$(".notice-container").html('<div class="notice notice-error is-dismissible"><p>Error cannot process <code>' + error.responseJSON.response + '</code></p></div>')
+  						
+							});
+
+							// */
 
 						});
 

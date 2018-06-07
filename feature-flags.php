@@ -69,8 +69,53 @@
 		
 	}
 
+	function debug(){
+
+		return featureFlags::init()->getUserSettings(); 
+
+	}
+
+	function hasUserEnabled($featureKey = ''){
+
+		return featureFlags::init()->hasUserEnabled($featureKey);
+
+	}
+
 	function isEnabled($featureKey = ''){
 
 		return featureFlags::init()->isEnabled($featureKey);
+
+	}
+
+	/**
+	 * AJAX Action
+	 */
+	add_action('wp_ajax_featureFlag_enable', 'featureFlagEnable');
+
+	function featureFlagEnable(){
+
+			$reponse = array();
+
+			$featureKey = $_POST['featureKey'];
+
+			if(!empty($featureKey)){
+				
+				// Do fun plugin stuff
+				$response['response'] = $featureKey;
+
+				featureFlags::init()->toggleFeature($featureKey);
+			
+			} else {
+				
+				header('HTTP/1.1 500 Internal Server Error');
+				$response['response'] = "no feature key";
+			
+			}
+			
+			header( "Content-Type: application/json" );
+			echo json_encode($response);
+
+			//Don't forget to always exit in the ajax function.
+			exit();
 
 	}

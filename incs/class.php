@@ -76,10 +76,25 @@
 
 				} else {
 
-					// 2. hasUserEnabled($featureKey);
-					return false;
+					return hasUserEnabled($flagKey);
 
 				}
+
+			} else {
+
+				return false;
+
+			}
+
+		}
+
+		function getUserSettings(){
+
+			$user_id = get_current_user_id();
+
+			if($user_id){
+
+				return get_user_meta( $user_id, 'enabledFlags', true);
 
 			} else {
 
@@ -97,7 +112,11 @@
 			if($user_id){
 
 				// We have a user
-				// $user_settings = get_user_meta( $user_id, $this->USER_META_KEY, );
+				$user_settings = get_user_meta( $user_id, 'enabledFlags', true);
+
+				// Other
+
+				$response = (isset($user_settings[$featureKey]) ? $user_settings[$featureKey] : false);
 
 			}
 
@@ -110,29 +129,29 @@
 		 *
 		 * @return void
 		 */
-		function enableFeature($featureKey){
+		function toggleFeature($featureKey){
 
 			$user_id = get_current_user_id();
 
 			if($user_id){
 
-				$user_settings = get_user_meta( $user_id, $this->USER_META_KEY);
+				$user_settings = get_user_meta( $user_id, 'enabledFlags', true);
 
-				$append = [];
+				$enabled = ( $user_settings ?: [] );
 
-				$append[$featureKey] = true;
+				if($enabled[$featureKey]){
 
-				$user_settings[] = $append[$featureKey];
+					$enabled[$featureKey] = !$enabled[$featureKey];
 
-				update_user_meta( $user_id, $this->USER_META_KEY, $user_settings);
+				} else {
+
+					$enabled[$featureKey] = true;
+
+				}
+
+				update_user_meta( $user_id, 'enabledFlags', $enabled);
 
 			}
-
-		}
-
-		function disableFeature($featureKey){
-
-			
 
 		}
 
