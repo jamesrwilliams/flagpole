@@ -43,7 +43,7 @@
 
 		$defaults = array(
 
-			'status' => 0,
+			'enforced' => false,
 			'description' => '',
 
 		);
@@ -60,7 +60,6 @@
 
 				$class = 'notice notice-error';
 				$message = 'Malformed featureFlag - Need to supply a key and a title.';
-				$dump = 
 
 				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) ); 
 
@@ -68,4 +67,10 @@
 
 		}		
 		
+	}
+
+	function isEnabled($featureKey = ''){
+
+		return featureFlags::init()->isEnabled($featureKey);
+
 	}

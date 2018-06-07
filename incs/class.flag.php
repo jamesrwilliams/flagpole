@@ -1,22 +1,38 @@
 <?php 
 
+  /**
+  * Flag Class
+  *
+  * Used for creating feature flags.
+  *
+  * @package   Feature Flags
+  * @author    James Williams <james@jamesrwilliams.co.uk>
+  * @link      https://github.com/jamesrwilliams/feature-flags
+  * @copyright 2018 James Williams
+  */
   class Flag {
 
-    private $status;
+    private $enforced;
     private $name;
-    private $key;
+    public $key;
     private $description;
 
-    function __construct($_key, $_name, $_status, $_description){
+    function __construct($_key, $_name, $_enforced, $_description){
 
-      $this->status = $_status;
+      $this->enforced = $_enforced;
       $this->name = ( $_name ? $_name : '' );
       $this->key = $_key;
       $this->description = $_description;
 
     }
 
-    function key( $echo = true ){
+    /**
+     * Display or retrieve the flag key.
+     *
+     * @param boolean $echo
+     * @return string|void Current flag key if $echo is false.
+     */
+    function get_key( $echo = true ){
 
       $key = $this->key;
 
@@ -32,7 +48,13 @@
 
     }
 
-    function name( $echo = true ){
+    /**
+     * Display or retrieve the flag name.
+     *
+     * @param boolean $echo
+     * @return string|void Current flag key if $echo is false.
+     */
+    function get_name( $echo = true ){
 
       $name = $this->name;
 
@@ -48,23 +70,13 @@
 
     }
 
-    function status( $echo = true ){
-
-      $status = $this->status;
-
-      if( $echo ){
-
-        echo $status;
-
-      } else {
-
-        return $status;
-
-      }
-
-    }
-
-    function description( $echo = true ){
+    /**
+     * Display or retrieve the flag name.
+     *
+     * @param boolean $echo
+     * @return string|void Current flag key if $echo is false.
+     */
+    function get_description( $echo = true ){
 
       $description = $this->description;
 
@@ -77,6 +89,17 @@
         return $description;
 
       }
+
+    }
+    
+    /**
+     * Retrieve the status of a flag's enforced state.
+     *
+     * @return boolean The status of if a flag is enforced or not.
+     */
+    function get_enforced(){
+
+      return $this->enforced;
 
     }
 

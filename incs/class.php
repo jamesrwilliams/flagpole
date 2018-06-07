@@ -5,17 +5,10 @@
 	class featureFlags {
 		
 		private static $instance;
+		private static $USER_META_KEY = 'enabledFlags';
 
 		public $example;
 		public $flags = [];
-
-		public $statusMap = [
-
-			0 => 'Alpha - Available locally only - cannot be enabled via the admin area',
-			1 => 'Beta - Available to users - disabled by default',
-			2 => 'Production - Enabled for all site users.',
-
-		];
 
 		/**
 		 * Static function to create an instance if none exists
@@ -37,19 +30,109 @@
 
 		function add_flag($flag){
 
-			$this->flags[] = new Flag($flag['key'], $flag['title'], $flag['status'], $flag['description']);
+			$this->flags[] = new Flag($flag['key'], $flag['title'], $flag['enforced'], $flag['description']);
 
 		}
 
-		function functionIsEnabled(){
+		/**
+		 * Retrieve the flag object of a specified key.
+		 *
+		 * @param string $key
+		 * @return void
+		 */
+		function findFlag($key){
 
-			// Return bool feature status;
+			$flag = false;
+			$flags = $this->flags;
+
+			foreach($flags as $struct) {
+					if ($key == $struct->key) {
+							$flag = $struct;
+							break;
+					}
+			}
+
+			return $flag;
 
 		}
 
-		function getStatus($flagKey){
+		/**
+		 * Undocumented function
+		 *
+		 * @param [type] $flagKey
+		 * @return boolean
+		 */
+		function isEnabled($flagKey){
 
-			$flag = getFlag($flagKey);
+			$export = $this->findFlag($flagKey);
+
+			if($export){
+
+				$enforced = $export->get_enforced();
+
+				if($enforced){
+
+					return true;
+
+				} else {
+
+					// 2. hasUserEnabled($featureKey);
+					return false;
+
+				}
+
+			} else {
+
+				return false;
+
+			}
+
+		}
+
+		function hasUserEnabled($featureKey){
+
+			$user_id = get_current_user_id();
+			$response = false;
+
+			if($user_id){
+
+				// We have a user
+				// $user_settings = get_user_meta( $user_id, $this->USER_META_KEY, );
+
+			}
+
+			return $response;
+
+		}
+
+		/**
+		 * Undocumented function
+		 *
+		 * @return void
+		 */
+		function enableFeature($featureKey){
+
+			$user_id = get_current_user_id();
+
+			if($user_id){
+
+				$user_settings = get_user_meta( $user_id, $this->USER_META_KEY);
+
+				$append = [];
+
+				$append[$featureKey] = true;
+
+				$user_settings[] = $append[$featureKey];
+
+				update_user_meta( $user_id, $this->USER_META_KEY, $user_settings);
+
+			}
+
+		}
+
+		function disableFeature($featureKey){
+
+			
 
 		}
 
