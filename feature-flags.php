@@ -32,3 +32,40 @@
 	-------------------------------------------------------- */
 	include FF_PLUGIN_PATH.'incs/class.php';
 	include FF_PLUGIN_PATH.'incs/admin/settings-page.php';
+
+	/**
+	 * Register a feature flag with the plugin.
+	 *
+	 * @param [Array] $args
+	 * @return void
+	 */
+	function register_featureFlag($args){
+
+		$defaults = array(
+
+			'status' => 0,
+			'description' => '',
+
+		);
+
+		$args = wp_parse_args($args, $defaults);
+
+		if( isset($args['title']) && isset($args['key']) ){
+
+			featureFlags::init()->add_flag($args);
+
+		} else {
+
+			add_action( 'admin_notices', function($args){
+
+				$class = 'notice notice-error';
+				$message = 'Malformed featureFlag - Need to supply a key and a title.';
+				$dump = 
+
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) ); 
+
+			});
+
+		}		
+		
+	}

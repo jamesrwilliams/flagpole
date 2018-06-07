@@ -22,15 +22,41 @@
 		add_submenu_page('tools.php', 'Feature Flags', 'Feature Flags', 'administrator', 'feature-flags', function() {
 			?>
 			
-			<?php $output = featureFlags::init()->get_flags(); ?>
-
-			<?php print_a($output); ?>
+			<?php $flags = featureFlags::init()->get_flags(); ?>
 
 			<div class="wrap">
 				
 				<h1>Feature Flags</h1>
-				<hr>
+				
+				<table class="widefat">
+					<thead>
+						<tr>
+							<th class="row-title">Feature</th>
+							<th>Key</th>
+							<th>Description</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						<?php if($flags){ ?> 
+				
+							<?php foreach ($flags as $flag) { ?>
+
+								<tr>
+									<td class="row-title"><?php $flag->name(); ?></td>
+									<td><code><?php $flag->key(); ?></code></td>
+									<td><?php $flag->description(); ?></td>
+									<td><?php $flag->status(); ?></td>
+								</tr>
 					
+							<?php } ?>
+						
+						<?php } ?>
+
+					</tbody>
+				</table>
+
 			</div>
 			<?php
 		});
