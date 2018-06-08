@@ -9,11 +9,18 @@ This plugin is for developers. The aim is to simplify/speed up the process of wo
 
 ## Usage
 
-1. Register a flag in functions.php
+Register a flag in functions.php
 
 ```php
 register_featureFlag($options)
 ```
+
+In template you can then check the feature status using:
+
+```php
+is_enabled('feature-key');
+```
+Replace `feature-key` with the key used in the register function to check if it is enabled.
 
 ### Options
 
