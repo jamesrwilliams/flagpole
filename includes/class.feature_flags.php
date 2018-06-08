@@ -22,12 +22,6 @@
 
 		function __construct() {}
 
-		function get_flags(){
-
-			return $this->flags;
-
-		}
-
 		function add_flag($flag){
 
 			$this->flags[] = new Flag($flag['key'], $flag['title'], $flag['enforced'], $flag['description']);
@@ -40,7 +34,7 @@
 		 * @param string $key
 		 * @return void
 		 */
-		function findFlag($key){
+		function find_flag($key){
 
 			$flag = false;
 			$flags = $this->flags;
@@ -59,12 +53,43 @@
 		/**
 		 * Undocumented function
 		 *
+		 * @return void
+		 */
+		function get_flags($enforced = false){
+
+			$flags = $this->flags;
+
+			if($enforced){
+
+					$filteredFlags = array_filter($flags, function($value){
+
+						return $value->get_enforced();
+
+					});
+
+			} else {
+
+				$filteredFlags = array_filter($flags, function($value){
+
+						return !$value->get_enforced();
+
+					});
+
+			}		
+
+			return $filteredFlags;
+
+		}
+
+		/**
+		 * Undocumented function
+		 *
 		 * @param [type] $flagKey
 		 * @return boolean
 		 */
-		function isEnabled($flagKey){
+		function is_enabled($flagKey){
 
-			$export = $this->findFlag($flagKey);
+			$export = $this->find_flag($flagKey);
 
 			if($export){
 
@@ -76,7 +101,7 @@
 
 				} else {
 
-					return hasUserEnabled($flagKey);
+					return has_user_enabled($flagKey);
 
 				}
 
@@ -88,7 +113,7 @@
 
 		}
 
-		function getUserSettings(){
+		function get_user_settings(){
 
 			$user_id = get_current_user_id();
 
@@ -104,7 +129,7 @@
 
 		}
 
-		function hasUserEnabled($featureKey){
+		function has_user_enabled($featureKey){
 
 			$user_id = get_current_user_id();
 			$response = false;
@@ -129,7 +154,7 @@
 		 *
 		 * @return void
 		 */
-		function toggleFeature($featureKey){
+		function toggle_feature($featureKey){
 
 			$user_id = get_current_user_id();
 

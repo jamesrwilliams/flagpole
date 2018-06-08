@@ -30,8 +30,8 @@
 
 	/* Includes
 	-------------------------------------------------------- */
-	include FF_PLUGIN_PATH.'incs/class.php';
-	include FF_PLUGIN_PATH.'incs/admin/settings-page.php';
+	include FF_PLUGIN_PATH.'includes/class.feature_flags.php';
+	include FF_PLUGIN_PATH.'includes/admin/settings_page.php';
 
 	/**
 	 * Register a feature flag with the plugin.
@@ -71,30 +71,30 @@
 
 	function debug(){
 
-		return featureFlags::init()->getUserSettings(); 
+		return featureFlags::init()->get_user_settings(); 
 
 	}
 
-	function hasUserEnabled($featureKey = ''){
+	function has_user_enabled($featureKey = ''){
 
-		return featureFlags::init()->hasUserEnabled($featureKey);
+		return featureFlags::init()->has_user_enabled($featureKey);
 
 	}
 
-	function isEnabled($featureKey = ''){
+	function is_enabled($featureKey = ''){
 
-		return featureFlags::init()->isEnabled($featureKey);
+		return featureFlags::init()->is_enabled($featureKey);
 
 	}
 
 	/**
-	 * AJAX Action
+	 * AJAX Action toggling features from the WP admin area.
 	 */
 	add_action('wp_ajax_featureFlag_enable', 'featureFlagEnable');
 
 	function featureFlagEnable(){
 
-			$reponse = array();
+			$response = array();
 
 			$featureKey = $_POST['featureKey'];
 
@@ -103,7 +103,7 @@
 				// Do fun plugin stuff
 				$response['response'] = $featureKey;
 
-				featureFlags::init()->toggleFeature($featureKey);
+				featureFlags::init()->toggle_feature($featureKey);
 			
 			} else {
 				

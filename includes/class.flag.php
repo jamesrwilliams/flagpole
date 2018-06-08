@@ -12,10 +12,10 @@
   */
   class Flag {
 
-    private $enforced;
-    private $name;
+    public $enforced;
+    public $name;
     public $key;
-    private $description;
+    public $description;
 
     function __construct($_key, $_name, $_enforced, $_description){
 
