@@ -28,6 +28,34 @@ define('FM_PLUGIN_URL', plugin_dir_url(__FILE__));
 -------------------------------------------------------- */
 register_activation_hook(__FILE__, function() {});
 
+/* Register admin page
+-------------------------------------------------------- */
+add_action('admin_init', function() {
+  
+  register_setting('ff-settings-page', 'ff_client_secret', function($posted_data) {
+    if (!$posted_data) {
+      add_settings_error('ff_client_secret', 'ff_updated', 'Error Message', 'error');
+      return false;
+    }
+
+    return $posted_data;
+
+  });
+
+});
+
+/* Plugin styles and scripts
+-------------------------------------------------------- */
+function feature_flags_admin_imports($hook) {
+
+  if($hook != 'tools_page_feature-flags') { return; }
+
+  wp_enqueue_style( 'feature-flags-styles', plugins_url('/assets/css/feature-flags.css', __FILE__) );
+  wp_enqueue_script( 'feature-flags-script', plugins_url('/assets/js/feature-flags.js', __FILE__) );
+
+}
+add_action( 'admin_enqueue_scripts', 'feature_flags_admin_imports' );
+
 /* Includes
 -------------------------------------------------------- */
 include FF_PLUGIN_PATH.'includes/class.feature_flags.php';
@@ -41,28 +69,28 @@ add_action('wp_ajax_featureFlag_enable', 'featureFlagEnable');
 
 function featureFlagEnable(){
 
-	$response = array();
+  $response = array();
 
-	$featureKey = $_POST['featureKey'];
+  $featureKey = $_POST['featureKey'];
 
-	if(!empty($featureKey)){
-		
-		// Do fun plugin stuff
-		$response['response'] = $featureKey;
+  if(!empty($featureKey)){
+    
+    // Do fun plugin stuff
+    $response['response'] = $featureKey;
 
-		featureFlags::init()->toggle_feature($featureKey);
-	
-	} else {
-		
-		header('HTTP/1.1 500 Internal Server Error');
-		$response['response'] = "no feature key";
-	
-	}
-	
-	header( "Content-Type: application/json" );
-	echo json_encode($response);
+    featureFlags::init()->toggle_feature($featureKey);
+  
+  } else {
+    
+    header('HTTP/1.1 500 Internal Server Error');
+    $response['response'] = "no feature key";
+  
+  }
+  
+  header( "Content-Type: application/json" );
+  echo json_encode($response);
 
-	//Don't forget to always exit in the ajax function.
-	exit();
+  //Don't forget to always exit in the ajax function.
+  exit();
 
 }
