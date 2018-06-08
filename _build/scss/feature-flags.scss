@@ -1,0 +1,31 @@
+.tools_page_feature-flags {
+
+  .status-marker { 
+          
+    display: inline-block;
+    height: 12px; 
+    width: 12px;
+    border-radius: 12px;
+    background: #E3E3E0;
+    margin-right: 10px;
+    transform: translateY(2px);
+    border: 1px solid rgba(0,0,0,.25);
+
+    &-enabled { background: #3ACC69; }
+
+  }
+
+  input[data-status]{ font-weight: bold; }
+
+  input[data-status="enabled"]{
+
+    background: rgba(240,72,72, .3) !important;
+    border: 0 !important;
+    color: rgba(0,0,0, .5) !important;
+    
+  }
+
+  pre { margin: 0; }
+
+}
+

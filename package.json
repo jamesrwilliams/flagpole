@@ -1,0 +1,29 @@
+{
+  "name": "feature-flags",
+  "version": "1.0.0",
+  "description": "This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://jamesrwilliams@github.com/jamesrwilliams/feature-flags.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesrwilliams/feature-flags/issues"
+  },
+  "homepage": "https://github.com/jamesrwilliams/feature-flags#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.3",
+    "gulp-sass": "^4.0.1",
+    "gulp-sass-bulk-import": "^1.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglifyjs": "^0.6.2"
+  }
+}
