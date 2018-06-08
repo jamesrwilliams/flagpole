@@ -32,60 +32,7 @@
 	-------------------------------------------------------- */
 	include FF_PLUGIN_PATH.'includes/class.feature_flags.php';
 	include FF_PLUGIN_PATH.'includes/admin/settings_page.php';
-
-	/**
-	 * Register a feature flag with the plugin.
-	 *
-	 * @param [Array] $args
-	 * @return void
-	 */
-	function register_featureFlag($args){
-
-		$defaults = array(
-
-			'enforced' => false,
-			'description' => '',
-
-		);
-
-		$args = wp_parse_args($args, $defaults);
-
-		if( isset($args['title']) && isset($args['key']) ){
-
-			featureFlags::init()->add_flag($args);
-
-		} else {
-
-			add_action( 'admin_notices', function($args){
-
-				$class = 'notice notice-error';
-				$message = 'Malformed featureFlag - Need to supply a key and a title.';
-
-				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) ); 
-
-			});
-
-		}		
-		
-	}
-
-	function debug(){
-
-		return featureFlags::init()->get_user_settings(); 
-
-	}
-
-	function has_user_enabled($featureKey = ''){
-
-		return featureFlags::init()->has_user_enabled($featureKey);
-
-	}
-
-	function is_enabled($featureKey = ''){
-
-		return featureFlags::init()->is_enabled($featureKey);
-
-	}
+	include FF_PLUGIN_PATH.'includes/api/api.general.php';
 
 	/**
 	 * AJAX Action toggling features from the WP admin area.
