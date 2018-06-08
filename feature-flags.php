@@ -41,28 +41,28 @@ add_action('wp_ajax_featureFlag_enable', 'featureFlagEnable');
 
 function featureFlagEnable(){
 
-		$response = array();
+	$response = array();
 
-		$featureKey = $_POST['featureKey'];
+	$featureKey = $_POST['featureKey'];
 
-		if(!empty($featureKey)){
-			
-			// Do fun plugin stuff
-			$response['response'] = $featureKey;
-
-			featureFlags::init()->toggle_feature($featureKey);
+	if(!empty($featureKey)){
 		
-		} else {
-			
-			header('HTTP/1.1 500 Internal Server Error');
-			$response['response'] = "no feature key";
-		
-		}
-		
-		header( "Content-Type: application/json" );
-		echo json_encode($response);
+		// Do fun plugin stuff
+		$response['response'] = $featureKey;
 
-		//Don't forget to always exit in the ajax function.
-		exit();
+		featureFlags::init()->toggle_feature($featureKey);
+	
+	} else {
+		
+		header('HTTP/1.1 500 Internal Server Error');
+		$response['response'] = "no feature key";
+	
+	}
+	
+	header( "Content-Type: application/json" );
+	echo json_encode($response);
+
+	//Don't forget to always exit in the ajax function.
+	exit();
 
 }
