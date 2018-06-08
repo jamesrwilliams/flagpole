@@ -12,7 +12,7 @@ This plugin is for developers. The aim is to simplify/speed up the process of wo
 Register a flag in functions.php
 
 ```php
-register_featureFlag($options)
+register_featureFlag($options);
 ```
 
 In template you can then check the feature status using:
@@ -21,6 +21,19 @@ In template you can then check the feature status using:
 is_enabled('feature-key');
 ```
 Replace `feature-key` with the key used in the register function to check if it is enabled.
+
+**Example**
+
+```php
+register_feature_flag([
+
+  'title' => 'My awesome new feature',
+  'key' => 'correct-horse-battery-staple',
+  'enforced' => false,
+  'description' => 'An example feature definition'
+
+]);
+```
 
 ### Options
 
