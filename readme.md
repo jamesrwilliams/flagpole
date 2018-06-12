@@ -12,7 +12,7 @@ This plugin is for developers. The aim is to simplify/speed up the process of wo
 Register a flag in functions.php
 
 ```php
-register_featureFlag($options);
+register_feature_flag($options);
 ```
 
 In template you can then check the feature status using:
