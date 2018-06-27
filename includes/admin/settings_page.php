@@ -2,28 +2,28 @@
 
 /* Settings page
 -------------------------------------------------------- */
-add_action('admin_menu', function() {
+add_action('admin_menu', function () {
 
-  add_submenu_page('tools.php', 'Feature Flags', 'Feature Flags', 'administrator', 'feature-flags', function() { ?>
-    
-    <?php 
+    add_submenu_page('tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags', function () {
 
-      $available_flags = featureFlags::init()->get_flags();
-      $enforced_flags = featureFlags::init()->get_flags(true);
-      
-    ?>
+        $available_flags = featureFlags::init()->get_flags();
+        $enforced_flags = featureFlags::init()->get_flags(true);
+
+        ?>
 
     <div class="wrap">
-      
+
       <h1>Feature Flags</h1>
 
       <hr>
 
-      <p>Feature flags or toggles allow features to easily be enabled for users to test in a more realistic environment. </p>
-        
+      <p>
+        Feature flags or toggles allow features to easily be enabled for users to test in a more realistic environment.
+      </p>
+
       <div class="notice-container"></div>
-      
-      <?php if($available_flags){ ?>
+
+      <?php if ($available_flags) { ?>
 
         <h2>Available feature flags</h2>
 
@@ -37,7 +37,7 @@ add_action('admin_menu', function() {
             </tr>
           </thead>
           <tbody>
-            
+
               <?php foreach ($available_flags as $key => $flag) { ?>
 
                 <?php $enabled = is_enabled($flag->get_key(false)); ?>
@@ -48,31 +48,29 @@ add_action('admin_menu', function() {
                   <td><?php $flag->get_description(); ?></td>
                   <td><?php 
 
-                    if($enabled){
-
-                      submit_button( 'Disable', 'small', 'featureFlags-disable', false, ['id' => 'flagActivateButton', 'data-status' => 'enabled']);
-                    
+                    if ($enabled) {
+                        submit_button('Disable', 'small', 'featureFlags-disable', false, ['id' => 'flagActivateButton', 'data-status' => 'enabled']);
                     } else {
-
-                      submit_button( 'Enable', 'small', 'featureFlags-enable', false, ['id' => 'flagActivateButton', 'data-status' => 'disabled']);
-
+                        submit_button('Enable', 'small', 'featureFlags-enable', false, ['id' => 'flagActivateButton', 'data-status' => 'disabled']);
                     } ?>
-            
+
                   </td>
                 </tr>
-          
-              <?php } ?>
+                  <?php
+                } ?>
 
           </tbody>
         </table>
 
       <?php } ?>
 
-      <?php if($enforced_flags){ ?> 
-        
+      <?php if ($enforced_flags) { ?>
         <h2>Enforced feature flags</h2>
 
-        <p>Features listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will be removed from the website code soon.</p>
+        <p>
+          Features listed below are currently configured to be <code>enforced</code> by default by the developers.
+           These are flags that will be removed from the website code soon.
+        </p>
 
         <table class="widefat">
           <thead>
@@ -83,17 +81,17 @@ add_action('admin_menu', function() {
             </tr>
           </thead>
           <tbody>
-            
+
               <?php foreach ($enforced_flags as $key => $flag) { ?>
 
-                <?php $enabled = is_enabled($flag->get_key(false)); ?>
+                    <?php $enabled = is_enabled($flag->get_key(false)); ?>
 
-                <tr class="<?php echo ($key % 2 == 0 ? 'alternate' : null); ?>">
-                  <td class="row-title"><?php $flag->get_name(); ?></td>
-                  <td><pre><?php $flag->get_key(); ?></pre></td>
-                  <td><?php $flag->get_description(); ?></td>
-                </tr>
-          
+                    <tr class="<?php echo ($key % 2 == 0 ? 'alternate' : null); ?>">
+                      <td class="row-title"><?php $flag->get_name(); ?></td>
+                      <td><pre><?php $flag->get_key(); ?></pre></td>
+                      <td><?php $flag->get_description(); ?></td>
+                    </tr>
+
               <?php } ?>
 
           </tbody>
