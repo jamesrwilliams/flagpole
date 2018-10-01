@@ -1,0 +1,28 @@
+######################
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+error_log
+
+######################
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+##############
+# IDE things #
+##############
+.idea
+
+#########################
+# Ignore included files #
+#########################
+node_modules

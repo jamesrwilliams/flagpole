@@ -1,27 +1,32 @@
-var gulp = require("gulp");
-var sass = require('gulp-sass');
-var rename = require('gulp-rename');
-var sourcemaps = require('gulp-sourcemaps');
-var bulkSass = require('gulp-sass-bulk-import');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglifyjs');
+let gulp = require("gulp");
+let sass = require('gulp-sass');
+let rename = require('gulp-rename');
+let sourcemaps = require('gulp-sourcemaps');
+let bulkSass = require('gulp-sass-bulk-import');
+let babel = require('gulp-babel');
+let concat = require('gulp-concat');
+let uglify = require('gulp-uglifyjs');
 
-var paths = {
+let src_dir = './src';
+let dest_dir = './feature-flags';
+let paths = {
 
-  scss: ['./_build/scss/**/*.scss'],
-  js: ['./_build/**/*.js']
+  scss: {
+      input: [`${src_dir}/scss/feature-flags.scss`],
+      output: `${dest_dir}/assets/css/`,
+      watch: `${src_dir}/scss/**/*.scss`
+  },
+  js: {
+      input: [`${src_dir}/**/*.js`],
+      output: `${dest_dir}/assets/js/`,
+      watch: `${src_dir}/**/*.js`
+  }
 
 };
 
-gulp.task('default', function () {
-
-  console.log("Hello there...");
-
-});
-
 gulp.task('scss', function (done) {
 
-  gulp.src('./_build/scss/feature-flags.scss')
+  gulp.src('./src/scss/feature-flags.scss')
     .pipe(bulkSass())
     .pipe(sourcemaps.init())
     .pipe(sass({
@@ -37,30 +42,37 @@ gulp.task('scss', function (done) {
       includeContent: false
 
     }))
-    .pipe(gulp.dest('./assets/css/'))
+    .pipe(gulp.dest(paths.scss.output))
     .on('end', done);
 
 });
 gulp.task('js', function (done) {
 
-  gulp.src('./_build/js/feature-flags.js')
+  gulp.src(paths.js.input)
     .pipe(concat('feature-flags.js'))
-    .pipe(uglify('feature-flags.js'))
     .pipe(sourcemaps.init())
+    .pipe(babel({
+      'presets': [ [ 'env', {
+          'targets': {
+              'browsers': [ 'last 2 versions', 'ie 11' ]
+          }
+      } ] ]
+    }))
+    .pipe(uglify('feature-flags.js'))
     .pipe(sourcemaps.write('.', {
 
       includeContent: false,
       sourceRoot: '.'
 
     }))
-    .pipe(gulp.dest('./assets/js/'))
+    .pipe(gulp.dest(paths.js.output))
     .on('end', done);
 
 });
 
 gulp.task('watch', function () {
 
-  gulp.watch(paths.scss, ['scss']);
-  gulp.watch(paths.js, ['js']);
+  gulp.watch(paths.scss.watch, ['scss']);
+  gulp.watch(paths.js.watch, ['js']);
 
 });

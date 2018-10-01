@@ -1,0 +1,3 @@
+.tools_page_feature-flags .status-marker{display:inline-block;height:12px;width:12px;border-radius:12px;background:#e3e3e0;margin-right:10px;transform:translateY(2px);border:1px solid rgba(0,0,0,0.25)}.tools_page_feature-flags .status-marker-enabled{background:#3acc69}.tools_page_feature-flags input[data-status]{font-weight:700}.tools_page_feature-flags input[data-status="enabled"]{background:rgba(240,72,72,0.3);border:0;color:rgba(0,0,0,0.5)}.tools_page_feature-flags pre{margin:0}
+
+/*# sourceMappingURL=feature-flags.css.map */
