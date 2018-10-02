@@ -5,15 +5,15 @@
  * @package feature-flags
  */
 
-use FeatureFlags\featureFlags;
+use FeatureFlags\FeatureFlags;
 
 // Settings page.
 add_action( 'admin_menu', function () {
 
 	add_submenu_page( 'tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags', function () {
 
-		$available_flags = featureFlags::init()->get_flags();
-		$enforced_flags  = featureFlags::init()->get_flags( true );
+		$available_flags = FeatureFlags::init()->get_flags();
+		$enforced_flags  = FeatureFlags::init()->get_flags( true );
 
 		?>
 
@@ -74,16 +74,6 @@ add_action( 'admin_menu', function () {
 
 								</td>
 							</tr>
-
-							<?php if ( WP_DEBUG ) { ?>
-
-								<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-									<td colspan="4">
-										<pre><?php echo var_dump( $flag ); ?></pre>
-									</td>
-								</tr>
-
-							<?php } ?>
 
 						<?php } ?>
 

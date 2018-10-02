@@ -22,7 +22,7 @@ if ( ! defined( 'WPINC' ) ) {
 	wp_die();
 }
 
-use FeatureFlags\featureFlags;
+use FeatureFlags\FeatureFlags;
 
 // Define plugin paths and url for global usage.
 define( 'FF_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
@@ -57,14 +57,22 @@ function feature_flags_admin_imports( $hook ) {
 	}
 
 	wp_enqueue_style( 'feature-flags-styles', plugins_url( '/assets/css/feature-flags.css', __FILE__ ), FF_VERSION );
-	wp_enqueue_script( 'feature-flags-script', plugins_url( '/assets/js/feature-flags.js', __FILE__ ), FF_VERSION );
+	wp_register_script( 'feature-flags-script', plugins_url( '/assets/js/feature-flags.js', __FILE__ ), FF_VERSION );
+
+	$params = [
+		'ajax_nonce' => wp_create_nonce( 'featureFlagNonce' ),
+	];
+
+	wp_localize_script( 'feature-flags-script', 'ffwp', $params );
+
+	wp_enqueue_script( 'feature-flags-script' );
 
 }
 
 add_action( 'admin_enqueue_scripts', 'feature_flags_admin_imports' );
 
 // Includes.
-require plugin_dir_path( __FILE__ ) . 'includes/class-feature-flags.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-featureflags.php';
 require plugin_dir_path( __FILE__ ) . 'includes/admin/settings-page.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
 
@@ -78,28 +86,32 @@ add_action( 'wp_ajax_featureFlag_enable', 'feature_flag_enable' );
  */
 function feature_flag_enable() {
 
-	$response = [];
+	// input var okay;
+	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) { // input var okay;
 
-	$feature_key = $_POST['featureKey'];
+		$response = [];
 
-	if ( ! empty( $feature_key ) ) {
+		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) ); // input var okay;
 
-		// Do fun plugin stuff.
-		$response['response'] = $feature_key;
+		if ( ! empty( $feature_key ) ) {
 
-		featureFlags::init()->toggle_feature( $feature_key );
+			// Do fun plugin stuff.
+			$response['response'] = $feature_key;
 
-	} else {
+			FeatureFlags::init()->toggle_feature( $feature_key );
 
-		header( 'HTTP/1.1 500 Internal Server Error' );
-		$response['response'] = 'no feature key';
+		} else {
+
+			header( 'HTTP/1.1 500 Internal Server Error' );
+			$response['response'] = 'no feature key';
+
+		}
+
+		header( 'Content-Type: application/json' );
+		echo wp_json_encode( $response );
 
 	}
 
-	header( 'Content-Type: application/json' );
-	echo wp_json_encode( $response );
-
-	// Don't forget to always exit in the ajax function.
 	exit();
 
 }

@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="MessDetectorValidationInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpArrayFillCanBeConvertedToLoopInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpArrayFilterCanBeConvertedToLoopInspection" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -9,10 +10,10 @@
     <inspection_tool class="PhpAssignmentReplaceableWithOperatorAssignmentInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpAssignmentReplaceableWithPrefixExpressionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="CODING_STANDARD" value="WordPress" />
+      <option name="CODING_STANDARD" value="WordPress-VIP" />
+      <option name="WARNING_HIGHLIGHT_LEVEL_NAME" value="ERROR" />
+      <option name="SHOW_SNIFF_NAMES" value="true" />
     </inspection_tool>
-    <inspection_tool class="PhpClassNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpConstantNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpDeprecationInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpDisabledExtensionStubsInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpDivisionByZeroInspection" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -21,7 +22,6 @@
     <inspection_tool class="PhpDocRedundantThrowsInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpDocSignatureInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpFullyQualifiedNameUsageInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpFunctionNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpGotoIntoLoopInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpHierarchyChecksInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpIgnoredClassAliasDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -31,7 +31,6 @@
     <inspection_tool class="PhpLoopCanBeConvertedToArrayFillInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpLoopCanBeConvertedToArrayFilterInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpLoopCanBeConvertedToArrayMapInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpMethodNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpMethodOrClassCallIsNotCaseSensitiveInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpMissingDocCommentInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpMissingParentCallCommonInspection" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -40,7 +39,6 @@
     <inspection_tool class="PhpMultipleClassesDeclarationsInOneFile" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpNonCanonicalElementsOrderInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpPassByRefInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpPropertyNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpRedundantClosingTagInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpShortOpenTagInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpStaticAsDynamicMethodCallInspection" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -53,8 +51,8 @@
     <inspection_tool class="PhpUnitMissingTargetForTestInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpUnnecessaryFullyQualifiedNameInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpUsageOfSilenceOperatorInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpVariableNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpVariableVariableInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="Stylelint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SyntaxError" enabled="false" level="ERROR" enabled_by_default="false" />
   </profile>
 </component>

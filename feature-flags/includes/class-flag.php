@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
+
 /**
  * Flag Class
  *
@@ -68,7 +69,7 @@ class Flag {
 	 * Display or retrieve the flag key.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 * @return void|string Current flag key if $echo is false.
+	 * @return string|void Current flag key if $echo is false.
 	 */
 	public function get_key( $echo = true ) {
 
@@ -86,7 +87,8 @@ class Flag {
 	 * Display or retrieve the flag name.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 * @return void|string Current flag key if $echo is false.
+	 *
+	 * @return string|void Current flag key if $echo is false.
 	 */
 	public function get_name( $echo = true ) {
 
@@ -125,7 +127,7 @@ class Flag {
 	/**
 	 * Retrieve the status of a flag's enforced state.
 	 *
-	 * @return boolean The status of if a flag is enforced or not.
+	 * @return bool The status of if a flag is enforced or not.
 	 */
 	public function get_enforced() {
 

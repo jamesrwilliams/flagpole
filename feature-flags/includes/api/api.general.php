@@ -5,7 +5,7 @@
  * @package feature-flags
  */
 
-use FeatureFlags\featureFlags;
+use FeatureFlags\FeatureFlags;
 
 /**
  * Register a feature flag with the plugin.
@@ -27,7 +27,7 @@ function register_feature_flag( $args ) {
 
 	if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
 
-		featureFlags::init()->add_flag( $args );
+		FeatureFlags::init()->add_flag( $args );
 
 	} else {
 
@@ -53,7 +53,7 @@ function register_feature_flag( $args ) {
  */
 function has_user_enabled( $feature_key = '' ) {
 
-	return featureFlags::init()->has_user_enabled( $feature_key );
+	return FeatureFlags::init()->has_user_enabled( $feature_key );
 
 }
 
@@ -66,6 +66,6 @@ function has_user_enabled( $feature_key = '' ) {
  */
 function is_enabled( $feature_key = '' ) {
 
-	return featureFlags::init()->is_enabled( $feature_key );
+	return FeatureFlags::init()->is_enabled( $feature_key );
 
 }

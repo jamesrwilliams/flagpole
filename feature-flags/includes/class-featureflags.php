@@ -16,7 +16,12 @@ use FeatureFlag\Flag;
 
 require_once 'class-flag.php';
 
-class featureFlags {
+/**
+ * Class featureFlags
+ *
+ * @package FeatureFlags
+ */
+class FeatureFlags {
 
 	/**
 	 * The class instance. Only need one of these.

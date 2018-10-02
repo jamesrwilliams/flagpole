@@ -82,3 +82,6 @@ Setting this to true will override any user specific settings and will enforce t
 
 A description displayed in the admin screen. Use to tell users what they are enabling and other information. 
 
+## Standards
+
+This project uses the [WordPress VIP](https://github.com/Automattic/VIP-Coding-Standards) coding standards.

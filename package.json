@@ -17,19 +17,14 @@
     "url": "https://github.com/jamesrwilliams/feature-flags/issues"
   },
   "homepage": "https://github.com/jamesrwilliams/feature-flags#readme",
-  "dependencies": {
+  "devDependency": {
+    "eslint-config-wordpress": "^2.0.0",
     "gulp": "^3.9.1",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "gulp-concat": "^2.6.1",
     "gulp-rename": "^1.2.3",
     "gulp-sass": "^4.0.1",
     "gulp-sass-bulk-import": "^1.0.1",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglifyjs": "^0.6.2",
-    "gulp-babel": "^7.0.1",
     "stylelint-config-wordpress": "^13.0.0",
-    "eslint-config-wordpress": "^2.0.0",
     "stylelint-scss": "^3.2.0"
   }
 }

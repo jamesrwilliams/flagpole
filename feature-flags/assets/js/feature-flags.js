@@ -1,1 +1,34 @@
-"use strict";jQuery(document).ready(function(e){e("input#flagActivateButton").on("click",function(n){var t=n.target,i=t.parentElement.parentElement.querySelector("pre").innerHTML;i?e.ajax({type:"POST",url:ajaxurl,data:{action:"featureFlagEnable",featureKey:i}}).done(function(){window.location.reload()}).fail(function(n){e(".notice-container").html('<div class="notice notice-error is-dismissible"><p>Error cannot process <code>'+n.responseJSON.response+"</code></p></div>")}):e(".notice-container").html('<div class="notice notice-error is-dismissible"><p>Error: missing featureKey</p></div>')})});
+'use strict';
+
+/* global jQuery, ffwp */
+jQuery( document ).ready( function( $ ) {
+
+	$( '#flagActivateButton' ).on( 'click', function( e ) {
+
+		var $button    = e.target;
+		var featureKey = $button.parentElement.parentElement.querySelector( 'pre' ).innerHTML;
+
+		var payload = {
+			action: 'featureFlag_enable',
+			featureKey: featureKey,
+			security: ffwp.ajax_nonce
+		};
+
+		if ( featureKey ) {
+
+			$.ajax({
+				type: 'POST',
+				url: ajaxurl,
+				data: payload
+			}).done( function() {
+
+				window.location.reload();
+			}).fail( function( error ) {
+
+				$( '.notice-container' ).html( '<div class="notice notice-error is-dismissible"><p>Error cannot process <code>' + error.responseJSON.response + '</code></p></div>' );
+			});
+		} else {
+			$( '.notice-container' ).html( '<div class="notice notice-error is-dismissible"><p>Error: missing featureKey</p></div>' );
+		}
+	});
+});
