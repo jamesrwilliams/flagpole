@@ -33,8 +33,7 @@ if ( ! function_exists( 'is_enabled' ) ) {
 ```php
 register_feature_flag($options);
 ```
-When registering a flag it is a good idea to wrap them in a function exists block to avoid any errors if the plugin is 
-In template you can then check the feature status using:
+When registering a flag it is a good idea to wrap them in a function exists block to avoid any errors if the plugin is disabled for any reason. In your templates you can then check the feature status using:
 
 ```php
 if ( function_exists( 'register_feature_flag' ) ) {
