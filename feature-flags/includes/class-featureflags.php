@@ -35,7 +35,7 @@ class FeatureFlags {
 	 *
 	 * @var string $user_meta_key
 	 */
-	private static $user_meta_key = 'enabledFlags';
+	private static $meta_key = 'enabledFlags';
 
 	/**
 	 * Current Feature Flags
@@ -94,9 +94,9 @@ class FeatureFlags {
 	}
 
 	/**
-	 * Undocumented function
+	 * Get all the current flags.
 	 *
-	 * @param boolean $enforced TODO Is the are we getting all enforce flags also.
+	 * @param boolean $enforced Fetch enforced flags or just regular ones.
 	 *
 	 * @return array All available flags if $enforced is false, else only returns 'enforced' features.
 	 */
@@ -168,7 +168,7 @@ class FeatureFlags {
 
 		if ( ! empty( $user_id ) ) {
 
-			return get_user_meta( $user_id, 'enabledFlags', true );
+			return self::get_user( $user_id, self::$meta_key, true );
 
 		} else {
 
@@ -193,7 +193,7 @@ class FeatureFlags {
 		if ( $user_id ) {
 
 			// We have a user.
-			$user_settings = get_user_meta( $user_id, 'enabledFlags', true );
+			$user_settings = self::get_user( $user_id, self::$meta_key, true );
 
 			// Other.
 			$response = ( isset( $user_settings[ $feature_key ] ) ? $user_settings[ $feature_key ] : false );
@@ -217,7 +217,7 @@ class FeatureFlags {
 
 		if ( $user_id ) {
 
-			$user_settings = get_user_meta( $user_id, 'enabledFlags', true );
+			$user_settings = self::get_user( $user_id, self::$meta_key, true );
 
 			$enabled = ( $user_settings ?: [] );
 
@@ -231,8 +231,49 @@ class FeatureFlags {
 
 			}
 
-			update_user_meta( $user_id, 'enabledFlags', $enabled );
+			self::update_user( $user_id, self::$meta_key, $enabled );
 
+		}
+
+	}
+
+	/**
+	 * Conditional wrapper for get_user_meta based on WordPress VIP or regular.
+	 *
+	 * @param integer $user_id The ID of the user whose data should be retrieved.
+	 * @param string $key The key for the meta_value to be returned.
+	 * @param bool $single If true return value of meta data field, if false return an array.
+	 *
+	 * @return mixed
+	 */
+	private function get_user( $user_id, $key, $single = true ) {
+
+		if ( function_exists( 'get_user_attribute' ) ) {
+			return get_user_attribute( $user_id, $key );
+		} else {
+			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
+			return get_user_meta( $user_id, $key, $single );
+		}
+
+	}
+
+	/**
+	 * Conditional wrapper for update_user_meta based on WordPress VIP or regular.
+	 *
+	 * @param integer $user_id User ID.
+	 * @param string $meta_key The key for the meta_value to be updated.
+	 * @param mixed $meta_value The new desired value of the meta_key, which must be different from the existing value.
+	 * @param string $prev_value Previous value to check before removing.
+	 *
+	 * @return bool|int
+	 */
+	private function update_user( $user_id, $meta_key, $meta_value, $prev_value = '' ) {
+
+		if ( function_exists( 'update_user_attribute' ) ) {
+			return update_user_attribute( $user_id, $meta_key, $meta_value );
+		} else {
+			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
+			return update_user_meta( $user_id, $meta_key, $meta_value, $prev_value );
 		}
 
 	}
