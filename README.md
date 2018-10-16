@@ -59,7 +59,7 @@ Replace `feature-key` with the key used in the register function to check if it 
 **Example**
 
 ```php
-if ( is_enabled( 'correct-horse-battery-staple' ) {
+if ( is_enabled( 'correct-horse-battery-staple' ) ) {
     /* Flagged feature */
 }
 ```

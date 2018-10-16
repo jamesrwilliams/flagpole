@@ -64,8 +64,13 @@ function has_user_enabled( $feature_key = '' ) {
  *
  * @return bool
  */
-function is_enabled( $feature_key = '' ) {
 
-	return FeatureFlags::init()->is_enabled( $feature_key );
+if( ! function_exists( 'is_enabled' ) ) {
+
+	function is_enabled( $feature_key = '' ) {
+
+		return FeatureFlags::init()->is_enabled( $feature_key );
+
+	}
 
 }
