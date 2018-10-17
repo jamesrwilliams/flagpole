@@ -67,7 +67,7 @@ class FeatureFlags {
 	 */
 	public function add_flag( $flag ) {
 
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'], $flag['private'] );
 
 	}
 
@@ -151,6 +151,7 @@ class FeatureFlags {
 
 				if ( $query ) {
 					return true;
+
 				} else {
 					return has_user_enabled( $feature_key );
 				}
@@ -226,9 +227,17 @@ class FeatureFlags {
 	 * @return bool Is the feature queryable or not.
 	 */
 	public function is_querable( $feature_key ) {
-
 		return self::find_flag( $feature_key )->queryable;
+	}
 
+	/**
+	 * Check if a provided key requires logging in.
+	 *
+	 * @param string $feature_key The feature we're checking.
+	 * @return bool Is the feature private or not.
+	 */
+	public function is_private ( $feature_key ) {
+		return self::find_flag( $feature_key )->private;
 	}
 
 	/**

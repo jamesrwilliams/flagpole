@@ -38,6 +38,7 @@ add_action( 'admin_menu', function () {
 						<th>Key</th>
 						<th>Description</th>
 						<th>Queryable</th>
+						<th>Visibility</th>
 						<th>Action</th>
 					</tr>
 					</thead>
@@ -57,6 +58,7 @@ add_action( 'admin_menu', function () {
 								</td>
 								<td><?php $flag->get_description(); ?></td>
 								<td><?php $flag->is_queryable( true ); ?></td>
+								<td><?php $flag->is_private( true ); ?></td>
 								<td>
 									<?php
 
@@ -86,7 +88,7 @@ add_action( 'admin_menu', function () {
 
 			<?php if ( $enforced_flags ) { ?>
 				<h2>Enforced feature flags</h2>
-				<p>Features listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will be removed from the website code soon.</p>
+				<p>Features listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will likely be removed from the website source code soon.</p>
 
 				<table class="widefat">
 					<thead>

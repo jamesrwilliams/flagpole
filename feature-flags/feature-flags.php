@@ -121,13 +121,17 @@ function feature_flag_enable() {
  */
 function redirect_with_key() {
 
-	if ( isset( $_SERVER['REQUEST_URI'] ) && isset( $_SERVER['HTTP_HOST'] ) && ! empty( find_query_string() ) && ! is_user_logged_in() ) { // input var okay;
+	$query = find_query_string();
 
-		$destination = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ); // input var okay;
+	if ( isset( $_SERVER['REQUEST_URI'] ) && isset( $_SERVER['HTTP_HOST'] ) && ! empty( $query ) && ! is_user_logged_in() ) { // input var okay;
 
-		if ( filter_var( $destination, FILTER_VALIDATE_URL ) ) {
-			wp_safe_redirect( wp_login_url( $destination ) );
-			exit();
+		if ( FeatureFlags::init()->is_private( $query ) ) {
+			$destination = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ); // input var okay;
+
+			if ( filter_var( $destination, FILTER_VALIDATE_URL ) ) {
+				wp_safe_redirect( wp_login_url( $destination ) );
+				exit();
+			}
 		}
 	}
 }

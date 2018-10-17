@@ -21,6 +21,7 @@ function register_feature_flag( $args ) {
 		'enforced'    => false,
 		'description' => '',
 		'queryable'   => false,
+		'private'     => true,
 
 	];
 
@@ -58,20 +59,16 @@ function has_user_enabled( $feature_key = '' ) {
 
 }
 
-/**
- * Check if a a flag is enabled.
- *
- * @param string $feature_key The key for the flag we're after.
- *
- * @return bool
- */
+if ( ! function_exists( 'is_enabled' ) ) {
 
-if( ! function_exists( 'is_enabled' ) ) {
-
+	/**
+	 * Check if a a flag is enabled.
+	 *
+	 * @param string $feature_key The key for the flag we're after.
+	 *
+	 * @return bool
+	 */
 	function is_enabled( $feature_key = '' ) {
-
 		return FeatureFlags::init()->is_enabled( $feature_key );
-
 	}
-
 }

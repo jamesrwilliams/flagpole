@@ -45,6 +45,7 @@ if ( function_exists( 'register_feature_flag' ) ) {
         'enforced'    => false,
         'description' => 'An example feature definition'
         'queryable'   => true,
+        'private'     => false,
     
     ]);
 }
@@ -86,6 +87,10 @@ A description displayed in the admin screen. Use to tell users what they are ena
 **queryable** (optional) - `boolean` - Default: `false`
 
 Allow users to enable this flag by using a query string in the URL.
+
+**private** (optional) - `boolean` - Default: `true`
+
+Works in tandem with the `queryable` argument. If this is set to false, users are not required to login to enable the flag.
 
 ## Standards
 

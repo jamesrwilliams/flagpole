@@ -56,6 +56,12 @@ class Flag {
 	public $queryable;
 
 	/**
+	 * Does the flag require users to be logged in.
+	 * @var bool
+	 */
+	public $private;
+
+	/**
 	 * Flag constructor.
 	 *
 	 * @param string $_key The Key for the feature.
@@ -63,14 +69,16 @@ class Flag {
 	 * @param bool   $_enforced Is the key enforced.
 	 * @param string $_description The description to be shown in the admin about the field.
 	 * @param bool   $_queryable Can you access the flag with a query string?
+	 * @param bool   $_private Allow this flag to be enabled without logging in.
 	 */
-	public function __construct( $_key, $_name, $_enforced, $_description, $_queryable ) {
+	public function __construct( $_key, $_name, $_enforced, $_description, $_queryable, $_private ) {
 
 		$this->enforced    = $_enforced;
 		$this->name        = ( $_name ? $_name : '' );
 		$this->key         = $_key;
 		$this->description = $_description;
 		$this->queryable   = $_queryable;
+		$this->private     = $_private;
 
 	}
 
@@ -133,11 +141,11 @@ class Flag {
 	}
 
 	/**
-	 * Check if a flag is publicly queryable.
-	 *
-	 * @param bool $echo Echo or return the response.
-	 * @return string|void Yes or no string if echo is true.
-	 */
+ * Check if a flag is publicly queryable.
+ *
+ * @param bool $echo Echo or return the response.
+ * @return string|void Yes or no string if echo is true.
+ */
 	public function is_queryable( $echo = true ) {
 
 		$queryable = $this->queryable;
@@ -149,6 +157,28 @@ class Flag {
 		} else {
 
 			return $queryable;
+
+		}
+
+	}
+
+	/**
+	 * Check if a flag is publicly queryable.
+	 *
+	 * @param bool $echo Echo or return the response.
+	 * @return string|void Yes or no string if echo is true.
+	 */
+	public function is_private( $echo = true ) {
+
+		$private = $this->private;
+
+		if ( $echo ) {
+
+			echo wp_kses_post( $private ? 'Private' : 'Public' );
+
+		} else {
+
+			return $private;
 
 		}
 
