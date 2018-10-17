@@ -60,12 +60,12 @@ add_action( 'admin_menu', function () {
 
 									if ( $enabled ) {
 										submit_button( 'Disable', 'small', 'featureFlags-disable', false, [
-											'id'          => 'flagActivateButton',
+											'data-action'          => 'toggleFeatureFlag',
 											'data-status' => 'enabled',
 										] );
 									} else {
 										submit_button( 'Enable', 'small', 'featureFlags-enable', false, [
-											'id'          => 'flagActivateButton',
+											'data-action'          => 'toggleFeatureFlag',
 											'data-status' => 'disabled',
 										] );
 									}

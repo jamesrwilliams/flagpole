@@ -3,7 +3,7 @@
 /* global jQuery, ffwp */
 jQuery( document ).ready( function( $ ) {
 
-	$( '#flagActivateButton' ).on( 'click', function( e ) {
+	$( '[data-action="toggleFeatureFlag"]' ).on( 'click', function( e ) {
 
 		var $button    = e.target;
 		var featureKey = $button.parentElement.parentElement.querySelector( 'pre' ).innerHTML;
