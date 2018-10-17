@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpInconsistentReturnPointsInspection */
+<?php
 
 /**
  * Flag Class

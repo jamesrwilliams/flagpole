@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection ALL */
+
 /**
  * FeatureFlag Class
  *
@@ -136,12 +137,13 @@ class FeatureFlags {
 	public function is_enabled( $flag_key ) {
 
 		$export = $this->find_flag( $flag_key );
+		$query  = $this->check_query_string( $flag_key );
 
 		if ( $export ) {
 
 			$enforced = $export->get_enforced();
 
-			if ( $enforced ) {
+			if ( $enforced || $query ) {
 
 				return true;
 
@@ -150,6 +152,14 @@ class FeatureFlags {
 				return has_user_enabled( $flag_key );
 			}
 		} else {
+
+			/**
+			 * We want to display an error if WP_DEBUG is enabled to highlight an
+			 * unregistered flag key is being checked.
+			 */
+
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			trigger_error( 'Feature not registered.', E_USER_WARNING );
 
 			return false;
 
@@ -241,8 +251,8 @@ class FeatureFlags {
 	 * Conditional wrapper for get_user_meta based on WordPress VIP or regular.
 	 *
 	 * @param integer $user_id The ID of the user whose data should be retrieved.
-	 * @param string $key The key for the meta_value to be returned.
-	 * @param bool $single If true return value of meta data field, if false return an array.
+	 * @param string  $key The key for the meta_value to be returned.
+	 * @param bool    $single If true return value of meta data field, if false return an array.
 	 *
 	 * @return mixed
 	 */
@@ -261,9 +271,9 @@ class FeatureFlags {
 	 * Conditional wrapper for update_user_meta based on WordPress VIP or regular.
 	 *
 	 * @param integer $user_id User ID.
-	 * @param string $meta_key The key for the meta_value to be updated.
-	 * @param mixed $meta_value The new desired value of the meta_key, which must be different from the existing value.
-	 * @param string $prev_value Previous value to check before removing.
+	 * @param string  $meta_key The key for the meta_value to be updated.
+	 * @param mixed   $meta_value The new desired value of the meta_key, which must be different from the existing value.
+	 * @param string  $prev_value Previous value to check before removing.
 	 *
 	 * @return bool|int
 	 */
@@ -274,6 +284,30 @@ class FeatureFlags {
 		} else {
 			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
 			return update_user_meta( $user_id, $meta_key, $meta_value, $prev_value );
+		}
+
+	}
+
+	/**
+	 * Check if a query argument has been passed to enable a flag manually.
+	 *
+	 * @param string $flag_key The key of the flag we're aiming to match.
+	 *
+	 * @return bool Is there a query string for this flag currently?
+	 */
+	function check_query_string( $flag_key ) {
+
+		/* TODO: Make this a configurable key */
+		$query_string_key = 'flag';
+
+		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+		if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {  // input var okay;
+
+			// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+			return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) ) === $flag_key;  // input var okay;
+
+		} else {
+			return false;
 		}
 
 	}
