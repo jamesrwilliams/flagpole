@@ -40,10 +40,11 @@ if ( function_exists( 'register_feature_flag' ) ) {
 
     register_feature_flag([
         
-        'title' => 'My awesome new feature',
-        'key' => 'correct-horse-battery-staple',
-        'enforced' => false,
+        'title'       => 'My awesome new feature',
+        'key'         => 'correct-horse-battery-staple',
+        'enforced'    => false,
         'description' => 'An example feature definition'
+        'queryable'   => true,
     
     ]);
 }
@@ -81,6 +82,10 @@ Setting this to true will override any user specific settings and will enforce t
 **description** (optional) - `string` - Default: ''
 
 A description displayed in the admin screen. Use to tell users what they are enabling and other information. 
+
+**queryable** (optional) - `boolean` - Default: `false`
+
+Allow users to enable this flag by using a query string in the URL.
 
 ## Standards
 

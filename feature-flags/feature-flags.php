@@ -95,7 +95,6 @@ function feature_flag_enable() {
 
 		if ( ! empty( $feature_key ) ) {
 
-			// Do fun plugin stuff.
 			$response['response'] = $feature_key;
 
 			FeatureFlags::init()->toggle_feature( $feature_key );
@@ -114,4 +113,45 @@ function feature_flag_enable() {
 
 	exit();
 
+}
+
+/**
+ * Redirect the user to the login form if they attempt to use a
+ * flag query string while logged out.
+ */
+function redirect_with_key() {
+
+	if ( isset( $_SERVER['REQUEST_URI'] ) && ! empty( find_query_string() && ! is_user_logged_in() ) ) {
+
+		$destination = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // input var okay;
+
+		if ( filter_var( $destination, FILTER_VALIDATE_URL ) ) {
+			wp_safe_redirect( wp_login_url( $destination ) );
+			exit();
+		}
+	}
+}
+
+add_action( 'template_redirect', 'redirect_with_key' );
+
+/**
+ * Check if there is a flag query string.
+ *
+ * @return bool|string False if there isn't one, the flag string if found.
+ */
+function find_query_string() {
+
+	/* TODO: Make this a configurable key */
+	$query_string_key = 'flag';
+
+	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+	if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {  // input var okay;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+		return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) );  // input var okay;
+
+	} else {
+
+		return false;
+	}
 }

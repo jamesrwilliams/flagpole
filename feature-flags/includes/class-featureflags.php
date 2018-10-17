@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 /**
  * FeatureFlag Class
@@ -67,7 +67,7 @@ class FeatureFlags {
 	 */
 	public function add_flag( $flag ) {
 
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'] );
 
 	}
 
@@ -130,26 +130,31 @@ class FeatureFlags {
 	/**
 	 * Check if the provided key is currently enabled.
 	 *
-	 * @param string $flag_key The key of the flag we're looking for.
+	 * @param string $feature_key The key of the flag we're looking for.
 	 *
 	 * @return boolean Is the flag enabled or not.
 	 */
-	public function is_enabled( $flag_key ) {
+	public function is_enabled( $feature_key ) {
 
-		$export = $this->find_flag( $flag_key );
-		$query  = $this->check_query_string( $flag_key );
+		$export = $this->find_flag( $feature_key );
 
 		if ( $export ) {
 
+			$query  = $this->check_query_string( $feature_key );
 			$enforced = $export->get_enforced();
 
-			if ( $enforced || $query ) {
+			if ( $enforced ) {
 
 				return true;
 
 			} else {
 
-				return has_user_enabled( $flag_key );
+				if ( $query ) {
+					return true;
+				} else {
+					return has_user_enabled( $feature_key );
+				}
+
 			}
 		} else {
 
@@ -215,10 +220,21 @@ class FeatureFlags {
 	}
 
 	/**
+	 * Check if a provided key is queryable.
+	 *
+	 * @param string $feature_key The feature we're checking.
+	 * @return bool Is the feature queryable or not.
+	 */
+	public function is_querable( $feature_key ) {
+
+		return self::find_flag( $feature_key )->queryable;
+
+	}
+
+	/**
 	 * Toggle the feature for the current user.
 	 *
 	 * @param string $feature_key The feature key we're checking.
-	 *
 	 * @return void
 	 */
 	public function toggle_feature( $feature_key ) {
@@ -290,26 +306,34 @@ class FeatureFlags {
 
 	/**
 	 * Check if a query argument has been passed to enable a flag manually.
+	 * Also validates it's publicly queryable.
 	 *
-	 * @param string $flag_key The key of the flag we're aiming to match.
-	 *
+	 * @param string $feature_key The key of the flag we're aiming to match.
 	 * @return bool Is there a query string for this flag currently?
 	 */
-	function check_query_string( $flag_key ) {
+	function check_query_string( $feature_key ) {
 
-		/* TODO: Make this a configurable key */
-		$query_string_key = 'flag';
+		$query = find_query_string();
 
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
-		if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {  // input var okay;
+		if ( ! empty( $query ) && $query ){
 
-			// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
-			return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) ) === $flag_key;  // input var okay;
+			if ( self::is_querable( $query ) ) {
+				return $query === $feature_key;
+			} else {
+				/**
+				 * We want to display an error if WP_DEBUG is enabled to highlight a
+				 * flag being queried that has not been enabled.
+				 */
 
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				trigger_error( 'Trying to query flag that is not queryable.', E_USER_WARNING );
+
+				return false;
+
+			}
 		} else {
 			return false;
 		}
-
 	}
 
 }

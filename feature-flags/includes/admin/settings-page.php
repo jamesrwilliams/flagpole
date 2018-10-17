@@ -37,6 +37,7 @@ add_action( 'admin_menu', function () {
 						<th class="row-title">Feature</th>
 						<th>Key</th>
 						<th>Description</th>
+						<th>Queryable</th>
 						<th>Action</th>
 					</tr>
 					</thead>
@@ -55,6 +56,7 @@ add_action( 'admin_menu', function () {
 									<pre><?php $flag->get_key(); ?></pre>
 								</td>
 								<td><?php $flag->get_description(); ?></td>
+								<td><?php $flag->is_queryable( true ); ?></td>
 								<td>
 									<?php
 

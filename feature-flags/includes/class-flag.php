@@ -49,19 +49,28 @@ class Flag {
 	public $description;
 
 	/**
+	 * Enable if the flag can be enabled with a query string.
+	 *
+	 * @var bool
+	 */
+	public $queryable;
+
+	/**
 	 * Flag constructor.
 	 *
 	 * @param string $_key The Key for the feature.
 	 * @param string $_name The human readable name for the flag.
 	 * @param bool   $_enforced Is the key enforced.
-	 * @param string $_description The description to be shown in the admin about the field..
+	 * @param string $_description The description to be shown in the admin about the field.
+	 * @param bool   $_queryable Can you access the flag with a query string?
 	 */
-	public function __construct( $_key, $_name, $_enforced, $_description ) {
+	public function __construct( $_key, $_name, $_enforced, $_description, $_queryable ) {
 
 		$this->enforced    = $_enforced;
 		$this->name        = ( $_name ? $_name : '' );
 		$this->key         = $_key;
 		$this->description = $_description;
+		$this->queryable   = $_queryable;
 
 	}
 
@@ -87,7 +96,6 @@ class Flag {
 	 * Display or retrieve the flag name.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 *
 	 * @return string|void Current flag key if $echo is false.
 	 */
 	public function get_name( $echo = true ) {
@@ -119,6 +127,28 @@ class Flag {
 		} else {
 
 			return $description;
+
+		}
+
+	}
+
+	/**
+	 * Check if a flag is publicly queryable.
+	 *
+	 * @param bool $echo Echo or return the response.
+	 * @return string|void Yes or no string if echo is true.
+	 */
+	public function is_queryable( $echo = true ) {
+
+		$queryable = $this->queryable;
+
+		if ( $echo ) {
+
+			echo wp_kses_post( $queryable ? 'Yes' : 'No' );
+
+		} else {
+
+			return $queryable;
 
 		}
 
