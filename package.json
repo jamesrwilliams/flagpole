@@ -17,7 +17,7 @@
     "url": "https://github.com/jamesrwilliams/feature-flags/issues"
   },
   "homepage": "https://github.com/jamesrwilliams/feature-flags#readme",
-  "devDependency": {
+  "devDependencies": {
     "eslint-config-wordpress": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.3",
