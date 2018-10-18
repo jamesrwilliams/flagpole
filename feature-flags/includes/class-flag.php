@@ -141,11 +141,11 @@ class Flag {
 	}
 
 	/**
- * Check if a flag is publicly queryable.
- *
- * @param bool $echo Echo or return the response.
- * @return string|void Yes or no string if echo is true.
- */
+	 * Check if a flag is publicly queryable.
+	 *
+	 * @param bool $echo Echo or return the response.
+	 * @return string|void Yes or no string if echo is true.
+	 */
 	public function is_queryable( $echo = true ) {
 
 		$queryable = $this->queryable;

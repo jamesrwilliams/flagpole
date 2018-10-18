@@ -11,7 +11,6 @@ use FeatureFlags\FeatureFlags;
  * Register a feature flag with the plugin.
  *
  * @param array $args Settings and options for each flag.
- *
  * @return void
  */
 function register_feature_flag( $args ) {
@@ -50,7 +49,6 @@ function register_feature_flag( $args ) {
  * Check if a user has enabled a flag.
  *
  * @param string $feature_key The key for the flag we're after.
- *
  * @return mixed
  */
 function has_user_enabled( $feature_key = '' ) {
@@ -65,7 +63,6 @@ if ( ! function_exists( 'is_enabled' ) ) {
 	 * Check if a a flag is enabled.
 	 *
 	 * @param string $feature_key The key for the flag we're after.
-	 *
 	 * @return bool
 	 */
 	function is_enabled( $feature_key = '' ) {
