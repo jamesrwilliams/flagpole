@@ -58,31 +58,30 @@ if ( is_enabled( 'correct-horse-battery-staple' ) ) {
 }
 ```
 
-## Options
+### Using Query Strings
 
-**key** - `string` 
+You can also enable flags using the query string feature. 
+This feature is only enabled if the flag has the `queryable` option enabled in it's declaration.
+Once enabled adding a `flag={{key}}` parameter to the URL will enable a flag with that key.
 
-The unique key used in the template to check if a feature is enabled.
+For example:
 
-**title** - `string`
+```php
+https://example.com/?flag=correct-horse-battery-staple
+```
 
-The human readable feature name.
+Flags can be set to private which will require the visitor to be logged in to wordpress to use. Appending the query string to a non-authenticated session will cause the user to be redirected to the login page and then redirected back to their original URL.
 
-**enforced** (optional) - `boolean` - Default: `false`
+## Feature declaration arguments
 
-Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase.
-
-**description** (optional) - `string` - Default: ''
-
-A description displayed in the admin screen. Use to tell users what they are enabling and other information. 
-
-**queryable** (optional) - `boolean` - Default: `false`
-
-Allow users to enable this flag by using a query string in the URL.
-
-**private** (optional) - `boolean` - Default: `true`
-
-Works in tandem with the `queryable` argument. If this is set to false, users are not required to login to enable the flag.
+| Parameter              | Type      | Default | Description |
+|------------------------|-----------|---------|---|
+| key                    | `string`  | N/A     |  The unique key used in the template to check if a feature is enabled. |
+| title                  | `string`  | ""      | The human readable feature name. |
+| enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
+| description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
+| queryable (optional)   | `boolean` | `false` | Allow users to enable this flag by using a query string in the URL. |
+| private (optional)     | `boolean` | `true`  | Works in tandem with the `queryable` argument. If this is set to false, users are not required to login to enable the flag. |
 
 ## Standards
 
