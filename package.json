@@ -19,12 +19,12 @@
   "homepage": "https://github.com/jamesrwilliams/feature-flags#readme",
   "devDependencies": {
     "eslint-config-wordpress": "^2.0.0",
-    "gulp": "^3.9.1",
-    "gulp-rename": "^1.2.3",
-    "gulp-sass": "^4.0.1",
+    "gulp": "^4.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
     "gulp-sass-bulk-import": "^1.0.1",
     "gulp-sourcemaps": "^2.6.4",
-    "stylelint-config-wordpress": "^13.0.0",
-    "stylelint-scss": "^3.2.0"
+    "stylelint-config-wordpress": "^13.1.0",
+    "stylelint-scss": "^3.5.1"
   }
 }

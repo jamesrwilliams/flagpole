@@ -1,16 +1,16 @@
-let gulp = require( 'gulp' );
-let sass = require( 'gulp-sass' );
-let rename = require( 'gulp-rename' );
+let gulp       = require( 'gulp' );
+let sass       = require( 'gulp-sass' );
+let rename     = require( 'gulp-rename' );
 let sourcemaps = require( 'gulp-sourcemaps' );
-let bulkSass = require( 'gulp-sass-bulk-import' );
+let bulkSass   = require( 'gulp-sass-bulk-import' );
 
-let srcDir = './src';
+let srcDir  = './src';
 let destDir = './feature-flags';
-let paths = {
-  scss: {
-      input: [ `${srcDir}/scss/feature-flags.scss` ],
-      output: `${destDir}/assets/css/`,
-      watch: `${srcDir}/scss/**/*.scss`
+let paths   = {
+    scss: {
+        input: [ `${srcDir}/scss/feature-flags.scss` ],
+        output: `${destDir}/assets/css/`,
+        watch: `${srcDir}/scss/**/*.scss`
   }
 };
 
