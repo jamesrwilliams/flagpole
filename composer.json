@@ -1,9 +1,9 @@
 {
-  "name": "jamesrwilliams/feature-flags",
+  "name": "jamesrwilliams/wp-feature-flags",
   "type": "wordpress-plugin",
   "description": "Feature flags in your wordpress sites",
   "keywords": ["wordpress","feature flags"],
-  "homepage": "https://github.com/jamesrwilliams/feature-flags",
+  "homepage": "https://github.com/jamesrwilliams/wp-feature-flags",
   "license": "MIT",
   "authors": [
     {
