@@ -12,5 +12,8 @@
       "homepage": "https://jamesrwilliams.co.uk",
       "role": "Developer"
     }
-  ]
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  }
 }
