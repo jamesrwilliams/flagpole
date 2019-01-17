@@ -1,0 +1,16 @@
+{
+  "name": "jamesrwilliams/feature-flags",
+  "type": "wordpress-plugin",
+  "description": "Feature flags in your wordpress sites",
+  "keywords": ["wordpress","feature flags"],
+  "homepage": "https://github.com/jamesrwilliams/feature-flags",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "James Williams",
+      "email": "james@jamesrwilliams.co.uk",
+      "homepage": "https://jamesrwilliams.co.uk",
+      "role": "Developer"
+    }
+  ]
+}
