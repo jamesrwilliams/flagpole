@@ -70,7 +70,7 @@ For example:
 https://example.com/?flag=correct-horse-battery-staple
 ```
 
-Flags can be set to private which will require the visitor to be logged in to wordpress to use. Appending the query string to a non-authenticated session will cause the user to be redirected to the login page and then redirected back to their original URL.
+Flags can be set to private which will require the visitor to be logged in to WordPress to use. Appending the query string to a non-authenticated session will cause the user to be redirected to the login page and then redirected back to their original URL.
 
 ## Feature declaration arguments
 
