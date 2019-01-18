@@ -39,7 +39,7 @@ add_action( 'admin_menu', function () {
 						<th>Description</th>
 						<th>Queryable</th>
 						<th>Visibility</th>
-						<th>Action</th>
+						<th>&nbsp;</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -63,18 +63,20 @@ add_action( 'admin_menu', function () {
 									<?php
 
 									if ( $enabled ) {
-										submit_button( 'Disable', 'small', 'featureFlags-disable', false, [
+										submit_button( 'Disable preview', 'small', 'featureFlags-disable', false, [
 											'data-action'          => 'toggleFeatureFlag',
 											'data-status' => 'enabled',
 										] );
 									} else {
-										submit_button( 'Enable', 'small', 'featureFlags-enable', false, [
+										submit_button( 'Enable preview', 'small', 'featureFlags-enable', false, [
 											'data-action'          => 'toggleFeatureFlag',
 											'data-status' => 'disabled',
 										] );
 									}
 
 									?>
+
+									<input type="submit" name="featureFlags-enable" id="featureFlags-enable" class="button button-small" value="Publish" data-action="toggleFeatureFlag" data-status="disabled">
 
 								</td>
 							</tr>

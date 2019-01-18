@@ -26,3 +26,4 @@ Thumbs.db
 # Ignore included files #
 #########################
 node_modules
+/vendor/
