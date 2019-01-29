@@ -7,7 +7,7 @@
  *
  * @package   feature-flags
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/feature-flags
+ * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 

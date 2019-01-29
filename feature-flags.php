@@ -3,7 +3,7 @@
  * Feature Flags for WordPress.
  * Include things in your WordPress theme using Feature Flags.
  *
- * @package   feature-flags
+ * @package   wp-feature-flags
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://jamesrwilliams.ca/
  * @copyright 2019 James Williams

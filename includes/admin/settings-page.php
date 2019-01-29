@@ -2,7 +2,7 @@
 /**
  * Settings page that is used to render admin UI.
  *
- * @package feature-flags
+ * @package wp-feature-flags
  */
 
 use FeatureFlags\FeatureFlags;
