@@ -64,6 +64,12 @@ class Flag {
 	public $private;
 
 	/**
+	 * Boolean whether or not the feature can be published.
+	 * @var bool
+	 */
+	public $stable;
+
+	/**
 	 * Flag constructor.
 	 *
 	 * @param string $_key The Key for the feature.
@@ -72,8 +78,9 @@ class Flag {
 	 * @param string $_description The description to be shown in the admin about the field.
 	 * @param bool   $_queryable Can you access the flag with a query string?
 	 * @param bool   $_private Allow this flag to be enabled without logging in.
+	 * @param bool   $_stable Allow this flag to be published or not.
 	 */
-	public function __construct( $_key, $_name, $_enforced, $_description, $_queryable, $_private ) {
+	public function __construct( $_key, $_name, $_enforced, $_description, $_queryable, $_private, $_stable ) {
 
 		$this->enforced    = $_enforced;
 		$this->name        = ( $_name ? $_name : '' );
@@ -81,6 +88,7 @@ class Flag {
 		$this->description = $_description;
 		$this->queryable   = $_queryable;
 		$this->private     = $_private;
+		$this->stable      = $_stable;
 
 	}
 
@@ -184,6 +192,25 @@ class Flag {
 
 		}
 
+	}
+
+	/**
+	 * Check to see if a variable is stable or not.
+	 *
+	 * @return bool
+	 */
+	public function is_stable( $echo = true ) {
+		$stable = $this->stable;
+
+		if ( $echo ) {
+
+			echo wp_kses_post( $stable ? 'Stable' : 'Unstable' );
+
+		} else {
+
+			return $stable;
+
+		}
 	}
 
 	/**

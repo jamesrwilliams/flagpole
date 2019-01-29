@@ -43,6 +43,21 @@ if ( function_exists( 'register_feature_flag' ) ) {
 }
 ```
 
+Alternatively features can be declared as an nested array to avoid large blocks of feature calls:
+
+```php
+register_feature_flag([
+    [       
+        'title'       => 'Listed Feature #1',
+        'key'         => 'listed-feature-1',
+    ],
+    [       
+        'title'       => 'Listed Feature #2',
+        'key'         => 'listed-feature-2',
+    ] 
+]);
+```
+
 ### Checking the status of a feature flag
 
 ```php
@@ -81,6 +96,7 @@ Flags can be set to private which will require the visitor to be logged in to Wo
 | enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
 | description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
 | queryable (optional)   | `boolean` | `false` | Allow users to enable this flag by using a query string in the URL. |
+| stable (optional)      | `boolean` | `false` | Allows users to publish features from the admin area. Has to be enabled. Features default to "unstable". |
 | private (optional)     | `boolean` | `true`  | Works in tandem with the `queryable` argument. If this is set to false, users are not required to login to enable the flag. |
 
 ## Standards

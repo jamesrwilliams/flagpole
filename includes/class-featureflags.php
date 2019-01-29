@@ -67,7 +67,7 @@ class FeatureFlags {
 	 */
 	public function add_flag( $flag ) {
 
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'], $flag['private'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'], $flag['private'], $flag['stable'] );
 
 	}
 
@@ -274,6 +274,11 @@ class FeatureFlags {
 
 	}
 
+	/**
+	 * @param $feature_key
+	 *
+	 * @return false|string
+	 */
 	public function toggle_feature_publication( $feature_key ) {
 
 		$published_flags = maybe_unserialize( get_option( self::$meta_key ) );
@@ -285,12 +290,15 @@ class FeatureFlags {
 
 		}
 
-
-
 		$found_in_options = array_search( $feature_key, $published_flags, true );
 
 		if ( false === $found_in_options || - 1 === $found_in_options ) {
-			$published_flags[] = $feature_key;
+
+			if ( self::find_flag( $feature_key )->stable !== true ) {
+				return wp_json_encode( 'This feature is unstable.' );
+			} else {
+				$published_flags[] = $feature_key;
+			}
 		} else {
 			unset( $published_flags[ $found_in_options ] );
 		}

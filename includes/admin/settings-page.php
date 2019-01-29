@@ -102,34 +102,32 @@ add_action( 'admin_menu', function () {
 												'data-status' => 'disabled',
 											]
 										);
-									} ?>
-
-									</td><td><?php
-
-									if ( $published ) {
-										submit_button(
-											'Unpublish',
-											'small',
-											'featureFlagsBtn_unpublish',
-											false,
-											[
-												'class' => 'action-btn',
-												'data-action' => 'togglePublishedFeature',
-												'data-status' => 'enabled',
-											]
-										);
-									} else {
-										submit_button(
-											'Publish',
-											'primary small',
-											'featureFlagsBtn_publish',
-											false,
-											[
-												'data-action' => 'togglePublishedFeature',
-												'data-status' => 'disabled',
-											]
-										);
 									}
+									?>
+
+									</td><td>
+									<?php
+
+									$stable       = $flag->is_stable( false );
+									$button_style = ( $stable ? 'primary small' : 'small' );
+									$button_text  = ( $published ? 'Unpublish' : 'Publish' );
+									$button_name  = ( $published ? 'featureFlagsBtn_unpublish' : 'featureFlagsBtn_publish' );
+									$other_args   = [
+										'data-action' => 'togglePublishedFeature',
+									];
+
+									if ( ! $stable ) {
+										$other_args['disabled'] = true;
+										$other_args['title']    = 'Feature is makred as unstable.';
+									}
+
+									submit_button(
+										$button_text,
+										$button_style,
+										$button_name,
+										false,
+										$other_args
+									);
 
 									?>
 

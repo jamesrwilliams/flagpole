@@ -24,28 +24,57 @@ function register_feature_flag( $args ) {
 		'description' => '',
 		'queryable'   => false,
 		'private'     => true,
+		'stable'      => false,
 
 	];
 
-	$args = wp_parse_args( $args, $defaults );
+	if ( isset( $args[0] ) && is_array( $args[0] ) ) {
 
-	if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
+		foreach ( $args as $declaration ) {
 
-		FeatureFlags::init()->add_flag( $args );
+			$args = wp_parse_args( $declaration, $defaults );
 
+			if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
+
+				FeatureFlags::init()->add_flag( $args );
+
+			} else {
+
+				add_action(
+					'admin_notices',
+					function() {
+
+						$class   = 'notice notice-error';
+						$message = 'Malformed featureFlag - Need to supply a key and a title.';
+
+						printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+
+					}
+				);
+			}
+		}
 	} else {
 
-		add_action(
-			'admin_notices',
-			function() {
+		$args = wp_parse_args( $args, $defaults );
 
-				$class   = 'notice notice-error';
-				$message = 'Malformed featureFlag - Need to supply a key and a title.';
+		if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
 
-				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+			FeatureFlags::init()->add_flag( $args );
 
-			}
-		);
+		} else {
+
+			add_action(
+				'admin_notices',
+				function() {
+
+					$class   = 'notice notice-error';
+					$message = 'Malformed featureFlag - Need to supply a key and a title.';
+
+					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+
+				}
+			);
+		}
 	}
 }
 

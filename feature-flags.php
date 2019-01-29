@@ -133,9 +133,7 @@ function feature_flag_publish() {
 
 		if ( ! empty( $feature_key ) ) {
 
-			$response['response'] = $feature_key;
-
-			FeatureFlags::init()->toggle_feature_publication( $feature_key );
+			$response['response'] = FeatureFlags::init()->toggle_feature_publication( $feature_key );
 
 		} else {
 
