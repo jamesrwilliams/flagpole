@@ -6,12 +6,14 @@
  * Used for creating feature flags.
  *
  * @package   feature-flags
- * @author    James Williams <james@jamesrwilliams.co.uk>
- * @link      https://github.com/jamesrwilliams/feature-flags
- * @copyright 2018 James Williams
+ * @author    James Williams <james@jamesrwilliams.ca>
+ * @link      https://github.com/jamesrwilliams/wp-feature-flags
+ * @copyright 2019 James Williams
  */
 
 namespace FeatureFlag;
+
+use FeatureFlags\FeatureFlags;
 
 /**
  * Class Flag
@@ -180,6 +182,35 @@ class Flag {
 
 			return $private;
 
+		}
+
+	}
+
+	/**
+	 * Check if this flag is published globally or not.
+	 *
+	 * @return bool
+	 */
+	public function is_published() {
+
+		$meta_key = FeatureFlags::init()->get_options_key();
+
+		/* Get options */
+		$published_flags = maybe_unserialize( get_option( $meta_key ) );
+		$options_type    = gettype( $published_flags );
+
+		if ( 'array' !== $options_type ) {
+			$published_flags = [];
+			add_option( $meta_key, maybe_serialize( $published_flags ) );
+
+		}
+
+		$found_in_options = array_search( $this->key, $published_flags, true );
+
+		if ( false === $found_in_options || - 1 === $found_in_options ) {
+			return false;
+		} else {
+			return true;
 		}
 
 	}
