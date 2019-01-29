@@ -4,9 +4,9 @@
  * Include things in your WordPress theme using Feature Flags.
  *
  * @package   feature-flags
- * @author    James Williams <james@jamesrwilliams.co.uk>
- * @link      https://jamesrwilliams.co.uk/
- * @copyright 2018 James Williams
+ * @author    James Williams <james@jamesrwilliams.ca>
+ * @link      https://jamesrwilliams.ca/
+ * @copyright 2019 James Williams
  *
  * @wordpress-plugin
  * Plugin Name:       Feature Flags
@@ -14,7 +14,7 @@
  * Version:           1.0.0
  * Author:            James Williams
  * Text Domain:       featureFlags
- * Author URI:        https://jamesrwilliams.co.uk/
+ * Author URI:        https://jamesrwilliams.ca/
  */
 
 // If this file is called directly abort.
@@ -79,7 +79,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
 /**
  * AJAX Action toggling features from the WP admin area.
  */
-add_action( 'wp_ajax_featureFlag_enable', 'feature_flag_enable' );
+add_action( 'wp_ajax_toggleFeatureFlag', 'feature_flag_enable' );
 
 /**
  * Enable a feature Flag
@@ -97,7 +97,7 @@ function feature_flag_enable() {
 
 			$response['response'] = $feature_key;
 
-			FeatureFlags::init()->toggle_feature( $feature_key );
+			FeatureFlags::init()->toggle_feature_preview( $feature_key );
 
 		} else {
 
@@ -113,6 +113,43 @@ function feature_flag_enable() {
 
 	exit();
 
+}
+
+/**
+ * AJAX Action toggling features from the WP admin area.
+ */
+add_action( 'wp_ajax_togglePublishedFeature', 'feature_flag_publish' );
+
+/**
+ * Publish a feature flag to be publicly visible.
+ */
+function feature_flag_publish() {
+
+	// input var okay;
+	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) { // input var okay;
+
+		$response = [];
+
+		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) ); // input var okay;
+
+		if ( ! empty( $feature_key ) ) {
+
+			$response['response'] = $feature_key;
+
+			FeatureFlags::init()->toggle_feature_publication( $feature_key );
+
+		} else {
+
+			header( 'HTTP/1.1 500 Internal Server Error' );
+			$response['response'] = 'no feature key';
+
+		}
+
+		header( 'Content-Type: application/json' );
+		echo wp_json_encode( $response );
+	}
+
+	exit();
 }
 
 /**

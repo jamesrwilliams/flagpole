@@ -140,7 +140,7 @@ class FeatureFlags {
 
 		if ( $export ) {
 
-			$query  = $this->check_query_string( $feature_key );
+			$query    = $this->check_query_string( $feature_key );
 			$enforced = $export->get_enforced();
 
 			if ( $enforced ) {
@@ -155,7 +155,6 @@ class FeatureFlags {
 				} else {
 					return has_user_enabled( $feature_key );
 				}
-
 			}
 		} else {
 
@@ -236,7 +235,7 @@ class FeatureFlags {
 	 * @param string $feature_key The feature we're checking.
 	 * @return bool Is the feature private or not.
 	 */
-	public function is_private ( $feature_key ) {
+	public function is_private( $feature_key ) {
 		return self::find_flag( $feature_key )->private;
 	}
 
@@ -246,7 +245,7 @@ class FeatureFlags {
 	 * @param string $feature_key The feature key we're checking.
 	 * @return void
 	 */
-	public function toggle_feature( $feature_key ) {
+	public function toggle_feature_preview( $feature_key ) {
 
 		$user_id = get_current_user_id();
 
@@ -269,6 +268,32 @@ class FeatureFlags {
 			self::update_user( $user_id, self::$meta_key, $enabled );
 
 		}
+
+	}
+
+	public function toggle_feature_publication( $feature_key ) {
+
+		$options = maybe_unserialize( get_option( self::$meta_key ) );
+
+		if ( gettype( $options ) !== 'array' ) {
+			add_option( self::$meta_key, maybe_serialize( [] ) );
+			$options = [];
+		}
+
+		$published_flags  = $options;
+		$found_in_options = array_search( $feature_key, $published_flags, true );
+
+		if ( $found_in_options ) {
+
+			unset( $published_flags[ $found_in_options ] );
+
+		} else {
+
+			$published_flags[] = $feature_key;
+
+		}
+
+		update_option( self::$meta_key, $published_flags, true );
 
 	}
 
@@ -312,6 +337,8 @@ class FeatureFlags {
 		}
 
 	}
+
+
 
 	/**
 	 * Check if a query argument has been passed to enable a flag manually.

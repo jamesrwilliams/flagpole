@@ -2,6 +2,9 @@
 /**
  * Theme API endpoints.
  *
+ * These are all the functions that people can
+ * use directly within their theme code.
+ *
  * @package feature-flags
  */
 

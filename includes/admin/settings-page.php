@@ -15,6 +15,10 @@ add_action( 'admin_menu', function () {
 		$available_flags = FeatureFlags::init()->get_flags();
 		$enforced_flags  = FeatureFlags::init()->get_flags( true );
 
+		if ( isset( $_GET['error'] ) ) {
+			echo "<h1>Error code 1</h1>";
+		}
+
 		?>
 
 		<div class="wrap">
@@ -47,11 +51,12 @@ add_action( 'admin_menu', function () {
 						<?php foreach ( $available_flags as $key => $flag ) { ?>
 
 							<?php $enabled = is_enabled( $flag->get_key( false ) ); ?>
+							<?php $published = false; ?>
 
 							<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
 								<td class="row-title"><span
 										class="status-marker <?php echo( $enabled ? 'status-marker-enabled' : null ); ?>"
-										title="<?php $flag->get_name(); ?> is currently <?php echo ( $enabled ? 'enabled' : 'disabled' ); ?>."></span><?php $flag->get_name(); ?>
+										title="<?php echo $flag->get_name(); ?> is currently <?php echo ( $enabled ? 'enabled' : 'disabled' ); ?>."></span><?php $flag->get_name(); ?>
 								</td>
 								<td>
 									<pre><?php $flag->get_key(); ?></pre>
@@ -63,20 +68,57 @@ add_action( 'admin_menu', function () {
 									<?php
 
 									if ( $enabled ) {
-										submit_button( 'Disable preview', 'small', 'featureFlags-disable', false, [
-											'data-action'          => 'toggleFeatureFlag',
-											'data-status' => 'enabled',
-										] );
+										submit_button(
+											'Disable preview',
+											'small',
+											'featureFlagsBtn_disable',
+											false,
+											[
+												'class'       => 'action-btn',
+												'data-action' => 'toggleFeatureFlag',
+												'data-status' => 'enabled',
+											]
+										);
 									} else {
-										submit_button( 'Enable preview', 'small', 'featureFlags-enable', false, [
-											'data-action'          => 'toggleFeatureFlag',
-											'data-status' => 'disabled',
-										] );
+										submit_button(
+											'Enable preview',
+											'small',
+											'featureFlagsBtn_enable',
+											false,
+											[
+												'class'       => 'action-btn',
+												'data-action' => 'toggleFeatureFlag',
+												'data-status' => 'disabled',
+											]
+										);
+									}
+
+									if ( $published ) {
+										submit_button(
+											'Unpublish',
+											'small',
+											'featureFlagsBtn_unpublish',
+											false,
+											[
+												'class'       => 'action-btn',
+												'data-action' => 'togglePublishedFeature',
+												'data-status' => 'enabled',
+											]
+										);
+									} else {
+										submit_button(
+											'Publish',
+											'small',
+											'featureFlagsBtn_publish',
+											false,
+											[
+												'data-action' => 'togglePublishedFeature',
+												'data-status' => 'disabled',
+											]
+										);
 									}
 
 									?>
-
-									<input type="submit" name="featureFlags-enable" id="featureFlags-enable" class="button button-small" value="Publish" data-action="toggleFeatureFlag" data-status="disabled">
 
 								</td>
 							</tr>
@@ -87,6 +129,13 @@ add_action( 'admin_menu', function () {
 				</table>
 
 			<?php } ?>
+
+			<h2>Published Flags</h2>
+			<p>Here is a debug output of whats currently in our site options table for published features:</p>
+
+			<?php $output = get_option( 'enabledFlags' ); ?>
+
+			<pre><code><?php var_dump( $output ); ?></code></pre>
 
 			<?php if ( $enforced_flags ) { ?>
 				<h2>Enforced feature flags</h2>

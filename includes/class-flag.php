@@ -6,9 +6,9 @@
  * Used for creating feature flags.
  *
  * @package   feature-flags
- * @author    James Williams <james@jamesrwilliams.co.uk>
+ * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/feature-flags
- * @copyright 2018 James Williams
+ * @copyright 2019 James Williams
  */
 
 namespace FeatureFlag;

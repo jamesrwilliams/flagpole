@@ -3,18 +3,21 @@
 /* global jQuery, ffwp */
 jQuery( document ).ready( function( $ ) {
 
-	$( '[data-action="toggleFeatureFlag"]' ).on( 'click', function( e ) {
+	$( 'input[name^="featureFlagsBtn_"]' ).on( 'click', function( e ) {
 
-		var $button    = e.target;
-		var featureKey = $button.parentElement.parentElement.querySelector( 'pre' ).innerHTML;
+		let $button    = e.target;
+		let featureKey = $button.parentElement.parentElement.querySelector( 'pre' ).innerHTML;
+		let action     = $button.getAttribute( 'data-action' ) || false;
 
-		var payload = {
-			action: 'featureFlag_enable',
+		let payload = {
+			action: action,
 			featureKey: featureKey,
 			security: ffwp.ajax_nonce
 		};
 
-		if ( featureKey ) {
+		console.log(action);
+
+		if ( featureKey && action ) {
 
 			$.ajax({
 				type: 'POST',
