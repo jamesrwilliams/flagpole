@@ -13,6 +13,8 @@
 
 namespace FeatureFlag;
 
+use FeatureFlags\FeatureFlags;
+
 /**
  * Class Flag
  *
@@ -180,6 +182,37 @@ class Flag {
 
 			return $private;
 
+		}
+
+	}
+
+	/**
+	 * Check if this flag is published globally or not.
+	 *
+	 * @param bool $echo
+	 *
+	 * @return bool
+	 */
+	public function is_published( $echo = false ) {
+
+		$meta_key = FeatureFlags::init()->get_options_key();
+
+		/* Get options */
+		$published_flags = maybe_unserialize( get_option( $meta_key ) );
+		$options_type    = gettype( $published_flags );
+
+		if ( 'array' !== $options_type ) {
+			$published_flags = [];
+			add_option( $meta_key, maybe_serialize( $published_flags ) );
+
+		}
+
+		$found_in_options = array_search( $this->key, $published_flags, true );
+
+		if ( false === $found_in_options || - 1 === $found_in_options ) {
+			return false;
+		} else {
+			return true;
 		}
 
 	}

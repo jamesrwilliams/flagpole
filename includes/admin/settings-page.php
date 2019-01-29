@@ -51,7 +51,7 @@ add_action( 'admin_menu', function () {
 						<?php foreach ( $available_flags as $key => $flag ) { ?>
 
 							<?php $enabled = is_enabled( $flag->get_key( false ) ); ?>
-							<?php $published = false; ?>
+							<?php $published = $flag->is_published( false ); ?>
 
 							<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
 								<td class="row-title"><span

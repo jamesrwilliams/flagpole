@@ -273,24 +273,23 @@ class FeatureFlags {
 
 	public function toggle_feature_publication( $feature_key ) {
 
-		$options = maybe_unserialize( get_option( self::$meta_key ) );
+		$published_flags = maybe_unserialize( get_option( self::$meta_key ) );
+		$options_type    = gettype( $published_flags );
 
-		if ( gettype( $options ) !== 'array' ) {
-			add_option( self::$meta_key, maybe_serialize( [] ) );
-			$options = [];
+		if ( 'array' !== $options_type ) {
+			$published_flags = [];
+			add_option( self::$meta_key, maybe_serialize( $published_flags ) );
+
 		}
 
-		$published_flags  = $options;
+
+
 		$found_in_options = array_search( $feature_key, $published_flags, true );
 
-		if ( $found_in_options ) {
-
-			unset( $published_flags[ $found_in_options ] );
-
-		} else {
-
+		if ( false === $found_in_options || - 1 === $found_in_options ) {
 			$published_flags[] = $feature_key;
-
+		} else {
+			unset( $published_flags[ $found_in_options ] );
 		}
 
 		update_option( self::$meta_key, $published_flags, true );
@@ -372,6 +371,14 @@ class FeatureFlags {
 		}
 	}
 
+	/**
+	 * Return the meta key for WP_options storage.
+	 *
+	 * @return string
+	 */
+	public function get_options_key() {
+		return self::$meta_key;
+	}
 }
 
 
