@@ -4,8 +4,6 @@
 
 .tools_page_feature-flags input[data-status] { font-weight: 700; }
 
-.tools_page_feature-flags input[data-status="enabled"] { background: rgba(240, 72, 72, 0.3); border: 0; color: rgba(0, 0, 0, 0.5); }
-
 .tools_page_feature-flags pre { margin: 0; }
 
 /*# sourceMappingURL=feature-flags.css.map */

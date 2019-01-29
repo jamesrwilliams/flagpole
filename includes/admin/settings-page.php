@@ -54,7 +54,8 @@ add_action( 'admin_menu', function () {
 						<th>Description</th>
 						<th>Queryable</th>
 						<th>Visibility</th>
-						<th>&nbsp;</th>
+						<th>Preview</th>
+						<th>Publish</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -65,9 +66,8 @@ add_action( 'admin_menu', function () {
 							<?php $published = $flag->is_published( false ); ?>
 
 							<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-								<td class="row-title"><span
-										class="status-marker <?php echo wp_kses_post( $enabled ? 'status-marker-enabled' : null ); ?>"
-										title="<?php echo wp_kses_post( $flag->get_name() ); ?> is currently <?php echo wp_kses_post( $enabled ? 'enabled' : 'disabled' ); ?>."></span><?php wp_kses_post( $flag->get_name() ); ?>
+								<td class="row-title">
+									<?php wp_kses_post( $flag->get_name() ); ?>
 								</td>
 								<td>
 									<pre><?php $flag->get_key(); ?></pre>
@@ -93,7 +93,7 @@ add_action( 'admin_menu', function () {
 									} else {
 										submit_button(
 											'Enable preview',
-											'small',
+											'primary small',
 											'featureFlagsBtn_enable',
 											false,
 											[
@@ -102,7 +102,9 @@ add_action( 'admin_menu', function () {
 												'data-status' => 'disabled',
 											]
 										);
-									}
+									} ?>
+
+									</td><td><?php
 
 									if ( $published ) {
 										submit_button(
@@ -119,7 +121,7 @@ add_action( 'admin_menu', function () {
 									} else {
 										submit_button(
 											'Publish',
-											'small',
+											'primary small',
 											'featureFlagsBtn_publish',
 											false,
 											[
