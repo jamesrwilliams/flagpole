@@ -26,7 +26,7 @@ indent_style = tab
 indent_size = 4
 
 # CSS http://make.wordpress.org/core/handbook/coding-standards/css/
-[*.css,*.scss]
+[*.css, *.scss]
 indent_style = tab
 indent_size = 4
 

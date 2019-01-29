@@ -31,19 +31,18 @@ define( 'FF_VERSION', '1.0.0' );
 
 // Register admin page.
 add_action( 'admin_init', function () {
-
-	register_setting( 'ff-settings-page', 'ff_client_secret', function ( $posted_data ) {
-		if ( ! $posted_data ) {
-			add_settings_error( 'ff_client_secret', 'ff_updated', 'Error Message', 'error' );
-
-			return false;
+	register_setting(
+		'ff-settings-page',
+		'ff_client_secret',
+		function ( $posted_data ) {
+			if ( ! $posted_data ) {
+				add_settings_error( 'ff_client_secret', 'ff_updated', 'Error Message', 'error' );
+				return false;
+			}
+			return $posted_data;
 		}
-
-		return $posted_data;
-
-	} );
-
-} );
+	);
+});
 
 /**
  * Plugin styles and scripts.

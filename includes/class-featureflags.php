@@ -107,19 +107,21 @@ class FeatureFlags {
 
 		if ( $enforced ) {
 
-			$filtered_flags = array_filter( $flags, function ( $value ) {
-
-				return $value->get_enforced();
-
-			} );
+			$filtered_flags = array_filter(
+				$flags,
+				function ( $value ) {
+					return $value->get_enforced();
+				}
+			);
 
 		} else {
 
-			$filtered_flags = array_filter( $flags, function ( $value ) {
-
-				return ! $value->get_enforced();
-
-			} );
+			$filtered_flags = array_filter(
+				$flags,
+				function( $value ) {
+					return ! $value->get_enforced();
+				}
+			);
 
 		}
 
@@ -140,13 +142,14 @@ class FeatureFlags {
 
 		if ( $export ) {
 
-			$query    = $this->check_query_string( $feature_key );
-			$enforced = $export->get_enforced();
+			$published = $export->is_published();
+			$query     = $this->check_query_string( $feature_key );
+			$enforced  = $export->get_enforced();
 
-			if ( $enforced ) {
-
+			if ( $published ) {
 				return true;
-
+			} elseif ( $enforced ) {
+				return true;
 			} else {
 
 				if ( $query ) {
@@ -350,7 +353,7 @@ class FeatureFlags {
 
 		$query = find_query_string();
 
-		if ( ! empty( $query ) && $query ){
+		if ( ! empty( $query ) && $query ) {
 
 			if ( self::is_querable( $query ) ) {
 				return $query === $feature_key;

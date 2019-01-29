@@ -10,18 +10,29 @@ use FeatureFlags\FeatureFlags;
 // Settings page.
 add_action( 'admin_menu', function () {
 
-	add_submenu_page( 'tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags', function () {
+	add_submenu_page( 'tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags',
+		function () {
 
-		$available_flags = FeatureFlags::init()->get_flags();
-		$enforced_flags  = FeatureFlags::init()->get_flags( true );
+			$available_flags = FeatureFlags::init()->get_flags();
+			$enforced_flags  = FeatureFlags::init()->get_flags( true );
 
-		if ( isset( $_GET['error'] ) ) {
-			echo "<h1>Error code 1</h1>";
-		}
+			if ( isset( $_GET['error'] ) ) {
+				echo '<h1>Error code 1</h1>';
+			}
 
-		?>
+			?>
 
 		<div class="wrap">
+
+			<?php if ( ! $enforced_flags && ! $available_flags ) { ?>
+
+				<div class="notice notice-success is-dismissible">
+					<p><strong>Heads Up!</strong> No feature flags have been detected in your theme.</p>
+				</div>
+
+				<p>We've got no flags so time to show a tutorial on how to add flags, maybe a link to the README etc.</p>
+
+			<?php } else { ?>
 
 			<h1>Feature Flags</h1>
 
@@ -50,13 +61,13 @@ add_action( 'admin_menu', function () {
 
 						<?php foreach ( $available_flags as $key => $flag ) { ?>
 
-							<?php $enabled = is_enabled( $flag->get_key( false ) ); ?>
+							<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
 							<?php $published = $flag->is_published( false ); ?>
 
 							<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
 								<td class="row-title"><span
-										class="status-marker <?php echo( $enabled ? 'status-marker-enabled' : null ); ?>"
-										title="<?php echo $flag->get_name(); ?> is currently <?php echo ( $enabled ? 'enabled' : 'disabled' ); ?>."></span><?php $flag->get_name(); ?>
+										class="status-marker <?php echo wp_kses_post( $enabled ? 'status-marker-enabled' : null ); ?>"
+										title="<?php echo wp_kses_post( $flag->get_name() ); ?> is currently <?php echo wp_kses_post( $enabled ? 'enabled' : 'disabled' ); ?>."></span><?php wp_kses_post( $flag->get_name() ); ?>
 								</td>
 								<td>
 									<pre><?php $flag->get_key(); ?></pre>
@@ -74,7 +85,7 @@ add_action( 'admin_menu', function () {
 											'featureFlagsBtn_disable',
 											false,
 											[
-												'class'       => 'action-btn',
+												'class' => 'action-btn',
 												'data-action' => 'toggleFeatureFlag',
 												'data-status' => 'enabled',
 											]
@@ -86,7 +97,7 @@ add_action( 'admin_menu', function () {
 											'featureFlagsBtn_enable',
 											false,
 											[
-												'class'       => 'action-btn',
+												'class' => 'action-btn',
 												'data-action' => 'toggleFeatureFlag',
 												'data-status' => 'disabled',
 											]
@@ -100,7 +111,7 @@ add_action( 'admin_menu', function () {
 											'featureFlagsBtn_unpublish',
 											false,
 											[
-												'class'       => 'action-btn',
+												'class' => 'action-btn',
 												'data-action' => 'togglePublishedFeature',
 												'data-status' => 'enabled',
 											]
@@ -129,13 +140,6 @@ add_action( 'admin_menu', function () {
 				</table>
 
 			<?php } ?>
-
-			<h2>Published Flags</h2>
-			<p>Here is a debug output of whats currently in our site options table for published features:</p>
-
-			<?php $output = get_option( 'enabledFlags' ); ?>
-
-			<pre><code><?php var_dump( $output ); ?></code></pre>
 
 			<?php if ( $enforced_flags ) { ?>
 				<h2>Enforced feature flags</h2>
@@ -168,7 +172,11 @@ add_action( 'admin_menu', function () {
 
 			<?php } ?>
 
+			<?php } ?>
+
 		</div>
-		<?php
-	} );
-} );
+			<?php
+		}
+	);
+}
+);

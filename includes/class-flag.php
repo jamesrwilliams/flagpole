@@ -189,11 +189,9 @@ class Flag {
 	/**
 	 * Check if this flag is published globally or not.
 	 *
-	 * @param bool $echo
-	 *
 	 * @return bool
 	 */
-	public function is_published( $echo = false ) {
+	public function is_published() {
 
 		$meta_key = FeatureFlags::init()->get_options_key();
 
