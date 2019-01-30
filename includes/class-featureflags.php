@@ -75,10 +75,11 @@ class FeatureFlags {
 	 * Retrieve the flag object of a specified key.
 	 *
 	 * @param string $key The flag key we're looking for.
+	 * @param bool $check Return either if it's a valid flag or the flag itself.
 	 *
-	 * @return \FeatureFlag\Flag.
+	 * @return \FeatureFlag\Flag|bool.
 	 */
-	public function find_flag( $key ) {
+	public function find_flag( $key, $check = false ) {
 
 		$flag  = false;
 		$flags = $this->flags;
@@ -90,7 +91,7 @@ class FeatureFlags {
 			}
 		}
 
-		return $flag;
+		return ( $check ? true : $flag );
 
 	}
 
@@ -133,10 +134,11 @@ class FeatureFlags {
 	 * Check if the provided key is currently enabled.
 	 *
 	 * @param string $feature_key The key of the flag we're looking for.
+	 * @param boolean $reason Option to return reason why a flag is enabled.
 	 *
 	 * @return boolean Is the flag enabled or not.
 	 */
-	public function is_enabled( $feature_key ) {
+	public function is_enabled( $feature_key, $reason = false ) {
 
 		$export = $this->find_flag( $feature_key );
 
@@ -147,16 +149,17 @@ class FeatureFlags {
 			$enforced  = $export->get_enforced();
 
 			if ( $published ) {
-				return true;
+				return ( $reason ? 'Published' : true );
 			} elseif ( $enforced ) {
-				return true;
+				return ( $reason ? 'Enforced' : true );
 			} else {
 
 				if ( $query ) {
-					return true;
-
+					return ( $reason ? 'Using query string' : true );
+				} elseif ( has_user_enabled( $feature_key ) ) {
+					return ( $reason ? 'User preview' : true );
 				} else {
-					return has_user_enabled( $feature_key );
+					return ( $reason ? '' : null );
 				}
 			}
 		} else {

@@ -74,6 +74,7 @@ add_action( 'admin_enqueue_scripts', 'feature_flags_admin_imports' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-featureflags.php';
 require plugin_dir_path( __FILE__ ) . 'includes/admin/settings-page.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
+require plugin_dir_path( __FILE__ ) . 'includes/api/api.shortcode.php';
 
 /**
  * AJAX Action toggling features from the WP admin area.
@@ -193,3 +194,5 @@ function find_query_string() {
 		return false;
 	}
 }
+
+add_shortcode( 'debugFeatureFlags', 'shortcode_debug' );
