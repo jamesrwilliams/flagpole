@@ -78,10 +78,10 @@ register_feature_flag([
 
 There are four ways to have a flag enabled with WP-Feature-Flags. These are as follows:
 
-- **[Previewed](#previewing)** - Enable a flag only for the current logged in user.
-- **[Queried](#querying)** - Enable a specific flag via a URL query string.
-- **[Published](#publishing)** - Enable a flag for every visitor on the site.
-- **[Enforced](#enforcing)** - Flags which are enabled by default by developers.
+- **[Previewed](#previewing-a-flag)** - Enable a flag only for the current logged in user.
+- **[Queried](#querying-a-flag)** - Enable a specific flag via a URL query string.
+- **[Published](#publishing-a-flag)** - Enable a flag for every visitor on the site.
+- **[Enforced](#enforcing-a-flag)** - Flags which are enabled by default by developers.
 
 ### Previewing a flag
 
