@@ -180,7 +180,7 @@ add_action( 'template_redirect', 'redirect_with_key' );
  */
 function find_query_string() {
 
-	/* TODO: Make this a configurable key */
+	/* TODO: #12 - Make this a configurable key */
 	$query_string_key = 'flag';
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
