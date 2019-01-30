@@ -1,12 +1,18 @@
-# Feature flags for WordPress themes
+# Feature Flags for WordPress themes
 
 ![Screenshot of the admin interface](./docs/assets/images/wp-feature-flags-screenshot.jpg)
 
 This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags. 
-This plugin adds an admin interface where users can enable and disable features for testing. Flags can also be enabled 
-using query strings.
+It adds an admin interface where users can enable and disable features for testing, and also be enabled 
+using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/feature-flags/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
 
-For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/feature-flags/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
+## Contents
+
+1. [Installation]()
+2. [Enabling flags]()
+3. [Using flags in your theme]()
+4. [Shortcode]()
+5. [Contributing]()
 
 ## Installation 
 
