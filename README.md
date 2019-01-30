@@ -8,11 +8,11 @@ using query strings. For planned development work and features see [issues label
 
 ## Contents
 
-1. [Installation]()
-2. [Enabling flags]()
-3. [Using flags in your theme]()
-4. [Shortcode]()
-5. [Contributing]()
+1. [Installation](#installation)
+2. [Enabling flags](#enabling-your-flags)
+3. [Using flags in your theme](#checking-the-status-of-a-feature-flag)
+4. [Shortcode](#the-shortcode)
+5. [Contributing](#contributing)
 
 ## Installation 
 
@@ -145,6 +145,7 @@ echo do_shortcode('[debugFeatureFlags flag="key-1"]');
 echo do_shortcode('[debugFeatureFlags flag="key-1,key-2,key-3"]');
 ```
 
-## Standards
+## Contributing
 
+Any PRs and suggestions are very welcome, along with ideas and discussions on issues. 
 This project uses the [WordPress VIP](https://github.com/Automattic/VIP-Coding-Standards) coding standards.
