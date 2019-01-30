@@ -1,5 +1,7 @@
 # Feature flags for WordPress themes
 
+![Screenshot of the admin interface](./docs/assets/images/wp-feature-flags-screenshot.jpg)
+
 This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags. 
 This plugin adds an admin interface where users can enable and disable features for testing. Flags can also be enabled 
 using query strings.
