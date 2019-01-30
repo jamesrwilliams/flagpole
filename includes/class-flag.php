@@ -243,6 +243,15 @@ class Flag {
 	}
 
 	/**
+	 * Check if a flag is currently enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_enabled( $reason = false ) {
+		return FeatureFlags::init()->is_enabled( $this->key, $reason );
+	}
+
+	/**
 	 * Retrieve the status of a flag's enforced state.
 	 *
 	 * @return bool The status of if a flag is enforced or not.

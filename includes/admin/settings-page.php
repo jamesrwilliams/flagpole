@@ -13,16 +13,15 @@ add_action( 'admin_menu', function () {
 	add_submenu_page( 'tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags',
 		function () {
 
-			$available_flags = FeatureFlags::init()->get_flags();
-			$enforced_flags  = FeatureFlags::init()->get_flags( true );
-
 			if ( isset( $_GET['error'] ) ) {
 				echo '<h1>Error code 1</h1>';
 			}
 
-			?>
+			$active_tab      = isset( $_GET['tab'] ) ? $_GET['tab'] : 'flags';
+			$available_flags = FeatureFlags::init()->get_flags();
+			$enforced_flags  = FeatureFlags::init()->get_flags( true );
 
-		<div class="wrap">
+			?>
 
 			<?php if ( ! $enforced_flags && ! $available_flags ) { ?>
 
@@ -30,147 +29,27 @@ add_action( 'admin_menu', function () {
 					<p><strong>Heads Up!</strong> No feature flags have been detected in your theme.</p>
 				</div>
 
+				<p>Feature flags or toggles allow features to easily be enabled for users to test in a more realistic environment.</p>
+
 				<p>We've got no flags so time to show a tutorial on how to add flags, maybe a link to the README etc.</p>
 
 			<?php } else { ?>
 
-			<h1>Feature Flags</h1>
+			<div class="wrap">
 
-			<hr />
+				<h1>Feature Flags</h1>
 
-			<p>Feature flags or toggles allow features to easily be enabled for users to test in a more realistic environment.</p>
+				<h2 class="nav-tab-wrapper">
+					<a href="?page=feature-flags&tab=flags" class="nav-tab <?php echo wp_kses_post( 'flags' === $active_tab ? 'nav-tab-active' : '' ); ?>">Feature Flags</a>
+				</h2>
 
-			<div class="notice-container"></div>
+				<div class="notice-container"></div>
 
-			<?php if ( $available_flags ) { ?>
+				<?php
 
-				<h2>Available feature flags</h2>
+				include_once plugin_dir_path( __FILE__ ) . '/settings-page/settings-page-' . $active_tab . '.php';
 
-				<table class="widefat">
-					<thead>
-					<tr>
-						<th class="row-title">Feature</th>
-						<th>Key</th>
-						<th>Description</th>
-						<th>Queryable</th>
-						<th>Visibility</th>
-						<th>Preview</th>
-						<th>Publish</th>
-					</tr>
-					</thead>
-					<tbody>
-
-						<?php foreach ( $available_flags as $key => $flag ) { ?>
-
-							<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
-							<?php $published = $flag->is_published( false ); ?>
-
-							<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-								<td class="row-title">
-									<?php wp_kses_post( $flag->get_name() ); ?>
-								</td>
-								<td>
-									<pre><?php $flag->get_key(); ?></pre>
-								</td>
-								<td><?php $flag->get_description(); ?></td>
-								<td><?php $flag->is_queryable( true ); ?></td>
-								<td><?php $flag->is_private( true ); ?></td>
-								<td>
-									<?php
-
-									if ( $enabled ) {
-										submit_button(
-											'Disable preview',
-											'small',
-											'featureFlagsBtn_disable',
-											false,
-											[
-												'class' => 'action-btn',
-												'data-action' => 'toggleFeatureFlag',
-												'data-status' => 'enabled',
-											]
-										);
-									} else {
-										submit_button(
-											'Enable preview',
-											'primary small',
-											'featureFlagsBtn_enable',
-											false,
-											[
-												'class' => 'action-btn',
-												'data-action' => 'toggleFeatureFlag',
-												'data-status' => 'disabled',
-											]
-										);
-									}
-									?>
-
-									</td><td>
-									<?php
-
-									$stable       = $flag->is_stable( false );
-									$button_style = ( $stable ? 'primary small' : 'small' );
-									$button_text  = ( $published ? 'Unpublish' : 'Publish' );
-									$button_name  = ( $published ? 'featureFlagsBtn_unpublish' : 'featureFlagsBtn_publish' );
-									$other_args   = [
-										'data-action' => 'togglePublishedFeature',
-									];
-
-									if ( ! $stable ) {
-										$other_args['disabled'] = true;
-										$other_args['title']    = 'Feature is makred as unstable.';
-									}
-
-									submit_button(
-										$button_text,
-										$button_style,
-										$button_name,
-										false,
-										$other_args
-									);
-
-									?>
-
-								</td>
-							</tr>
-
-						<?php } ?>
-
-					</tbody>
-				</table>
-
-			<?php } ?>
-
-			<?php if ( $enforced_flags ) { ?>
-				<h2>Enforced feature flags</h2>
-				<p>Features listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will likely be removed from the website source code soon.</p>
-
-				<table class="widefat">
-					<thead>
-					<tr>
-						<th class="row-title">Feature</th>
-						<th>Key</th>
-						<th>Description</th>
-					</tr>
-					</thead>
-					<tbody>
-
-					<?php foreach ( $enforced_flags as $key => $flag ) { ?>
-
-						<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-							<td class="row-title"><?php $flag->get_name(); ?></td>
-							<td>
-								<pre><?php $flag->get_key(); ?></pre>
-							</td>
-							<td><?php $flag->get_description(); ?></td>
-						</tr>
-
-					<?php } ?>
-
-					</tbody>
-				</table>
-
-			<?php } ?>
+				?>
 
 			<?php } ?>
 
