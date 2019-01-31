@@ -5,7 +5,7 @@
  *
  * Used for creating feature flags.
  *
- * @package   feature-flags
+ * @package   wp-feature-flags
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
@@ -15,11 +15,6 @@ namespace FeatureFlag;
 
 use FeatureFlags\FeatureFlags;
 
-/**
- * Class Flag
- *
- * @package FeatureFlag
- */
 class Flag {
 
 	/**

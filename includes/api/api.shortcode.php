@@ -2,7 +2,7 @@
 /**
  * api.shortcode.php
  *
- * @package feature-flags
+ * @package wp-feature-flags
  */
 
 use FeatureFlags\FeatureFlags;

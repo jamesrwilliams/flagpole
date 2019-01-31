@@ -13,15 +13,12 @@
 
 namespace FeatureFlags;
 
-use FeatureFlag\Flag;
-
 require_once 'class-flag.php';
+require_once 'class-group.php';
 
-/**
- * Class featureFlags
- *
- * @package FeatureFlags
- */
+use FeatureFlag\Flag;
+use FeatureFlag\Group;
+
 class FeatureFlags {
 
 	/**
@@ -46,6 +43,13 @@ class FeatureFlags {
 	public $flags = [];
 
 	/**
+	 * Current feature groups.
+	 *
+	 * @var array $groups
+	 */
+	public $groups = [];
+
+	/**
 	 * Static function to create an instance if none exists
 	 */
 	public static function init() {
@@ -58,10 +62,25 @@ class FeatureFlags {
 
 	}
 
+	public function __construct() {
+
+		$key         = self::get_options_key() . '_groups';
+		$flag_groups = maybe_unserialize( get_option( $key . '_groups' ) );
+		$type        = gettype( $flag_groups );
+
+		if ( 'array' !== $type ) {
+			$flag_groups = [];
+			add_option( $key, maybe_serialize( $flag_groups ) );
+		}
+
+		$this->groups = $flag_groups;
+
+	}
+
 	/**
 	 * Add a new flag to the plugin register.
 	 *
-	 * @param array $flag TODO Add a flag to the system.
+	 * @param array $flag
 	 *
 	 * @return void
 	 */
@@ -284,12 +303,13 @@ class FeatureFlags {
 	 */
 	public function toggle_feature_publication( $feature_key ) {
 
-		$published_flags = maybe_unserialize( get_option( self::$meta_key ) );
+		$key             = self::$meta_key . '_flags';
+		$published_flags = maybe_unserialize( get_option( $key ) );
 		$options_type    = gettype( $published_flags );
 
 		if ( 'array' !== $options_type ) {
 			$published_flags = [];
-			add_option( self::$meta_key, maybe_serialize( $published_flags ) );
+			add_option( $key, maybe_serialize( $published_flags ) );
 
 		}
 
@@ -306,7 +326,7 @@ class FeatureFlags {
 			unset( $published_flags[ $found_in_options ] );
 		}
 
-		update_option( self::$meta_key, $published_flags, true );
+		update_option( $key, $published_flags, true );
 
 	}
 
@@ -392,6 +412,51 @@ class FeatureFlags {
 	 */
 	public function get_options_key() {
 		return self::$meta_key;
+	}
+
+	/** ==========
+	 * Flag Groups
+	 * ======== */
+
+	/**
+	 * Register a new flag group.
+	 *
+	 * @param $name
+	 * @param $key
+	 *
+	 * @return Group
+	 */
+	public function register_group( $name, $key ) {
+
+		$new_group = new Group( $name, $key );
+
+		$groups = maybe_unserialize( get_option( self::$meta_key . '_groups' ) );
+
+		$this->groups = $groups;
+
+		$this->groups[] = $new_group;
+
+		$this->save_groups();
+
+		return $new_group;
+	}
+
+	public function get_groups() {
+
+		$key             = self::$meta_key . '_groups';
+		$published_flags = maybe_unserialize( get_option( $key ) );
+
+		$this->groups = $published_flags;
+
+		return $this->groups;
+	}
+
+	/**
+	 * Save groups to the WordPress Database.
+	 */
+	public function save_groups() {
+		$key = self::get_options_key() . '_groups';
+		update_option( $key, maybe_serialize( $this->groups ) );
 	}
 }
 

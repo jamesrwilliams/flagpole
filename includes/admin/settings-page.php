@@ -40,7 +40,8 @@ add_action( 'admin_menu', function () {
 				<h1>Feature Flags</h1>
 
 				<h2 class="nav-tab-wrapper">
-					<a href="?page=feature-flags&tab=flags" class="nav-tab <?php echo wp_kses_post( 'flags' === $active_tab ? 'nav-tab-active' : '' ); ?>">Feature Flags</a>
+					<a href="?page=feature-flags&tab=flags" class="nav-tab <?php echo wp_kses_post( 'flags' === $active_tab ? 'nav-tab-active' : '' ); ?>">Flags</a>
+					<a href="?page=feature-flags&tab=groups" class="nav-tab <?php echo wp_kses_post( 'groups' === $active_tab ? 'nav-tab-active' : '' ); ?>">Groups</a>
 				</h2>
 
 				<div class="notice-container"></div>

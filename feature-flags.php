@@ -150,6 +150,41 @@ function feature_flag_publish() {
 	exit();
 }
 
+add_action( 'admin_post_ff_register_group', 'register_group' );
+add_action( 'admin_post_nopriv_ff_register_group', 'register_group' );
+
+function register_group() {
+
+//	wp_die( var_dump($_GET) );
+
+	if ( isset( $_GET['group-name'] ) && isset( $_GET['group-key'] ) ) { // input var okay;
+
+		$response = [];
+
+		$group_name = sanitize_text_field( wp_unslash( $_GET['group-name'] ) ); // input var okay;
+		$group_key  = sanitize_text_field( wp_unslash( $_GET['group-key'] ) ); // input var okay;
+
+		if ( ! empty( $group_key ) ) {
+
+			$response['response'] = FeatureFlags::init()->register_group( $group_name, $group_key );
+			$location = $_SERVER['HTTP_REFERER'];
+			wp_safe_redirect($location);
+
+		} else {
+
+			header( 'HTTP/1.1 500 Internal Server Error' );
+			$response['response'] = 'no Group key';
+
+		}
+
+		header( 'Content-Type: application/json' );
+		echo wp_json_encode( $response );
+	}
+
+	exit();
+
+}
+
 /**
  * Redirect the user to the login form if they attempt to use a
  * flag query string while logged out.
