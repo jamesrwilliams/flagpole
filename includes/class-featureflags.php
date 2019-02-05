@@ -29,11 +29,11 @@ class FeatureFlags {
 	private static $instance;
 
 	/**
-	 * The user meta key used for db access.
+	 * The user meta key used for wp_options access.
 	 *
 	 * @var string $user_meta_key
 	 */
-	private static $meta_key = 'enabledFlags';
+	private static $meta_prefix = 'feature_flags_';
 
 	/**
 	 * Current Feature Flags
@@ -62,10 +62,14 @@ class FeatureFlags {
 
 	}
 
+	/**
+	 * FeatureFlags constructor.
+	 */
 	public function __construct() {
 
-		$key         = self::get_options_key() . '_groups';
-		$flag_groups = maybe_unserialize( get_option( $key . '_groups' ) );
+		// Initialise the groups wp_options row for future use.
+		$key         = self::get_options_key() . 'groups';
+		$flag_groups = maybe_unserialize( get_option( $key ) );
 		$type        = gettype( $flag_groups );
 
 		if ( 'array' !== $type ) {
@@ -75,6 +79,53 @@ class FeatureFlags {
 
 		$this->groups = $flag_groups;
 
+	}
+
+	/**
+	 * Return the meta key for WP_options storage.
+	 *
+	 * @return string
+	 */
+	public function get_options_key() {
+		return self::$meta_prefix;
+	}
+
+	/**
+	 * Return the appropriate error message for the error code provided.
+	 *
+	 * @param int $index Error code in the array.
+	 *
+	 * @return string The error message associated with the $index.
+	 */
+	public function get_admin_error_message( $index = 0 ) {
+
+		$messages = [
+			0     => 'An unknown error occurred. Please check the error logs for more information.',
+			'gc'  => 'Flag group created successfully.',
+			'gr'  => false,
+			'gu'  => 'Flag group updated successfully.',
+			'gd'  => 'Flag group successfully deleted.',
+			'fpc' => 'Flag enabled.',
+			'fd'  => 'Flag disabled.',
+		];
+
+		return ( ! empty( $messages[ $index ] ) ? $messages[ $index ] : $messages[0] );
+	}
+
+	/**
+	 * Return the appropriate status class for the error code provided.
+	 *
+	 * @param int $index  Error code for the array.
+	 *
+	 * @return string The associated class for the WordPress admin notice.
+	 */
+	public function get_admin_message_class( $index = 0 ) {
+		$statuses = [
+			0    => 'error',
+			'g1' => 'success',
+		];
+
+		return ( ! empty( $statuses[ $index ] ) ? $statuses[ $index ] : $statuses[0] );
 	}
 
 	/**
@@ -208,7 +259,7 @@ class FeatureFlags {
 
 		if ( ! empty( $user_id ) ) {
 
-			return self::get_user( $user_id, self::$meta_key, true );
+			return self::get_user( $user_id, self::$meta_prefix, true );
 
 		} else {
 
@@ -233,7 +284,7 @@ class FeatureFlags {
 		if ( $user_id ) {
 
 			// We have a user.
-			$user_settings = self::get_user( $user_id, self::$meta_key, true );
+			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
 
 			// Other.
 			$response = ( isset( $user_settings[ $feature_key ] ) ? $user_settings[ $feature_key ] : false );
@@ -276,7 +327,7 @@ class FeatureFlags {
 
 		if ( $user_id ) {
 
-			$user_settings = self::get_user( $user_id, self::$meta_key, true );
+			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
 
 			$enabled = ( $user_settings ?: [] );
 
@@ -290,7 +341,7 @@ class FeatureFlags {
 
 			}
 
-			self::update_user( $user_id, self::$meta_key, $enabled );
+			self::update_user( $user_id, self::$meta_prefix, $enabled );
 
 		}
 
@@ -298,12 +349,10 @@ class FeatureFlags {
 
 	/**
 	 * @param $feature_key
-	 *
-	 * @return false|string
 	 */
 	public function toggle_feature_publication( $feature_key ) {
 
-		$key             = self::$meta_key . '_flags';
+		$key             = self::$meta_prefix . 'flags';
 		$published_flags = maybe_unserialize( get_option( $key ) );
 		$options_type    = gettype( $published_flags );
 
@@ -371,8 +420,6 @@ class FeatureFlags {
 
 	}
 
-
-
 	/**
 	 * Check if a query argument has been passed to enable a flag manually.
 	 * Also validates it's publicly queryable.
@@ -406,31 +453,19 @@ class FeatureFlags {
 	}
 
 	/**
-	 * Return the meta key for WP_options storage.
-	 *
-	 * @return string
-	 */
-	public function get_options_key() {
-		return self::$meta_key;
-	}
-
-	/** ==========
-	 * Flag Groups
-	 * ======== */
-
-	/**
-	 * Register a new flag group.
+	 * Register a new Flag group.
 	 *
 	 * @param $name
 	 * @param $key
+	 * @param $description
 	 *
 	 * @return Group
 	 */
-	public function register_group( $name, $key ) {
+	public function create_group( $key, $name, $description = '' ) {
 
-		$new_group = new Group( $name, $key );
+		$new_group = new Group( sanitize_title( $key ), $name, $description );
 
-		$groups = maybe_unserialize( get_option( self::$meta_key . '_groups' ) );
+		$groups = maybe_unserialize( get_option( self::get_options_key() . 'groups' ) );
 
 		$this->groups = $groups;
 
@@ -441,12 +476,36 @@ class FeatureFlags {
 		return $new_group;
 	}
 
+	/**
+	 * Remove a flag group from the system.
+	 *
+	 * @param $key string The flag group's key.
+	 */
+	public function delete_group( $key ) {
+		// TODO Implement the "Delete" function for flag groups.
+	}
+
+	/**
+	 * Update meta information about a flag group.
+	 *
+	 * @param $key string The feature group's key.
+	 * @param array $args The parameters to update for $key
+	 */
+	public function update_group( $key, $args = [] ) {
+		// TODO Implement "Update" using variable args array.
+	}
+
+	/**
+	 * Returns the array of current flag groups found in the system.
+	 *
+	 * @return array|mixed
+	 */
 	public function get_groups() {
 
-		$key             = self::$meta_key . '_groups';
-		$published_flags = maybe_unserialize( get_option( $key ) );
+		$key    = self::get_options_key() . 'groups';
+		$groups = maybe_unserialize( get_option( $key ) );
 
-		$this->groups = $published_flags;
+		$this->groups = $groups;
 
 		return $this->groups;
 	}
@@ -455,7 +514,7 @@ class FeatureFlags {
 	 * Save groups to the WordPress Database.
 	 */
 	public function save_groups() {
-		$key = self::get_options_key() . '_groups';
+		$key = self::get_options_key() . 'groups';
 		update_option( $key, maybe_serialize( $this->groups ) );
 	}
 }

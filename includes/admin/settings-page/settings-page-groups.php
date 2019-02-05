@@ -7,63 +7,81 @@
 
 use FeatureFlags\FeatureFlags;
 
-?>
-
-<?php
-
 	$available_groups = FeatureFlags::init()->get_groups();
-	$available_flags = FeatureFlags::init()->get_flags();
+	$available_flags  = FeatureFlags::init()->get_flags();
 
 ?>
-
-
 
 <h2>Groups</h2>
 
-<table class="widefat">
-	<thead>
-	<tr>
-		<th class="row-title">Group Name</th>
-		<th>Key</th>
-		<th>Features</th>
-	</tr>
-	</thead>
-	<tbody>
-		<?php foreach ( $available_groups as $group ) { ?>
-		<tr>
-			<td class="row-title"><?php echo $group->get_name(); ?></td>
-			<td><code><?php echo $group->get_key(); ?></code></td>
-			<td>
-				<?php
+<?php if ( count( $available_groups ) === 0 ) { ?>
 
-				if ( count( $group->get_flags() ) > 0 ) {
-					foreach ( $group->get_flags() as $flag ) {
-						echo $flag;
+	<h1>No groups - You should add one, they're great.</h1>
+
+<?php } else { ?>
+
+	<table class="widefat">
+		<thead>
+		<tr>
+			<th class="row-title">Group Name</th>
+			<th>Key</th>
+			<th>Description</th>
+			<th>Features</th>
+			<th colspan="2">Actions</th>
+		</tr>
+		</thead>
+		<tbody>
+
+		<?php foreach ( $available_groups as $key => $group ) { ?>
+			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
+				<td class="row-title">
+					<strong><?php echo wp_kses_post( $group->get_name() ); ?></strong>
+				</td>
+				<td><code><?php echo wp_kses_post( $group->get_key() ); ?></code></td>
+				<td><?php echo wp_kses_post( $group->get_description() ); ?></td>
+				<td>
+					<?php
+
+					if ( count( $group->get_flags() ) > 0 ) {
+						foreach ( $group->get_flags() as $flag ) {
+							echo wp_kses_post( $flag );
+						}
+					} else {
+						echo '-';
 					}
-				} else {
-					echo 'No flags in group.';
-				}
 
 					?>
-			</td>
-		</tr>
-		<?php } ?>
-	</tbody>
-</table>
+				</td>
+				<td>
+					[Preview]
+				</td>
+				<td>
+					[Publish]
+				</td>
+			</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+
+<?php } ?>
 
 <h2>Add flag to group</h2>
 
-<form>
-	<label for="flag-to-add">Add flag</label>
-	<select name="flag-to-add" id="flag-to-add">
+<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="add-to-group">
+	<input type="hidden" name="action" value="ff_add_to_group">
+	<?php wp_nonce_field( 'add-to-group' ); ?>
+	<label for="selected-flag">Add flag</label>
+	<select name="selected-flag" id="selected-flag">
+		<option disabled selected>Select flag...</option>
 		<?php foreach ( $available_flags as $flag ) { ?>
-		<option value="<?php echo $flag->get_key(); ?>"><?php echo $flag->get_name(); ?></option>
+			<option value="<?php echo wp_kses_post( $flag->get_key() ); ?>"><?php echo wp_kses_post( $flag->get_name() ); ?></option>
 		<?php } ?>
 	</select>
-	<label for="flag-to-add">to group</label>
-	<select name="flag-to-add" id="flag-to-add">
+	<label for="selected-group">to group</label>
+	<select name="selected-group" id="selected-group">
+		<option disabled selected>Select group...</option>
 		<?php foreach ( $available_groups as $group ) { ?>
-			<option value="<?php echo $group->get_key(); ?>"><?php echo $group->get_name(); ?></option>
+			<option value="<?php echo wp_kses_post( $group->get_key() ); ?>"><?php echo wp_kses_post( $group->get_name() ); ?></option>
 		<?php } ?>
 	</select>
 	<input class="button-primary" type="submit" value="Add">
@@ -74,6 +92,7 @@ use FeatureFlags\FeatureFlags;
 <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="new-group">
 
 	<input type="hidden" name="action" value="ff_register_group">
+	<?php wp_nonce_field( 'register-group' ); ?>
 
 	<label for="group-name">Group Name</label>
 	<br>
@@ -82,6 +101,9 @@ use FeatureFlags\FeatureFlags;
 	<label for="group-key">Group Key</label>
 	<br>
 	<input type="text" name="group-key" class="regular-text" id="group-key">
+	<br>
+	<label for="group-description">Group Description</label>
+	<textarea name="group-description" id="group-description" cols="30" rows="10"></textarea>
 	<br>
 	<input class="button-primary" type="submit" value="Create" />
 </form>

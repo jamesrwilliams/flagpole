@@ -18,8 +18,7 @@
 			<th>Description</th>
 			<th>Queryable</th>
 			<th>Visibility</th>
-			<th>Preview</th>
-			<th>Publish</th>
+			<th colspan="2">Actions</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -29,12 +28,12 @@
 			<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
 			<?php $published = $flag->is_published( false ); ?>
 
-			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-				<td class="row-title">
-					<?php wp_kses_post( $flag->get_name() ); ?>
+			<tr class="<?php echo( 0 === $key % 2 ? null : 'alternate' ); ?>">
+				<td class="title">
+					<strong><?php wp_kses_post( $flag->get_name() ); ?></strong>
 				</td>
 				<td>
-					<pre><?php $flag->get_key(); ?></pre>
+					<code><?php $flag->get_key(); ?></code>
 				</td>
 				<td><?php $flag->get_description(); ?></td>
 				<td><?php $flag->is_queryable( true ); ?></td>

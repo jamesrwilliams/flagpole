@@ -24,13 +24,15 @@ class Group {
 
 	public $key;
 	public $name;
+	public $description;
 	public $flags;
 
-	public function __construct( $_key, $_name, $_flags = [] ) {
+	public function __construct( $_key, $_name, $_description = '', $_flags = [] ) {
 
-		$this->name  = ( $_name ? $_name : '' );
-		$this->key   = $_key;
-		$this->flags = $_flags;
+		$this->name        = ( $_name ? $_name : '' );
+		$this->key         = $_key;
+		$this->flags       = $_flags;
+		$this->description = $_description;
 
 	}
 
@@ -49,21 +51,16 @@ class Group {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function get_description() {
+		return $this->description;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function get_flags() {
 		return $this->flags;
-	}
-
-	/**
-	 * @param $flag
-	 */
-	public function add_flag( $flag ) {
-
-		$result = FeatureFlags::init()->find_flag( $flag );
-
-		if ( $result ) {
-			$this->flags[] = $flag;
-		}
 	}
 }

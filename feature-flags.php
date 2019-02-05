@@ -63,7 +63,6 @@ function feature_flags_admin_imports( $hook ) {
 	];
 
 	wp_localize_script( 'feature-flags-script', 'ffwp', $params );
-
 	wp_enqueue_script( 'feature-flags-script' );
 
 }
@@ -86,7 +85,6 @@ add_action( 'wp_ajax_toggleFeatureFlag', 'feature_flag_enable' );
  */
 function feature_flag_enable() {
 
-	// input var okay;
 	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) { // input var okay;
 
 		$response = [];
@@ -105,10 +103,6 @@ function feature_flag_enable() {
 			$response['response'] = 'no feature key';
 
 		}
-
-		header( 'Content-Type: application/json' );
-		echo wp_json_encode( $response );
-
 	}
 
 	exit();
@@ -150,46 +144,66 @@ function feature_flag_publish() {
 	exit();
 }
 
-add_action( 'admin_post_ff_register_group', 'register_group' );
-add_action( 'admin_post_nopriv_ff_register_group', 'register_group' );
+// Groups - Register
+add_action( 'admin_post_ff_register_group', 'feature_flag_create_group' );
+add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' );
 
-function register_group() {
+/**
+ * Create a new flag group
+ */
+function feature_flag_create_group() {
 
-//	wp_die( var_dump($_GET) );
+	$validation = [];
+	$response   = [];
 
-	if ( isset( $_GET['group-name'] ) && isset( $_GET['group-key'] ) ) { // input var okay;
+	$validation['group-nonce'] = check_admin_referer( 'register-group' );
+	$validation['group-key']    = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false ); // input var okay;
+	$validation['group-name']  = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false ); // input var okay;
+	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : false ); // input var okay;
 
-		$response = [];
+	$validation = array_filter( $validation );
 
-		$group_name = sanitize_text_field( wp_unslash( $_GET['group-name'] ) ); // input var okay;
-		$group_key  = sanitize_text_field( wp_unslash( $_GET['group-key'] ) ); // input var okay;
+	if ( $validation ) {
 
-		if ( ! empty( $group_key ) ) {
+		$response['response'] = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'] );
 
-			$response['response'] = FeatureFlags::init()->register_group( $group_name, $group_key );
-			$location = $_SERVER['HTTP_REFERER'];
-			wp_safe_redirect($location);
-
+		if ( wp_get_referer() ) {
+			$dest = wp_get_referer();
 		} else {
-
-			header( 'HTTP/1.1 500 Internal Server Error' );
-			$response['response'] = 'no Group key';
-
+			$dest = get_home_url();
 		}
 
-		header( 'Content-Type: application/json' );
-		echo wp_json_encode( $response );
+		$dest = add_query_arg(
+			[ 'error' => 'g1' ],
+			$dest
+		);
+
+		wp_safe_redirect( $dest );
+
 	}
 
 	exit();
 
 }
 
+// Groups - Add too
+add_action( 'admin_post_ff_add_to_group', 'feature_flag_add_to_group' );
+add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
+
+/**
+ * TODO - Adding a flag to a group.
+ */
+function feature_flag_add_to_group() {
+	// TODO Adding flags to groups.
+}
+
+add_action( 'template_redirect', 'feature_flag_redirect_with_key' );
+
 /**
  * Redirect the user to the login form if they attempt to use a
  * flag query string while logged out.
  */
-function redirect_with_key() {
+function feature_flag_redirect_with_key() {
 
 	$query = find_query_string();
 
@@ -205,8 +219,6 @@ function redirect_with_key() {
 		}
 	}
 }
-
-add_action( 'template_redirect', 'redirect_with_key' );
 
 /**
  * Check if there is a flag query string.
