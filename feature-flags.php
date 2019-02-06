@@ -144,7 +144,7 @@ function feature_flag_publish() {
 	exit();
 }
 
-// Groups - Register
+// Groups - Create
 add_action( 'admin_post_ff_register_group', 'feature_flag_create_group' );
 add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' );
 
@@ -154,10 +154,9 @@ add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' )
 function feature_flag_create_group() {
 
 	$validation = [];
-	$response   = [];
 
 	$validation['group-nonce'] = check_admin_referer( 'register-group' );
-	$validation['group-key']    = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false ); // input var okay;
+	$validation['group-key']   = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false ); // input var okay;
 	$validation['group-name']  = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false ); // input var okay;
 	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : false ); // input var okay;
 
@@ -165,24 +164,28 @@ function feature_flag_create_group() {
 
 	if ( $validation ) {
 
-		$response['response'] = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'] );
+		$result = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'] );
 
-		if ( wp_get_referer() ) {
-			$dest = wp_get_referer();
-		} else {
-			$dest = get_home_url();
-		}
-
-		$dest = add_query_arg(
-			[ 'error' => 'g1' ],
-			$dest
-		);
-
-		wp_safe_redirect( $dest );
+		feature_flag_operation_redirect( $result );
 
 	}
+}
 
-	exit();
+// Groups - Delete
+add_action( 'admin_post_ff_delete_group', 'feature_flag_delete_group' );
+add_action( 'admin_post_nopriv_ff_delete_group', 'feature_flag_delete_group' );
+
+function feature_flag_delete_group() {
+
+	if ( ! empty( $_GET['key'] ) && check_admin_referer( 'ff_delete_group' ) ) {
+		$key = sanitize_text_field( wp_unslash( $_GET['key'] ) ); // input var okay;
+	}
+
+	$result = FeatureFlags::init()->delete_group( $key );
+
+	error_log( $result );
+
+	feature_flag_operation_redirect( $result );
 
 }
 
@@ -240,6 +243,37 @@ function find_query_string() {
 
 		return false;
 	}
+}
+
+/**
+ * Quickly generate return URLs with appropriate Error code messages.
+ *
+ * @param bool $error_code The error code string.
+ * @param bool $redirect Either safe_redirect or return the URL.
+ *
+ * @see FeatureFlags::get_admin_error_message() Method for generating error messages.
+ *
+ * @return null|string Depending on $redirect.
+ */
+function feature_flag_operation_redirect( $error_code = false, $redirect = true ) {
+
+	$redirect_url = ( wp_get_referer() ?: get_home_url() );
+
+	if ( false !== $error_code && ! empty( $error_code ) ) {
+		$redirect_url = add_query_arg(
+			[
+				'error' => $error_code,
+			],
+			$redirect_url
+		);
+	}
+
+	if ( $redirect ) {
+		wp_safe_redirect( $redirect_url );
+	} else {
+		return $redirect_url;
+	}
+
 }
 
 add_shortcode( 'debugFeatureFlags', 'shortcode_debug' );

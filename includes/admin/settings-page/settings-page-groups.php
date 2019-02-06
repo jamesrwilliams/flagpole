@@ -27,7 +27,7 @@ use FeatureFlags\FeatureFlags;
 			<th>Key</th>
 			<th>Description</th>
 			<th>Features</th>
-			<th colspan="2">Actions</th>
+			<th colspan="3">Actions</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -57,6 +57,26 @@ use FeatureFlags\FeatureFlags;
 				</td>
 				<td>
 					[Publish]
+				</td>
+				<td>
+					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+						<input type="hidden" name="action" value="ff_delete_group">
+						<input type="hidden" name="key" value="<?php echo $group->get_key(); ?>">
+						<?php wp_nonce_field( 'ff_delete_group' ); ?>
+						<?php
+							submit_button(
+								'Delete',
+								'small',
+								'featureFlagsBtn_delete_group',
+								false,
+								[
+									'class'       => 'action-btn',
+									'data-action' => 'toggleFeatureFlag',
+									'data-status' => 'enabled',
+								]
+							);
+						?>
+					</form>
 				</td>
 			</tr>
 			<?php } ?>

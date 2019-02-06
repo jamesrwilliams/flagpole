@@ -115,14 +115,16 @@ class FeatureFlags {
 	/**
 	 * Return the appropriate status class for the error code provided.
 	 *
-	 * @param int $index  Error code for the array.
+	 * @param int $index Error code for the array.
 	 *
 	 * @return string The associated class for the WordPress admin notice.
 	 */
 	public function get_admin_message_class( $index = 0 ) {
 		$statuses = [
 			0    => 'error',
-			'g1' => 'success',
+			'gc' => 'success',
+			'gu' => 'success',
+			'gd' => 'success',
 		];
 
 		return ( ! empty( $statuses[ $index ] ) ? $statuses[ $index ] : $statuses[0] );
@@ -465,24 +467,13 @@ class FeatureFlags {
 
 		$new_group = new Group( sanitize_title( $key ), $name, $description );
 
-		$groups = maybe_unserialize( get_option( self::get_options_key() . 'groups' ) );
+		$groups = self::get_groups();
 
-		$this->groups = $groups;
+		$groups[] = $new_group;
 
-		$this->groups[] = $new_group;
+		self::save_groups( $groups );
 
-		$this->save_groups();
-
-		return $new_group;
-	}
-
-	/**
-	 * Remove a flag group from the system.
-	 *
-	 * @param $key string The flag group's key.
-	 */
-	public function delete_group( $key ) {
-		// TODO Implement the "Delete" function for flag groups.
+		return 'gc';
 	}
 
 	/**
@@ -496,6 +487,28 @@ class FeatureFlags {
 	}
 
 	/**
+	 * Remove a flag group from the system.
+	 *
+	 * @param $key string The flag group's key.
+	 *
+	 * @return string Result code.
+	 */
+	public function delete_group( $key ) {
+
+		$index  = self::find_group( $key, false, true );
+		$groups = self::get_groups();
+
+		if ( $index >= 0 ) {
+			unset( $groups[ $index ] );
+			self::save_groups( $groups );
+			return 'gd';
+		} else {
+			return 0;
+		}
+
+	}
+
+	/**
 	 * Returns the array of current flag groups found in the system.
 	 *
 	 * @return array|mixed
@@ -505,17 +518,49 @@ class FeatureFlags {
 		$key    = self::get_options_key() . 'groups';
 		$groups = maybe_unserialize( get_option( $key ) );
 
-		$this->groups = $groups;
+		if ( gettype( $groups ) !== 'array' ) {
+			$groups = [];
+		}
 
-		return $this->groups;
+		return $groups;
+	}
+
+	/**
+	 * Retrieve the group object of a specified key.
+	 *
+	 * @param string $key The group key we're looking for.
+	 * @param bool $check Return either if it's a valid group or the group itself.
+	 * @param bool $pos Return the position of $key in the Groups list.
+	 *
+	 * @return \FeatureFlag\Group|bool.
+	 */
+	public function find_group( $key, $check = false, $pos = false ) {
+
+		$group    = false;
+		$groups   = $this->groups;
+		$position = false;
+
+		foreach ( $groups as $index => $struct ) {
+			if ( $key === $struct->key ) {
+				$position = $index;
+				$group    = $struct;
+				break;
+			}
+		}
+
+		if ( $pos ) {
+			return $position;
+		} else {
+			return ( $check ? true : $group );
+		}
 	}
 
 	/**
 	 * Save groups to the WordPress Database.
 	 */
-	public function save_groups() {
+	public function save_groups( $groups ) {
 		$key = self::get_options_key() . 'groups';
-		update_option( $key, maybe_serialize( $this->groups ) );
+		update_option( $key, maybe_serialize( $groups ) );
 	}
 }
 
