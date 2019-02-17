@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Group Class
  *
@@ -13,8 +12,6 @@
 
 namespace FeatureFlag;
 
-use FeatureFlags\FeatureFlags;
-
 /**
  * Class Group
  *
@@ -22,11 +19,42 @@ use FeatureFlags\FeatureFlags;
  */
 class Group {
 
+	/**
+	 * Key of the group.
+	 *
+	 * @var string
+	 */
 	public $key;
+
+	/**
+	 * The human readable name of the group.
+	 *
+	 * @var string
+	 */
 	public $name;
+
+	/**
+	 * Optional description of the group.
+	 *
+	 * @var string
+	 */
 	public $description;
+
+	/**
+	 * Array of flags that make up the group.
+	 *
+	 * @var array The flags of this group.
+	 */
 	public $flags;
 
+	/**
+	 * Group constructor.
+	 *
+	 * @param string $_key key for the new group.
+	 * @param string $_name Name of the group.
+	 * @param string $_description The description of the group.
+	 * @param array  $_flags The array of the flags within the group.
+	 */
 	public function __construct( $_key, $_name, $_description = '', $_flags = [] ) {
 
 		$this->name        = ( $_name ? $_name : '' );
@@ -37,6 +65,8 @@ class Group {
 	}
 
 	/**
+	 * Return the group's key.
+	 *
 	 * @return mixed
 	 */
 	public function get_key() {
@@ -44,6 +74,8 @@ class Group {
 	}
 
 	/**
+	 * Return the group's name.
+	 *
 	 * @return string
 	 */
 	public function get_name() {
@@ -51,6 +83,8 @@ class Group {
 	}
 
 	/**
+	 * Return the group's description.
+	 *
 	 * @return string
 	 */
 	public function get_description() {
@@ -58,9 +92,20 @@ class Group {
 	}
 
 	/**
+	 * Return an array of this group's flags.
+	 *
 	 * @return array
 	 */
 	public function get_flags() {
 		return $this->flags;
+	}
+
+	/**
+	 * Add a flag to the group's object property.
+	 *
+	 * @param Flag $flag The flag we're adding.
+	 */
+	public function add_flag( $flag ) {
+		$this->flags[] = $flag;
 	}
 }

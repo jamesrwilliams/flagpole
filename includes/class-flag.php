@@ -15,6 +15,11 @@ namespace FeatureFlag;
 
 use FeatureFlags\FeatureFlags;
 
+/**
+ * Class Flag
+ *
+ * @package FeatureFlag
+ */
 class Flag {
 
 	/**
@@ -54,12 +59,14 @@ class Flag {
 
 	/**
 	 * Does the flag require users to be logged in.
+	 *
 	 * @var bool
 	 */
 	public $private;
 
 	/**
 	 * Boolean whether or not the feature can be published.
+	 *
 	 * @var bool
 	 */
 	public $stable;
@@ -71,7 +78,7 @@ class Flag {
 	 * @param string $_name The human readable name for the flag.
 	 * @param bool   $_enforced Is the key enforced.
 	 * @param string $_description The description to be shown in the admin about the field.
-	 * @param bool   $_queryable Can you access the flag with a query string?
+	 * @param bool   $_queryable Set whether or not you can you access the flag with a query string.
 	 * @param bool   $_private Allow this flag to be enabled without logging in.
 	 * @param bool   $_stable Allow this flag to be published or not.
 	 */
@@ -192,7 +199,8 @@ class Flag {
 	/**
 	 * Check to see if a variable is stable or not.
 	 *
-	 * @return bool
+	 * @param bool $echo Echo or return the response.
+	 * @return string|void Yes or no string if echo is true.
 	 */
 	public function is_stable( $echo = true ) {
 		$stable = $this->stable;
@@ -211,7 +219,7 @@ class Flag {
 	/**
 	 * Check if this flag is published globally or not.
 	 *
-	 * @return bool
+	 * @return bool Is the flag published?
 	 */
 	public function is_published() {
 
@@ -240,10 +248,14 @@ class Flag {
 	/**
 	 * Check if a flag is currently enabled.
 	 *
+	 * @param bool $reason Do we want the reason why the flag is enabled or just the status.
+	 *
 	 * @return bool
 	 */
 	public function is_enabled( $reason = false ) {
+
 		return FeatureFlags::init()->is_enabled( $this->key, $reason );
+
 	}
 
 	/**

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * FeatureFlag Class
  *
@@ -19,6 +18,11 @@ require_once 'class-group.php';
 use FeatureFlag\Flag;
 use FeatureFlag\Group;
 
+/**
+ * Class FeatureFlags
+ *
+ * @package FeatureFlags
+ */
 class FeatureFlags {
 
 	/**
@@ -107,6 +111,8 @@ class FeatureFlags {
 			'gd'  => 'Flag group successfully deleted.',
 			'fpc' => 'Flag enabled.',
 			'fd'  => 'Flag disabled.',
+			'fga' => 'Flag added to group successfully.',
+			'fgd' => 'Flag removed from group successfully.',
 		];
 
 		return ( ! empty( $messages[ $index ] ) ? $messages[ $index ] : $messages[0] );
@@ -133,7 +139,7 @@ class FeatureFlags {
 	/**
 	 * Add a new flag to the plugin register.
 	 *
-	 * @param array $flag
+	 * @param array $flag The flag object to add.
 	 *
 	 * @return void
 	 */
@@ -147,7 +153,7 @@ class FeatureFlags {
 	 * Retrieve the flag object of a specified key.
 	 *
 	 * @param string $key The flag key we're looking for.
-	 * @param bool $check Return either if it's a valid flag or the flag itself.
+	 * @param bool   $check Return either if it's a valid flag or the flag itself.
 	 *
 	 * @return \FeatureFlag\Flag|bool.
 	 */
@@ -205,7 +211,7 @@ class FeatureFlags {
 	/**
 	 * Check if the provided key is currently enabled.
 	 *
-	 * @param string $feature_key The key of the flag we're looking for.
+	 * @param string  $feature_key The key of the flag we're looking for.
 	 * @param boolean $reason Option to return reason why a flag is enabled.
 	 *
 	 * @return boolean Is the flag enabled or not.
@@ -350,7 +356,11 @@ class FeatureFlags {
 	}
 
 	/**
-	 * @param $feature_key
+	 * Toggles a feature for publication.
+	 *
+	 * @param Flag $feature_key The key of the feature to toggle publication status.
+	 *
+	 * @return string|null JSON response if error.
 	 */
 	public function toggle_feature_publication( $feature_key ) {
 
@@ -429,7 +439,7 @@ class FeatureFlags {
 	 * @param string $feature_key The key of the flag we're aiming to match.
 	 * @return bool Is there a query string for this flag currently?
 	 */
-	function check_query_string( $feature_key ) {
+	public function check_query_string( $feature_key ) {
 
 		$query = find_query_string();
 
@@ -457,11 +467,11 @@ class FeatureFlags {
 	/**
 	 * Register a new Flag group.
 	 *
-	 * @param $name
-	 * @param $key
-	 * @param $description
+	 * @param string $key string The Group key.
+	 * @param string $name string The Group name to create.
+	 * @param string $description string Optional description for the group.
 	 *
-	 * @return Group
+	 * @return string Error response message key.
 	 */
 	public function create_group( $key, $name, $description = '' ) {
 
@@ -479,17 +489,43 @@ class FeatureFlags {
 	/**
 	 * Update meta information about a flag group.
 	 *
-	 * @param $key string The feature group's key.
-	 * @param array $args The parameters to update for $key
+	 * @param string $key The feature group's key.
+	 * @param array  $args The parameters to update for $key.
 	 */
 	public function update_group( $key, $args = [] ) {
 		// TODO Implement "Update" using variable args array.
 	}
 
 	/**
+	 * Add a flag to a group.
+	 *
+	 * @param string $flag_key The key we want to add to a group.
+	 * @param string $group_key The group we want to add a key to.
+	 *
+	 * @return int|string
+	 */
+	public function add_flag_to_group( $flag_key, $group_key ) {
+
+		$flag  = self::find_flag( $flag_key );
+		$group = self::find_group( $group_key );
+
+		if ( false !== $flag && false !== $group ) {
+
+			$group->add_flag( $flag_key );
+			save_groups();
+
+			return 'fga';
+
+		} else {
+			return 0;
+		}
+
+	}
+
+	/**
 	 * Remove a flag group from the system.
 	 *
-	 * @param $key string The flag group's key.
+	 * @param string $key The flag group's key.
 	 *
 	 * @return string Result code.
 	 */
@@ -529,8 +565,8 @@ class FeatureFlags {
 	 * Retrieve the group object of a specified key.
 	 *
 	 * @param string $key The group key we're looking for.
-	 * @param bool $check Return either if it's a valid group or the group itself.
-	 * @param bool $pos Return the position of $key in the Groups list.
+	 * @param bool   $check Return either if it's a valid group or the group itself.
+	 * @param bool   $pos Return the position of $key in the Groups list.
 	 *
 	 * @return \FeatureFlag\Group|bool.
 	 */
@@ -557,9 +593,16 @@ class FeatureFlags {
 
 	/**
 	 * Save groups to the WordPress Database.
+	 *
+	 * @param bool $groups The groups to save if none uses system's.
 	 */
-	public function save_groups( $groups ) {
+	public function save_groups( $groups = false ) {
 		$key = self::get_options_key() . 'groups';
+
+		if ( false === $groups ) {
+			$groups = self::get_groups();
+		}
+
 		update_option( $key, maybe_serialize( $groups ) );
 	}
 }

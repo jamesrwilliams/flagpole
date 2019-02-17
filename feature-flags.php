@@ -198,6 +198,15 @@ add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
  */
 function feature_flag_add_to_group() {
 	// TODO Adding flags to groups.
+
+	if ( ! empty( $_GET['selected_flag'] ) && ! empty( $_GET['selected_group'] ) && check_admin_referer( 'ff_add_to_group' ) ) {
+		$flag  = sanitize_text_field( wp_unslash( $_GET['selected_flag'] ) ); // input var okay;
+		$group = sanitize_text_field( wp_unslash( $_GET['selected_group'] ) ); // input var okay;
+
+		$response = FeatureFlags::init()->
+
+		feature_flag_operation_redirect();
+	}
 }
 
 add_action( 'template_redirect', 'feature_flag_redirect_with_key' );
