@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Flag Class
  *
@@ -10,8 +9,6 @@
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
-
-namespace FeatureFlag;
 
 use FeatureFlags\FeatureFlags;
 
@@ -200,7 +197,7 @@ class Flag {
 	 * Check to see if a variable is stable or not.
 	 *
 	 * @param bool $echo Echo or return the response.
-	 * @return string|void Yes or no string if echo is true.
+	 * @return null|string Yes or no string if echo is true.
 	 */
 	public function is_stable( $echo = true ) {
 		$stable = $this->stable;

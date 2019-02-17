@@ -1,6 +1,6 @@
 <?php
 /**
- * settings-page-groups.php
+ * Template for the WP-Feature-Flags admin pages.
  *
  * @package feature-flags
  */
@@ -40,28 +40,41 @@ use FeatureFlags\FeatureFlags;
 				<td><code><?php echo wp_kses_post( $group->get_key() ); ?></code></td>
 				<td><?php echo wp_kses_post( $group->get_description() ); ?></td>
 				<td>
-					<?php
+					<?php if ( count( $group->get_flags() ) > 0 ) { ?>
 
-					if ( count( $group->get_flags() ) > 0 ) {
-						foreach ( $group->get_flags() as $flag ) {
-							echo wp_kses_post( $flag );
-						}
-					} else {
-						echo '-';
-					}
+						<?php foreach ( $group->get_flags() as $flag ) { ?>
 
-					?>
+							<div class="ff-badge">
+								<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+									<?php $flag_obj = FeatureFlags::init()->find_flag( $flag ); ?>
+									<?php wp_nonce_field( 'ff_remove_flag_from_group' ); ?>
+									<input type="hidden" name="action" value="ff_remove_flag_from_group">
+									<input type="hidden" name="flag" value="<?php echo wp_kses_post( $flag_obj->key ); ?>">
+									<input type="hidden" name="group" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
+									<span class="ff_group-flag-label" title="Key: <?php echo wp_kses_post( $flag_obj->key ); ?>">
+										<?php echo wp_kses_post( $flag_obj->get_name() ); ?>
+									</span>
+									<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flag_obj->name ); ?>' from '<?php echo wp_kses_post( $group->name ); ?>'">&#10005;</button>
+								</form>
+							</div>
+
+						<?php } // Close Foreach ?>
+
+					<?php } else { ?>
+						<span class="no-flags">No flags in group. <a href="#add-to-group">Add one.</a></span>
+					<?php } // Close Else ?>
+
 				</td>
 				<td>
-					[Preview]
+					<!-- [Preview] -->
 				</td>
 				<td>
-					[Publish]
+					<!-- [Publish] -->
 				</td>
 				<td>
 					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="ff_delete_group">
-						<input type="hidden" name="key" value="<?php echo $group->get_key(); ?>">
+						<input type="hidden" name="key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
 						<?php wp_nonce_field( 'ff_delete_group' ); ?>
 						<?php
 							submit_button(
@@ -89,7 +102,7 @@ use FeatureFlags\FeatureFlags;
 
 <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="add-to-group">
 	<input type="hidden" name="action" value="ff_add_to_group">
-	<?php wp_nonce_field( 'add-to-group' ); ?>
+	<?php wp_nonce_field( 'ff-add-to-group' ); ?>
 	<label for="selected-flag">Add flag</label>
 	<select name="selected-flag" id="selected-flag">
 		<option disabled selected>Select flag...</option>

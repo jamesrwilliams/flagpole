@@ -1,2 +1,8 @@
 .tools_page_feature-flags pre { margin: 0; }
 .tools_page_feature-flags textarea { display: block; resize: vertical; }
+.tools_page_feature-flags table tr ul { margin-top: 0; list-style: disc; padding-left: 20px; }
+
+form#add-to-group:target { background: #fff; }
+
+.tools_page_feature-flags .ff-badge { -webkit-font-smoothing: antialiased; padding: 2px 0 2px 7px; display: inline-block; border-radius: 3px; background: #777777; font-weight: bold; font-size: 11px; color: white; }
+.tools_page_feature-flags .ff-badge button { background: none; color: white; border: 0; border-radius: 100%; }

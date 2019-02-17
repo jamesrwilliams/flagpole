@@ -10,8 +10,6 @@
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlag;
-
 /**
  * Class Group
  *
@@ -104,8 +102,48 @@ class Group {
 	 * Add a flag to the group's object property.
 	 *
 	 * @param Flag $flag The flag we're adding.
+	 *
+	 * @return bool Result has the flag been added.
 	 */
 	public function add_flag( $flag ) {
-		$this->flags[] = $flag;
+
+		if ( false === $this->has_flag( $flag ) ) {
+			$this->flags[] = $flag;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Check if this group has this flag enabled.
+	 *
+	 * @param string $flag_key The flag key we're checking.
+	 *
+	 * @return bool The result of the search.
+	 */
+	public function has_flag( $flag_key ) {
+		$index = array_search( $flag_key, $this->flags, true );
+
+		return $index;
+	}
+
+	/**
+	 * Remove a specific flag from the array.
+	 *
+	 * @param string $flag_key The flag key we're going to remove.
+	 *
+	 * @return bool Response if successful.
+	 */
+	public function remove_flag( $flag_key ) {
+
+		$index = $this->has_flag( $flag_key );
+
+		if ( false !== $index ) {
+			unset( $this->flags[ $index ] );
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

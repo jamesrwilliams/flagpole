@@ -119,12 +119,12 @@ add_action( 'wp_ajax_togglePublishedFeature', 'feature_flag_publish' );
  */
 function feature_flag_publish() {
 
-	// input var okay;
-	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) { // input var okay;
+	// input var okay.
+	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) { // input var okay.
 
 		$response = [];
 
-		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) ); // input var okay;
+		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) ); // input var okay.
 
 		if ( ! empty( $feature_key ) ) {
 
@@ -144,7 +144,7 @@ function feature_flag_publish() {
 	exit();
 }
 
-// Groups - Create
+// Groups - Create.
 add_action( 'admin_post_ff_register_group', 'feature_flag_create_group' );
 add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' );
 
@@ -156,9 +156,9 @@ function feature_flag_create_group() {
 	$validation = [];
 
 	$validation['group-nonce'] = check_admin_referer( 'register-group' );
-	$validation['group-key']   = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false ); // input var okay;
-	$validation['group-name']  = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false ); // input var okay;
-	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : false ); // input var okay;
+	$validation['group-key']   = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false ); // input var okay.
+	$validation['group-name']  = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false ); // input var okay.
+	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : false ); // input var okay.
 
 	$validation = array_filter( $validation );
 
@@ -171,25 +171,28 @@ function feature_flag_create_group() {
 	}
 }
 
-// Groups - Delete
+// Groups - Delete.
 add_action( 'admin_post_ff_delete_group', 'feature_flag_delete_group' );
 add_action( 'admin_post_nopriv_ff_delete_group', 'feature_flag_delete_group' );
 
+/**
+ * Delete group admin hook handler.
+ */
 function feature_flag_delete_group() {
 
 	if ( ! empty( $_GET['key'] ) && check_admin_referer( 'ff_delete_group' ) ) {
-		$key = sanitize_text_field( wp_unslash( $_GET['key'] ) ); // input var okay;
+		$key = sanitize_text_field( wp_unslash( $_GET['key'] ) ); // input var okay.
+	} else {
+		$key = false;
 	}
 
 	$result = FeatureFlags::init()->delete_group( $key );
-
-	error_log( $result );
 
 	feature_flag_operation_redirect( $result );
 
 }
 
-// Groups - Add too
+// Groups - Add too group.
 add_action( 'admin_post_ff_add_to_group', 'feature_flag_add_to_group' );
 add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
 
@@ -197,15 +200,40 @@ add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
  * TODO - Adding a flag to a group.
  */
 function feature_flag_add_to_group() {
-	// TODO Adding flags to groups.
 
-	if ( ! empty( $_GET['selected_flag'] ) && ! empty( $_GET['selected_group'] ) && check_admin_referer( 'ff_add_to_group' ) ) {
-		$flag  = sanitize_text_field( wp_unslash( $_GET['selected_flag'] ) ); // input var okay;
-		$group = sanitize_text_field( wp_unslash( $_GET['selected_group'] ) ); // input var okay;
+	if (
+		! empty( $_GET['selected-flag'] ) &&
+		! empty( $_GET['selected-group'] ) &&
+		check_admin_referer( 'ff-add-to-group' )
+	) {
+		$flag  = sanitize_text_field( wp_unslash( $_GET['selected-flag'] ) ); // input var okay.
+		$group = sanitize_text_field( wp_unslash( $_GET['selected-group'] ) ); // input var okay.
 
-		$response = FeatureFlags::init()->
+		$response = FeatureFlags::init()->add_flag_to_group( $flag, $group );
 
-		feature_flag_operation_redirect();
+		feature_flag_operation_redirect( $response );
+	} else {
+		feature_flag_operation_redirect( 'fgae' );
+	}
+}
+
+add_action( 'admin_post_ff_remove_flag_from_group', 'feature_flag_remove_from_group');
+add_action( 'admin_post_nopriv_remove_flag_from_group', 'feature_flag_remove_from_group');
+
+function feature_flag_remove_from_group() {
+	if (
+		! empty( $_GET['flag'] ) &&
+		! empty( $_GET['group'] ) &&
+		check_admin_referer( 'ff_remove_flag_from_group' )
+	) {
+		$flag  = sanitize_text_field( wp_unslash( $_GET['flag'] ) ); // input var okay.
+		$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // input var okay.
+
+		$response = FeatureFlags::init()->remove_flag_from_group( $flag, $group );
+
+		feature_flag_operation_redirect( $response );
+	} else {
+		feature_flag_operation_redirect( 'fgae' );
 	}
 }
 
@@ -282,7 +310,6 @@ function feature_flag_operation_redirect( $error_code = false, $redirect = true 
 	} else {
 		return $redirect_url;
 	}
-
 }
 
 add_shortcode( 'debugFeatureFlags', 'shortcode_debug' );

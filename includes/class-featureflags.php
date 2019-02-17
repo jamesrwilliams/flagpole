@@ -10,8 +10,6 @@
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlags;
-
 require_once 'class-flag.php';
 require_once 'class-group.php';
 
@@ -104,15 +102,19 @@ class FeatureFlags {
 	public function get_admin_error_message( $index = 0 ) {
 
 		$messages = [
-			0     => 'An unknown error occurred. Please check the error logs for more information.',
-			'gc'  => 'Flag group created successfully.',
-			'gr'  => false,
-			'gu'  => 'Flag group updated successfully.',
-			'gd'  => 'Flag group successfully deleted.',
-			'fpc' => 'Flag enabled.',
-			'fd'  => 'Flag disabled.',
-			'fga' => 'Flag added to group successfully.',
-			'fgd' => 'Flag removed from group successfully.',
+			0                       => 'An unknown error occurred. Please check the error logs for more information.',
+			'gc'                    => 'Flag group created successfully.',
+			'gr'                    => false,
+			'gu'                    => 'Flag group updated successfully.',
+			'gd'                    => 'Flag group successfully deleted.',
+			'fpc'                   => 'Flag enabled.',
+			'fd'                    => 'Flag disabled.',
+			'fga'                   => 'Flag added to group successfully.',
+			'fgae'                  => 'A problem occurred adding the flag to the group.',
+			'fgd'                   => 'Flag removed from group successfully.',
+			'fgde'                  => 'A problem occurred removing the flag from the group.',
+			'flag-already-in-group' => 'This flag is already in this group.',
+
 		];
 
 		return ( ! empty( $messages[ $index ] ) ? $messages[ $index ] : $messages[0] );
@@ -127,10 +129,13 @@ class FeatureFlags {
 	 */
 	public function get_admin_message_class( $index = 0 ) {
 		$statuses = [
-			0    => 'error',
-			'gc' => 'success',
-			'gu' => 'success',
-			'gd' => 'success',
+			0                       => 'error',
+			'gc'                    => 'success',
+			'gu'                    => 'success',
+			'gd'                    => 'success',
+			'fga'                   => 'success',
+			'fgd'                   => 'success',
+			'flag-already-in-group' => 'warning',
 		];
 
 		return ( ! empty( $statuses[ $index ] ) ? $statuses[ $index ] : $statuses[0] );
@@ -360,7 +365,7 @@ class FeatureFlags {
 	 *
 	 * @param Flag $feature_key The key of the feature to toggle publication status.
 	 *
-	 * @return string|null JSON response if error.
+	 * @return void|string JSON response if error.
 	 */
 	public function toggle_feature_publication( $feature_key ) {
 
@@ -506,20 +511,45 @@ class FeatureFlags {
 	 */
 	public function add_flag_to_group( $flag_key, $group_key ) {
 
-		$flag  = self::find_flag( $flag_key );
-		$group = self::find_group( $group_key );
+		$flag   = self::find_flag( $flag_key );
+		$group  = self::find_group( $group_key, false, true );
+		$groups = self::get_groups();
 
 		if ( false !== $flag && false !== $group ) {
+			$result = $groups[ $group ]->add_flag( $flag_key );
 
-			$group->add_flag( $flag_key );
-			save_groups();
-
-			return 'fga';
-
+			if ( $result ) {
+				self::save_groups( $groups );
+				return 'fga';
+			} else {
+				return 'flag-already-in-group';
+			}
 		} else {
-			return 0;
+			return 'fgae';
 		}
+	}
 
+	/**
+	 * Remove flag from group.
+	 *
+	 * @param string $flag_key  The Key we're removing from the group.
+	 * @param string $group_key The group we're removing the flag from.
+	 *
+	 * @return string
+	 */
+	public function remove_flag_from_group( $flag_key, $group_key ) {
+
+		$flag   = empty( $flag );
+		$group  = self::find_group( $group_key, false, true );
+		$groups = self::get_groups();
+
+		if ( false !== $flag && false !== $group ) {
+			$groups[ $group ]->remove_flag( $flag_key );
+			self::save_groups( $groups );
+			return 'fgd';
+		} else {
+			return 'fgde';
+		}
 	}
 
 	/**
