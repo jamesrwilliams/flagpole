@@ -46,7 +46,6 @@ if ( function_exists( 'register_feature_flag' ) ) {
         'key'         => 'correct-horse-battery-staple',
         'enforced'    => false,
         'description' => 'An example feature definition'
-        'queryable'   => true,
         'stable'      => false,
         'private'     => false,
     
@@ -77,9 +76,7 @@ register_feature_flag([
 | title                  | `string`  | ""      | The human readable feature name. |
 | enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
 | description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
-| queryable (optional)   | `boolean` | `false` | Allow users to enable this flag by using a query string in the URL. |
 | stable (optional)      | `boolean` | `false` | Allows users to publish features from the admin area. Has to be enabled. Features default to "unstable". |
-| private (optional)     | `boolean` | `true`  | Works in tandem with the `queryable` argument. If this is set to false, users are not required to login to enable the flag. |
 
 
 ## Enabling your flags
@@ -87,22 +84,12 @@ register_feature_flag([
 There are four ways to have a flag enabled with WP-Feature-Flags. These are as follows:
 
 - **[Previewed](#previewing-a-flag)** - Enable a flag only for the current logged in user.
-- **[Queried](#querying-a-flag)** - Enable a specific flag via a URL query string.
 - **[Published](#publishing-a-flag)** - Enable a flag for every visitor on the site.
 - **[Enforced](#enforcing-a-flag)** - Flags which are enabled by default by developers.
 
 ### Previewing a flag
 
 Any flag can be previewed. This can be done via the Feature Flags admin screen and pressing the "Enabled Preview" button. This will enable a flag for the current logged in user, which is great for previewing a feature while limiting it's exposure to users. This can then be turned off again by pressing the "disable preview" button. Users can preview any number of flags at any one time.
-
-### Querying a flag
-
-In order to Query a flag the flag options needs to include `['querable' => true]`. This works in partnership with the 'private' option which redirects any unauthenticated users to the login page and then back in order to preview the flag. These flags can then be activated by visiting a site with the query string appended to the URL as follows:
-
-```
-https://example.com?flag=foo
-```
-Where `foo` is the flag key for the flag users are trying to enable.
 
 ### Publishing a flag
 

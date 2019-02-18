@@ -20,9 +20,10 @@ use FeatureFlags\FeatureFlags;
 
 <?php } else { ?>
 
-	<table class="widefat">
+	<table class="widefat groups_table">
 		<thead>
 		<tr>
+			<th>&nbsp;</th>
 			<th class="row-title">Group Name</th>
 			<th>Key</th>
 			<th>Description</th>
@@ -34,6 +35,13 @@ use FeatureFlags\FeatureFlags;
 
 		<?php foreach ( $available_groups as $key => $group ) { ?>
 			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
+				<td class="has-icon">
+					<?php $img_path = FM_PLUGIN_URL . 'assets/images/' . ( $group->is_private() ? 'private' : 'public' ) . '.icon.svg'; ?>
+
+					<img
+						src="<?php echo esc_url( $img_path ); ?>"
+						alt="<?php echo wp_kses_post( $group->is_private() ? 'This group is private.' : 'This group is public.' ); ?>">
+				</td>
 				<td class="row-title">
 					<strong><?php echo wp_kses_post( $group->get_name() ); ?></strong>
 				</td>
@@ -135,6 +143,26 @@ use FeatureFlags\FeatureFlags;
 	<br>
 	<input type="text" name="group-key" class="regular-text" id="group-key">
 	<br>
+	<div class="radio-container">
+
+		<p>Flag group visibility:</p>
+
+		<label>
+			<input type="radio" name="group-private" value="true" checked>
+			<span><strong>Private</strong> - Requires users to be logged in to view.</span>
+		</label>
+
+		<br>
+
+		<label>
+			<input type="radio" name="group-private" value="false">
+			<span><strong>Public</strong> - Makes the group publicly queryable.</span>
+		</label>
+
+		<br>
+		<br>
+
+	</div>
 	<label for="group-description">Group Description</label>
 	<textarea name="group-description" id="group-description" cols="30" rows="10"></textarea>
 	<br>

@@ -153,7 +153,7 @@ class FeatureFlags {
 	 */
 	public function add_flag( $flag ) {
 
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['queryable'], $flag['private'], $flag['stable'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'] );
 
 	}
 
@@ -231,8 +231,11 @@ class FeatureFlags {
 		if ( $export ) {
 
 			$published = $export->is_published();
-			$query     = $this->check_query_string( $feature_key );
-			$enforced  = $export->get_enforced();
+
+			// Commenting this out as I've ripped up the flag query string system.
+			// $query  = $this->check_query_string( $feature_key ); .
+			$query    = false;
+			$enforced = $export->get_enforced();
 
 			if ( $published ) {
 				return ( $reason ? 'Published' : true );
@@ -312,23 +315,13 @@ class FeatureFlags {
 	}
 
 	/**
-	 * Check if a provided key is queryable.
+	 * Check if a provided group key requires logging in.
 	 *
-	 * @param string $feature_key The feature we're checking.
-	 * @return bool Is the feature queryable or not.
-	 */
-	public function is_querable( $feature_key ) {
-		return self::find_flag( $feature_key )->queryable;
-	}
-
-	/**
-	 * Check if a provided key requires logging in.
-	 *
-	 * @param string $feature_key The feature we're checking.
+	 * @param string $group_key The feature we're checking.
 	 * @return bool Is the feature private or not.
 	 */
-	public function is_private( $feature_key ) {
-		return self::find_flag( $feature_key )->private;
+	public function is_private( $group_key ) {
+		return self::get_group( $group_key )->private;
 	}
 
 	/**
@@ -478,10 +471,11 @@ class FeatureFlags {
 	 * @param string $key string The Group key.
 	 * @param string $name string The Group name to create.
 	 * @param string $description string Optional description for the group.
+	 * @param bool   $private Is this group publicly accessible.
 	 *
 	 * @return string Error response message key.
 	 */
-	public function create_group( $key, $name, $description = '' ) {
+	public function create_group( $key, $name, $description = '', $private = false ) {
 
 		$sanitised_key = sanitize_title( $key );
 
@@ -490,7 +484,10 @@ class FeatureFlags {
 		if ( true === $group_exists ) {
 			return 'group-with-key-exists';
 		} else {
-			$new_group = new Group( $sanitised_key, $name, $description );
+
+			$status = ( 'true' === $private ? true : false );
+
+			$new_group = new Group( $sanitised_key, $name, $description, $status );
 
 			$groups = self::get_groups();
 

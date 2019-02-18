@@ -22,8 +22,6 @@ function register_feature_flag( $args ) {
 
 		'enforced'    => false,
 		'description' => '',
-		'queryable'   => false,
-		'private'     => true,
 		'stable'      => false,
 
 	];

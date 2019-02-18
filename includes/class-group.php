@@ -48,18 +48,26 @@ class Group {
 	public $flags;
 
 	/**
+	 * The access state of this group.
+	 *
+	 * @var bool Is the Group accessible for the public.
+	 */
+	public $private;
+
+	/**
 	 * Group constructor.
 	 *
 	 * @param string $_key key for the new group.
 	 * @param string $_name Name of the group.
 	 * @param string $_description The description of the group.
-	 * @param array  $_flags The array of the flags within the group.
+	 * @param bool   $_private Is the group private.
 	 */
-	public function __construct( $_key, $_name, $_description = '', $_flags = [] ) {
+	public function __construct( $_key, $_name, $_description = '', $_private = true ) {
 
 		$this->name        = ( $_name ? $_name : $_key );
 		$this->key         = $_key;
-		$this->flags       = $_flags;
+		$this->flags       = [];
+		$this->private     = $_private;
 		$this->description = $_description;
 
 	}
@@ -98,6 +106,15 @@ class Group {
 	 */
 	public function get_flags() {
 		return $this->flags;
+	}
+
+	/**
+	 * Return the group's private status.
+	 *
+	 * @return bool
+	 */
+	public function is_private() {
+		return $this->private;
 	}
 
 	/**

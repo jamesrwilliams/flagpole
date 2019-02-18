@@ -10,13 +10,12 @@
 
 	<h2>Available feature flags</h2>
 
-	<table class="widefat">
+	<table class="widefat flags_table">
 		<thead>
 		<tr>
 			<th class="row-title">Feature</th>
 			<th>Key</th>
 			<th>Description</th>
-			<th>Queryable</th>
 			<th>Visibility</th>
 			<th colspan="2">Actions</th>
 		</tr>
@@ -36,8 +35,6 @@
 					<code><?php $flag->get_key(); ?></code>
 				</td>
 				<td><?php $flag->get_description(); ?></td>
-				<td><?php $flag->is_queryable( true ); ?></td>
-				<td><?php $flag->is_private( true ); ?></td>
 				<td>
 					<?php
 
