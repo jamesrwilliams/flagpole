@@ -143,7 +143,6 @@ add_action( 'wp_ajax_togglePublishedFeature', 'feature_flag_publish' );
  */
 function feature_flag_publish() {
 
-
 	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) {
 
 		$response = [];
@@ -173,7 +172,7 @@ add_action( 'admin_post_ff_register_group', 'feature_flag_create_group' );
 add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' );
 
 /**
- * Create a new flag group
+ * Create group admin hook handler.
  */
 function feature_flag_create_group() {
 
@@ -221,7 +220,7 @@ add_action( 'admin_post_ff_add_to_group', 'feature_flag_add_to_group' );
 add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
 
 /**
- * TODO - Adding a flag to a group.
+ * Add to group admin hook handler.
  */
 function feature_flag_add_to_group() {
 
@@ -298,7 +297,7 @@ function feature_flag_redirect_with_key() {
  */
 function find_query_string() {
 
-	/* TODO: #12 - Make this a configurable key */
+	/* TODO: #21 - Make this a configurable key */
 	$query_string_key = 'flag';
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
