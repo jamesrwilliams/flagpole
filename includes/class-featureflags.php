@@ -10,6 +10,8 @@
  * @copyright 2019 James Williams
  */
 
+namespace FeatureFlags;
+
 require_once 'class-flag.php';
 require_once 'class-group.php';
 

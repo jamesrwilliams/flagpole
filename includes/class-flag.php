@@ -10,6 +10,8 @@
  * @copyright 2019 James Williams
  */
 
+namespace FeatureFlag;
+
 use FeatureFlags\FeatureFlags;
 
 /**
