@@ -226,25 +226,20 @@ class FeatureFlags {
 	 */
 	public function is_enabled( $feature_key, $reason = false ) {
 
-		$export = $this->find_flag( $feature_key );
+		$flag = $this->find_flag( $feature_key );
 
-		if ( $export ) {
+		if ( $flag ) {
 
-			$published = $export->is_published();
+			$query = $this->check_query_string( $feature_key );
 
-			// Commenting this out as I've ripped up the flag query string system.
-			// $query  = $this->check_query_string( $feature_key ); .
-			$query    = false;
-			$enforced = $export->get_enforced();
-
-			if ( $published ) {
+			if ( $flag->is_published() ) {
 				return ( $reason ? 'Published' : true );
-			} elseif ( $enforced ) {
+			} elseif ( $flag->get_enforced() ) {
 				return ( $reason ? 'Enforced' : true );
 			} else {
 
 				if ( $query ) {
-					return ( $reason ? 'Using query string' : true );
+					return ( $reason ? 'Using a group query string' : true );
 				} elseif ( has_user_enabled( $feature_key ) ) {
 					return ( $reason ? 'User preview' : true );
 				} else {
@@ -359,7 +354,7 @@ class FeatureFlags {
 	/**
 	 * Toggles a feature for publication.
 	 *
-	 * @param Flag $feature_key The key of the feature to toggle publication status.
+	 * @param string $feature_key The key of the feature to toggle publication status.
 	 *
 	 * @return void|string JSON response if error.
 	 */
@@ -446,19 +441,12 @@ class FeatureFlags {
 
 		if ( ! empty( $query ) && $query ) {
 
-			if ( self::is_querable( $query ) ) {
-				return $query === $feature_key;
+			$group = $this->get_group( $query );
+
+			if ( false !== $group ) {
+				return $group->has_flag( $feature_key );
 			} else {
-				/**
-				 * We want to display an error if WP_DEBUG is enabled to highlight a
-				 * flag being queried that has not been enabled.
-				 */
-
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-				trigger_error( 'Trying to query flag that is not queryable.', E_USER_WARNING );
-
 				return false;
-
 			}
 		} else {
 			return false;
@@ -525,6 +513,7 @@ class FeatureFlags {
 		$groups = self::get_groups();
 
 		if ( false !== $flag && false !== $group ) {
+
 			$result = $groups[ $group ]->add_flag( $flag_key );
 
 			if ( $result ) {

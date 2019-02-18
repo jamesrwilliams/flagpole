@@ -176,10 +176,7 @@ add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' )
  */
 function feature_flag_create_group() {
 
-	$validation = [];
-
-
-
+	$validation                  = [];
 	$validation['group-nonce']   = check_admin_referer( 'register-group' );
 	$validation['group-key']     = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false );
 	$validation['group-name']    = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false );
@@ -189,8 +186,6 @@ function feature_flag_create_group() {
 	$validation = array_filter( $validation );
 
 	if ( $validation ) {
-
-//		wp_die( var_dump( $validation['group-private'] ) );
 
 		$result = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'], $validation['group-private'] );
 
