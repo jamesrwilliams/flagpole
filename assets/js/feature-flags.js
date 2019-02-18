@@ -6,7 +6,7 @@ jQuery(document).ready(function ($) {
     $('input[name^="featureFlagsBtn_"]').on('click', function (e) {
 
         let $button = e.target;
-        let featureKey = $button.parentElement.parentElement.querySelector('pre').innerHTML;
+        let featureKey = $button.parentElement.parentElement.querySelector('code').innerHTML;
         let action = $button.getAttribute('data-action') || false;
 
         let payload = {

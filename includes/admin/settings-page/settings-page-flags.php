@@ -26,7 +26,7 @@
 		<?php foreach ( $available_flags as $key => $flag ) { ?>
 
 			<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
-			<?php $published = $flag->is_published( false ); ?>
+			<?php $published = $flag->is_published(); ?>
 
 			<tr class="<?php echo( 0 === $key % 2 ? null : 'alternate' ); ?>">
 				<td class="title">

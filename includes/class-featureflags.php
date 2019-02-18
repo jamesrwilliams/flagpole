@@ -379,13 +379,13 @@ class FeatureFlags {
 	 */
 	public function toggle_feature_publication( $flag_key ) {
 
-		$key             = self::$meta_prefix . 'flags';
-		$published_flags = maybe_unserialize( get_option( $key ) );
+		$meta_key        = self::$meta_prefix . 'flags';
+		$published_flags = maybe_unserialize( get_option( $meta_key ) );
 		$options_type    = gettype( $published_flags );
 
 		if ( 'array' !== $options_type ) {
 			$published_flags = [];
-			add_option( $key, maybe_serialize( $published_flags ) );
+			add_option( $meta_key, maybe_serialize( $published_flags ) );
 
 		}
 
@@ -402,7 +402,7 @@ class FeatureFlags {
 			unset( $published_flags[ $found_in_options ] );
 		}
 
-		update_option( $key, $published_flags, true );
+		update_option( $meta_key, $published_flags, true );
 
 	}
 

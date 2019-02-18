@@ -173,7 +173,7 @@ class Flag {
 	 */
 	public function is_published() {
 
-		$meta_key = FeatureFlags::init()->get_options_key();
+		$meta_key = FeatureFlags::init()->get_options_key() . 'flags';
 
 		/* Get options */
 		$published_flags = maybe_unserialize( get_option( $meta_key ) );
