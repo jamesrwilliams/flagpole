@@ -10,10 +10,16 @@ use FeatureFlags\FeatureFlags;
 // Settings page.
 add_action( 'admin_menu', function () {
 
-	add_submenu_page( 'tools.php', 'Feature Flags', 'Feature Flags', 'edit_posts', 'feature-flags',
+	add_submenu_page(
+		'tools.php',
+		'Feature Flags',
+		'Feature Flags',
+		'edit_posts',
+		'feature-flags',
 		function () {
 
-			$active_tab      = isset( $_GET['tab'] ) ? $_GET['tab'] : 'flags';
+			// TODO Add nonce to admin pages for tab and flags.
+			$active_tab      = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'flags';
 			$available_flags = FeatureFlags::init()->get_flags();
 			$enforced_flags  = FeatureFlags::init()->get_flags( true );
 
@@ -37,7 +43,7 @@ add_action( 'admin_menu', function () {
 
 				<?php if ( isset( $_GET['error'] ) ) { ?>
 
-				<?php $error_key = sanitize_text_field( wp_unslash( $_GET['error'] ) ); ?>
+					<?php $error_key = sanitize_text_field( wp_unslash( $_GET['error'] ) ); ?>
 
 					<div class="notice notice-<?php echo wp_kses_post( FeatureFlags::init()->get_admin_message_class( $error_key ) ); ?> is-dismissible">
 						<p><?php echo wp_kses_post( FeatureFlags::init()->get_admin_error_message( $error_key ) ); ?></p>
