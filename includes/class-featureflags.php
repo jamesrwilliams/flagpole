@@ -160,18 +160,18 @@ class FeatureFlags {
 	/**
 	 * Retrieve the flag object of a specified key.
 	 *
-	 * @param string $key The flag key we're looking for.
+	 * @param string $key_key The flag key we're looking for.
 	 * @param bool   $check Return either if it's a valid flag or the flag itself.
 	 *
 	 * @return \FeatureFlag\Flag|bool.
 	 */
-	public function find_flag( $key, $check = false ) {
+	public function find_flag( $key_key, $check = false ) {
 
 		$flag  = false;
 		$flags = $this->flags;
 
 		foreach ( $flags as $struct ) {
-			if ( $key === $struct->key ) {
+			if ( $key_key === $struct->key ) {
 				$flag = $struct;
 				break;
 			}
@@ -219,18 +219,18 @@ class FeatureFlags {
 	/**
 	 * Check if the provided key is currently enabled.
 	 *
-	 * @param string  $feature_key The key of the flag we're looking for.
+	 * @param string  $flag_key The key of the flag we're looking for.
 	 * @param boolean $reason Option to return reason why a flag is enabled.
 	 *
 	 * @return boolean Is the flag enabled or not.
 	 */
-	public function is_enabled( $feature_key, $reason = false ) {
+	public function is_enabled( $flag_key, $reason = false ) {
 
-		$flag = $this->find_flag( $feature_key );
+		$flag = $this->find_flag( $flag_key );
 
 		if ( $flag ) {
 
-			$query = $this->check_query_string( $feature_key );
+			$query = $this->check_query_string( $flag_key );
 
 			if ( $flag->is_published() ) {
 				return ( $reason ? 'Published' : true );
@@ -240,7 +240,7 @@ class FeatureFlags {
 
 				if ( $query ) {
 					return ( $reason ? 'Using a group query string' : true );
-				} elseif ( has_user_enabled( $feature_key ) ) {
+				} elseif ( has_user_enabled( $flag_key ) ) {
 					return ( $reason ? 'User preview' : true );
 				} else {
 					return ( $reason ? '' : null );
@@ -286,11 +286,11 @@ class FeatureFlags {
 	/**
 	 * Check if the current WordPress user has enabled the provided feature.
 	 *
-	 * @param string $feature_key The feature key we're checking.
+	 * @param string $flag_key The feature key we're checking.
 	 *
 	 * @return bool
 	 */
-	public function has_user_enabled( $feature_key ) {
+	public function has_user_enabled_flag( $flag_key ) {
 
 		$user_id  = get_current_user_id();
 		$response = false;
@@ -301,12 +301,30 @@ class FeatureFlags {
 			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
 
 			// Other.
-			$response = ( isset( $user_settings[ $feature_key ] ) ? $user_settings[ $feature_key ] : false );
+			$response = ( isset( $user_settings[ $flag_key ] ) ? $user_settings[ $flag_key ] : false );
 
 		}
 
 		return $response;
 
+	}
+
+	public function has_user_enabled_group( $group_key ) {
+
+		$user_id  = get_current_user_id();
+		$response = false;
+
+		if ( $user_id ) {
+
+			// We have a user.
+			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
+
+			// Other.
+			$response = ( isset( $user_settings[ $group_key ] ) ? $user_settings[ $group_key ] : false );
+
+		}
+
+		return $response;
 	}
 
 	/**
@@ -322,10 +340,11 @@ class FeatureFlags {
 	/**
 	 * Toggle the feature for the current user.
 	 *
-	 * @param string $feature_key The feature key we're checking.
+	 * @param string $flag_key The feature key we're checking.
+	 *
 	 * @return void
 	 */
-	public function toggle_feature_preview( $feature_key ) {
+	public function toggle_feature_preview( $flag_key ) {
 
 		$user_id = get_current_user_id();
 
@@ -335,13 +354,13 @@ class FeatureFlags {
 
 			$enabled = ( $user_settings ?: [] );
 
-			if ( $enabled[ $feature_key ] ) {
+			if ( $enabled[ $flag_key ] ) {
 
-				$enabled[ $feature_key ] = ! $enabled[ $feature_key ];
+				$enabled[ $flag_key ] = ! $enabled[ $flag_key ];
 
 			} else {
 
-				$enabled[ $feature_key ] = true;
+				$enabled[ $flag_key ] = true;
 
 			}
 
@@ -354,11 +373,11 @@ class FeatureFlags {
 	/**
 	 * Toggles a feature for publication.
 	 *
-	 * @param string $feature_key The key of the feature to toggle publication status.
+	 * @param string $flag_key The key of the feature to toggle publication status.
 	 *
 	 * @return void|string JSON response if error.
 	 */
-	public function toggle_feature_publication( $feature_key ) {
+	public function toggle_feature_publication( $flag_key ) {
 
 		$key             = self::$meta_prefix . 'flags';
 		$published_flags = maybe_unserialize( get_option( $key ) );
@@ -370,14 +389,14 @@ class FeatureFlags {
 
 		}
 
-		$found_in_options = array_search( $feature_key, $published_flags, true );
+		$found_in_options = array_search( $flag_key, $published_flags, true );
 
 		if ( false === $found_in_options || - 1 === $found_in_options ) {
 
-			if ( self::find_flag( $feature_key )->stable !== true ) {
+			if ( self::find_flag( $flag_key )->stable !== true ) {
 				return wp_json_encode( 'This feature is unstable.' );
 			} else {
-				$published_flags[] = $feature_key;
+				$published_flags[] = $flag_key;
 			}
 		} else {
 			unset( $published_flags[ $found_in_options ] );
@@ -432,10 +451,11 @@ class FeatureFlags {
 	 * Check if a query argument has been passed to enable a flag manually.
 	 * Also validates it's publicly queryable.
 	 *
-	 * @param string $feature_key The key of the flag we're aiming to match.
+	 * @param string $flag_key The key of the flag we're aiming to match.
+	 *
 	 * @return bool Is there a query string for this flag currently?
 	 */
-	public function check_query_string( $feature_key ) {
+	public function check_query_string( $flag_key ) {
 
 		$query = find_query_string();
 
@@ -444,7 +464,7 @@ class FeatureFlags {
 			$group = $this->get_group( $query );
 
 			if ( false !== $group ) {
-				return $group->has_flag( $feature_key );
+				return $group->has_flag( $flag_key );
 			} else {
 				return false;
 			}
@@ -456,16 +476,16 @@ class FeatureFlags {
 	/**
 	 * Register a new Flag group.
 	 *
-	 * @param string $key string The Group key.
+	 * @param string $group_key string The Group key.
 	 * @param string $name string The Group name to create.
 	 * @param string $description string Optional description for the group.
 	 * @param bool   $private Is this group publicly accessible.
 	 *
 	 * @return string Error response message key.
 	 */
-	public function create_group( $key, $name, $description = '', $private = false ) {
+	public function create_group( $group_key, $name, $description = '', $private = false ) {
 
-		$sanitised_key = sanitize_title( $key );
+		$sanitised_key = sanitize_title( $group_key );
 
 		$group_exists = self::get_group( $sanitised_key, true );
 
@@ -491,10 +511,10 @@ class FeatureFlags {
 	/**
 	 * Update meta information about a flag group.
 	 *
-	 * @param string $key The feature group's key.
+	 * @param string $group_key The feature group's key.
 	 * @param array  $args The parameters to update for $key.
 	 */
-	public function update_group( $key, $args = [] ) {
+	public function update_group( $group_key, $args = [] ) {
 		// TODO Implement "Update" using variable args array.
 	}
 
@@ -553,13 +573,13 @@ class FeatureFlags {
 	/**
 	 * Remove a flag group from the system.
 	 *
-	 * @param string $key The flag group's key.
+	 * @param string $group_key The flag group's key.
 	 *
 	 * @return string Result code.
 	 */
-	public function delete_group( $key ) {
+	public function delete_group( $group_key ) {
 
-		$index  = self::get_group( $key, false, true );
+		$index  = self::get_group( $group_key, false, true );
 		$groups = self::get_groups();
 
 		if ( $index >= 0 ) {
@@ -592,20 +612,20 @@ class FeatureFlags {
 	/**
 	 * Retrieve the group object of a specified key.
 	 *
-	 * @param string $key The group key we're looking for.
+	 * @param string $group_key The group key we're looking for.
 	 * @param bool   $check Return either if it's a valid group or the group itself.
 	 * @param bool   $pos Return the position of $key in the Groups list.
 	 *
 	 * @return \FeatureFlag\Group|bool.
 	 */
-	public function get_group( $key, $check = false, $pos = false ) {
+	public function get_group( $group_key, $check = false, $pos = false ) {
 
 		$group    = false;
 		$groups   = $this->groups;
 		$position = false;
 
 		foreach ( $groups as $index => $struct ) {
-			if ( $key === $struct->key ) {
+			if ( $group_key === $struct->key ) {
 				$position = $index;
 				$group    = $struct;
 				break;

@@ -28,7 +28,7 @@ use FeatureFlags\FeatureFlags;
 			<th>Key</th>
 			<th>Description</th>
 			<th>Features</th>
-			<th colspan="3">Actions</th>
+			<th colspan="2">Actions</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -74,10 +74,22 @@ use FeatureFlags\FeatureFlags;
 
 				</td>
 				<td>
-					<!-- [Preview] -->
-				</td>
-				<td>
-					<!-- [Publish] -->
+					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+						<input type="hidden" name="action" value="ff_publish_group">
+						<input type="hidden" name="key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
+						<?php wp_nonce_field( 'ff_publish_group' ); ?>
+						<?php
+						submit_button(
+							'Publish',
+							'small primary',
+							'featureFlagsBtn_publish_group',
+							false,
+							[
+								'class' => 'action-btn',
+							]
+						);
+						?>
+					</form>
 				</td>
 				<td>
 					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -91,9 +103,7 @@ use FeatureFlags\FeatureFlags;
 								'featureFlagsBtn_delete_group',
 								false,
 								[
-									'class'       => 'action-btn',
-									'data-action' => 'toggleFeatureFlag',
-									'data-status' => 'enabled',
+									'class' => 'action-btn',
 								]
 							);
 						?>

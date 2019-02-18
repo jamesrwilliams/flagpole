@@ -1,9 +1,10 @@
 <?php
 /**
- * settings-page-flags.php
+ * Settings page partial for the Flags page.
  *
  * @package feature-flags
  */
+
 ?>
 
 <?php if ( $available_flags ) { ?>
@@ -45,7 +46,7 @@
 							'featureFlagsBtn_disable',
 							false,
 							[
-								'class' => 'action-btn',
+								'class'       => 'action-btn',
 								'data-action' => 'toggleFeatureFlag',
 								'data-status' => 'enabled',
 							]
@@ -57,7 +58,7 @@
 							'featureFlagsBtn_enable',
 							false,
 							[
-								'class' => 'action-btn',
+								'class'       => 'action-btn',
 								'data-action' => 'toggleFeatureFlag',
 								'data-status' => 'disabled',
 							]
@@ -78,8 +79,8 @@
 
 					if ( ! $stable ) {
 						$other_args['disabled'] = true;
-						$button_text = 'Disabled';
-						$other_args['title']    = 'Feature is makred as unstable.';
+						$button_text            = 'Disabled';
+						$other_args['title']    = 'Feature is marked as unstable.';
 					}
 
 					submit_button(

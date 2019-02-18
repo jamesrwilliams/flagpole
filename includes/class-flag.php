@@ -93,7 +93,7 @@ class Flag {
 	 * Display or retrieve the flag key.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 * @return string|void Current flag key if $echo is false.
+	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_key( $echo = true ) {
 
@@ -104,14 +104,13 @@ class Flag {
 		} else {
 			return $key;
 		}
-
 	}
 
 	/**
 	 * Display or retrieve the flag name.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 * @return string|void Current flag key if $echo is false.
+	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_name( $echo = true ) {
 
@@ -129,7 +128,7 @@ class Flag {
 	 * Display or retrieve the flag name.
 	 *
 	 * @param boolean $echo Echo or return the response.
-	 * @return string|void Current flag key if $echo is false.
+	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_description( $echo = true ) {
 

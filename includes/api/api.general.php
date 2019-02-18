@@ -84,7 +84,7 @@ function register_feature_flag( $args ) {
  */
 function has_user_enabled( $feature_key = '' ) {
 
-	return FeatureFlags::init()->has_user_enabled( $feature_key );
+	return FeatureFlags::init()->has_user_enabled_flag( $feature_key );
 
 }
 
