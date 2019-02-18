@@ -57,7 +57,7 @@ class Group {
 	 */
 	public function __construct( $_key, $_name, $_description = '', $_flags = [] ) {
 
-		$this->name        = ( $_name ? $_name : '' );
+		$this->name        = ( $_name ? $_name : $_key );
 		$this->key         = $_key;
 		$this->flags       = $_flags;
 		$this->description = $_description;

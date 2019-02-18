@@ -105,7 +105,7 @@ class FeatureFlags {
 
 		$messages = [
 			0                       => 'An unknown error occurred. Please check the error logs for more information.',
-			'gc'                    => 'Flag group created successfully.',
+			'group-created'         => 'Flag group created successfully.',
 			'gr'                    => false,
 			'gu'                    => 'Flag group updated successfully.',
 			'gd'                    => 'Flag group successfully deleted.',
@@ -116,6 +116,7 @@ class FeatureFlags {
 			'fgd'                   => 'Flag removed from group successfully.',
 			'fgde'                  => 'A problem occurred removing the flag from the group.',
 			'flag-already-in-group' => 'This flag is already in this group.',
+			'group-with-key-exists' => 'A group with the key already exists',
 
 		];
 
@@ -482,15 +483,24 @@ class FeatureFlags {
 	 */
 	public function create_group( $key, $name, $description = '' ) {
 
-		$new_group = new Group( sanitize_title( $key ), $name, $description );
+		$sanitised_key = sanitize_title( $key );
 
-		$groups = self::get_groups();
+		$group_exists = self::get_group( $sanitised_key, true );
 
-		$groups[] = $new_group;
+		if ( true === $group_exists ) {
+			return 'group-with-key-exists';
+		} else {
+			$new_group = new Group( $sanitised_key, $name, $description );
 
-		self::save_groups( $groups );
+			$groups = self::get_groups();
 
-		return 'gc';
+			$groups[] = $new_group;
+
+			self::save_groups( $groups );
+
+			return 'group-created';
+		}
+
 	}
 
 	/**
@@ -514,7 +524,7 @@ class FeatureFlags {
 	public function add_flag_to_group( $flag_key, $group_key ) {
 
 		$flag   = self::find_flag( $flag_key );
-		$group  = self::find_group( $group_key, false, true );
+		$group  = self::get_group( $group_key, false, true );
 		$groups = self::get_groups();
 
 		if ( false !== $flag && false !== $group ) {
@@ -542,7 +552,7 @@ class FeatureFlags {
 	public function remove_flag_from_group( $flag_key, $group_key ) {
 
 		$flag   = empty( $flag );
-		$group  = self::find_group( $group_key, false, true );
+		$group  = self::get_group( $group_key, false, true );
 		$groups = self::get_groups();
 
 		if ( false !== $flag && false !== $group ) {
@@ -563,7 +573,7 @@ class FeatureFlags {
 	 */
 	public function delete_group( $key ) {
 
-		$index  = self::find_group( $key, false, true );
+		$index  = self::get_group( $key, false, true );
 		$groups = self::get_groups();
 
 		if ( $index >= 0 ) {
@@ -602,7 +612,7 @@ class FeatureFlags {
 	 *
 	 * @return \FeatureFlag\Group|bool.
 	 */
-	public function find_group( $key, $check = false, $pos = false ) {
+	public function get_group( $key, $check = false, $pos = false ) {
 
 		$group    = false;
 		$groups   = $this->groups;
@@ -616,10 +626,15 @@ class FeatureFlags {
 			}
 		}
 
-		if ( $pos ) {
-			return $position;
+		if ( $group ) {
+			if ( $pos ) {
+				return $position;
+			} else {
+				return ( $check ? true : $group );
+			}
 		} else {
-			return ( $check ? true : $group );
+			// No group so everything should return false.
+			return false;
 		}
 	}
 

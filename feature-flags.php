@@ -181,7 +181,7 @@ function feature_flag_create_group() {
 	$validation['group-nonce'] = check_admin_referer( 'register-group' );
 	$validation['group-key']   = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false );
 	$validation['group-name']  = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false );
-	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : false );
+	$validation['group-desc']  = ( ! empty( $_GET['group-description'] ) ? sanitize_textarea_field( wp_unslash( $_GET['group-description'] ) ) : '' );
 
 	$validation = array_filter( $validation );
 
