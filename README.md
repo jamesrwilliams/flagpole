@@ -47,7 +47,6 @@ if ( function_exists( 'register_feature_flag' ) ) {
         'enforced'    => false,
         'description' => 'An example feature definition'
         'stable'      => false,
-        'private'     => false,
     
     ]);
 }
