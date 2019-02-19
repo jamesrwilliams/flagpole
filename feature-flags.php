@@ -215,8 +215,8 @@ function feature_flag_delete_group() {
 
 }
 
-add_action( 'admin_post_ff_preview_group', 'feature_flag_toggle_group_preview');
-add_action( 'admin_post_nopriv_ff_preview_group', 'feature_flag_toggle_group_preview');
+add_action( 'admin_post_ff_preview_group', 'feature_flag_toggle_group_preview' );
+add_action( 'admin_post_nopriv_ff_preview_group', 'feature_flag_toggle_group_preview' );
 
 /**
  * Toggle group preview handler.
