@@ -75,19 +75,35 @@ use FeatureFlags\FeatureFlags;
 				</td>
 				<td>
 					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-						<input type="hidden" name="action" value="ff_publish_group">
-						<input type="hidden" name="key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
-						<?php wp_nonce_field( 'ff_publish_group' ); ?>
+						<input type="hidden" name="action" value="ff_preview_group">
+						<input type="hidden" name="group_key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
+						<?php wp_nonce_field( 'ff_preview_group' ); ?>
 						<?php
-						submit_button(
-							'Publish',
-							'small primary',
-							'featureFlagsBtn_publish_group',
-							false,
-							[
-								'class' => 'action-btn',
-							]
-						);
+						if ( $group->in_preview() ) {
+							submit_button(
+								'Disable preview',
+								'small',
+								'featureFlagsBtn_disable',
+								false,
+								[
+									'class'       => 'action-btn',
+									'data-action' => 'toggleFeatureFlag',
+									'data-status' => 'enabled',
+								]
+							);
+						} else {
+							submit_button(
+								'Enable preview',
+								'primary small',
+								'featureFlagsBtn_enable',
+								false,
+								[
+									'class'       => 'action-btn',
+									'data-action' => 'toggleFeatureFlag',
+									'data-status' => 'disabled',
+								]
+							);
+						}
 						?>
 					</form>
 				</td>

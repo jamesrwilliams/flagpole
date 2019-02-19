@@ -12,6 +12,8 @@
 
 namespace FeatureFlag;
 
+use FeatureFlags\FeatureFlags;
+
 /**
  * Class Group
  *
@@ -164,5 +166,29 @@ class Group {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Check to see if this group is currently in preview for the current user.
+	 *
+	 * @return bool
+	 */
+	public function in_preview() {
+
+		$meta_key = FeatureFlags::init()->get_options_key() . 'groups';
+		$user_id  = get_current_user_id();
+		$response = false;
+
+		if ( $user_id ) {
+
+			// We have a user.
+			$user_settings = FeatureFlags::init()->get_user( $user_id, $meta_key, true );
+
+			// Other.
+			$response = ( isset( $user_settings[ $this->key ] ) ? $user_settings[ $this->key ] : false );
+
+		}
+
+		return $response;
 	}
 }

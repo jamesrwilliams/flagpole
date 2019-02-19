@@ -230,18 +230,18 @@ class FeatureFlags {
 
 		if ( $flag ) {
 
-			$query = $this->check_query_string( $flag_key );
-
 			if ( $flag->is_published() ) {
 				return ( $reason ? 'Published' : true );
 			} elseif ( $flag->get_enforced() ) {
 				return ( $reason ? 'Enforced' : true );
 			} else {
 
-				if ( $query ) {
+				if ( self::check_query_string( $flag_key ) ) {
 					return ( $reason ? 'Using a group query string' : true );
 				} elseif ( has_user_enabled( $flag_key ) ) {
-					return ( $reason ? 'User preview' : true );
+					return ( $reason ? 'User previewing flag' : true );
+				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
+					return ( $reason ? 'User preview enabled via group' : true );
 				} else {
 					return ( $reason ? '' : null );
 				}
@@ -309,19 +309,42 @@ class FeatureFlags {
 
 	}
 
-	public function has_user_enabled_group( $group_key ) {
+	/**
+	 * Check if a user has enabled a flag via a group.
+	 *
+	 * @param string $flag_key The key we're looking for.
+	 *
+	 * @return bool
+	 */
+	public function user_enabled_key_via_group( $flag_key ) {
 
+		/**
+		 * Is the flag_key in any of the users current groups?
+		 */
+
+		$meta_key = self::get_options_key() . 'groups';
 		$user_id  = get_current_user_id();
 		$response = false;
 
 		if ( $user_id ) {
 
 			// We have a user.
-			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
+			$groups = self::get_user( $user_id, $meta_key, true );
 
-			// Other.
-			$response = ( isset( $user_settings[ $group_key ] ) ? $user_settings[ $group_key ] : false );
+			foreach ( $groups as $group => $index ) {
 
+				$group_obj = self::get_group( $group );
+
+				if ( false !== $group_obj ) {
+
+					$result = $group_obj->has_flag( $flag_key );
+
+					if ( false !== $result ) {
+						$response = ( $group_obj->in_preview() ? true : false );
+						break;
+					}
+				}
+			}
 		}
 
 		return $response;
@@ -371,6 +394,37 @@ class FeatureFlags {
 	}
 
 	/**
+	 * Toggle the preview status of a flag for the current user.
+	 *
+	 * @param string $group_key The key for the group we're toggling.
+	 */
+	public function toggle_group_preview( $group_key ) {
+
+		$user_id  = get_current_user_id();
+		$meta_key = self::$meta_prefix . 'groups';
+
+		if ( $user_id ) {
+
+			$user_settings = self::get_user( $user_id, $meta_key, true );
+
+			$enabled = ( $user_settings ?: [] );
+
+			if ( $enabled[ $group_key ] ) {
+
+				$enabled[ $group_key ] = ! $enabled[ $group_key ];
+
+			} else {
+
+				$enabled[ $group_key ] = true;
+
+			}
+
+			self::update_user( $user_id, $meta_key, $enabled );
+
+		}
+	}
+
+	/**
 	 * Toggles a feature for publication.
 	 *
 	 * @param string $flag_key The key of the feature to toggle publication status.
@@ -415,7 +469,7 @@ class FeatureFlags {
 	 *
 	 * @return mixed
 	 */
-	private function get_user( $user_id, $key, $single = true ) {
+	public function get_user( $user_id, $key, $single = true ) {
 
 		if ( function_exists( 'get_user_attribute' ) ) {
 			return get_user_attribute( $user_id, $key );

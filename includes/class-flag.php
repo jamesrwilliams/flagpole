@@ -182,7 +182,6 @@ class Flag {
 		if ( 'array' !== $options_type ) {
 			$published_flags = [];
 			add_option( $meta_key, maybe_serialize( $published_flags ) );
-
 		}
 
 		$found_in_options = array_search( $this->key, $published_flags, true );

@@ -215,6 +215,25 @@ function feature_flag_delete_group() {
 
 }
 
+add_action( 'admin_post_ff_preview_group', 'feature_flag_toggle_group_preview');
+add_action( 'admin_post_nopriv_ff_preview_group', 'feature_flag_toggle_group_preview');
+
+/**
+ * Toggle group preview handler.
+ */
+function feature_flag_toggle_group_preview() {
+
+	if ( ! empty( $_GET['group_key'] ) && check_admin_referer( 'ff_preview_group' ) ) {
+		$group_key = sanitize_text_field( wp_unslash( $_GET['group_key'] ) );
+	} else {
+		$group_key = false;
+	}
+
+	$result = FeatureFlags::init()->toggle_group_preview( $group_key );
+
+	feature_flag_operation_redirect( $result );
+}
+
 // Groups - Add too group.
 add_action( 'admin_post_ff_add_to_group', 'feature_flag_add_to_group' );
 add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
