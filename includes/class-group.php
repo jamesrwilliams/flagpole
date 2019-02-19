@@ -144,9 +144,14 @@ class Group {
 	 * @return bool The result of the search.
 	 */
 	public function has_flag( $flag_key ) {
-		$index = array_search( $flag_key, $this->flags, true );
 
-		return $index;
+		foreach ( $this->flags as $flag ) {
+			if ( $flag_key === $flag ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
