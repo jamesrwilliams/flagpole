@@ -1,25 +1,24 @@
 <?php
 /**
- * settings-page-flags.php
+ * Settings page partial for the Flags page.
  *
  * @package feature-flags
  */
+
 ?>
 
 <?php if ( $available_flags ) { ?>
 
 	<h2>Available feature flags</h2>
 
-	<table class="widefat">
+	<table class="widefat flags_table">
 		<thead>
 		<tr>
 			<th class="row-title">Feature</th>
 			<th>Key</th>
 			<th>Description</th>
-			<th>Queryable</th>
 			<th>Visibility</th>
-			<th>Preview</th>
-			<th>Publish</th>
+			<th colspan="2">Actions</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -27,18 +26,16 @@
 		<?php foreach ( $available_flags as $key => $flag ) { ?>
 
 			<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
-			<?php $published = $flag->is_published( false ); ?>
+			<?php $published = $flag->is_published(); ?>
 
-			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-				<td class="row-title">
-					<?php wp_kses_post( $flag->get_name() ); ?>
+			<tr class="<?php echo( 0 === $key % 2 ? null : 'alternate' ); ?>">
+				<td class="title">
+					<strong><?php wp_kses_post( $flag->get_name() ); ?></strong>
 				</td>
 				<td>
-					<pre><?php $flag->get_key(); ?></pre>
+					<code><?php $flag->get_key(); ?></code>
 				</td>
 				<td><?php $flag->get_description(); ?></td>
-				<td><?php $flag->is_queryable( true ); ?></td>
-				<td><?php $flag->is_private( true ); ?></td>
 				<td>
 					<?php
 
@@ -49,7 +46,7 @@
 							'featureFlagsBtn_disable',
 							false,
 							[
-								'class' => 'action-btn',
+								'class'       => 'action-btn',
 								'data-action' => 'toggleFeatureFlag',
 								'data-status' => 'enabled',
 							]
@@ -61,7 +58,7 @@
 							'featureFlagsBtn_enable',
 							false,
 							[
-								'class' => 'action-btn',
+								'class'       => 'action-btn',
 								'data-action' => 'toggleFeatureFlag',
 								'data-status' => 'disabled',
 							]
@@ -82,8 +79,8 @@
 
 					if ( ! $stable ) {
 						$other_args['disabled'] = true;
-						$button_text = 'Disabled';
-						$other_args['title']    = 'Feature is makred as unstable.';
+						$button_text            = 'Disabled';
+						$other_args['title']    = 'Feature is marked as unstable.';
 					}
 
 					submit_button(

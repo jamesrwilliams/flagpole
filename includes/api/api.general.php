@@ -5,7 +5,7 @@
  * These are all the functions that people can
  * use directly within their theme code.
  *
- * @package feature-flags
+ * @package wp-feature-flags
  */
 
 use FeatureFlags\FeatureFlags;
@@ -22,8 +22,6 @@ function register_feature_flag( $args ) {
 
 		'enforced'    => false,
 		'description' => '',
-		'queryable'   => false,
-		'private'     => true,
 		'stable'      => false,
 
 	];
@@ -81,13 +79,24 @@ function register_feature_flag( $args ) {
 /**
  * Check if a user has enabled a flag.
  *
- * @param string $feature_key The key for the flag we're after.
+ * @param string $flag_key The key for the flag we're after.
  * @return mixed
  */
-function has_user_enabled( $feature_key = '' ) {
+function has_user_enabled( $flag_key = '' ) {
 
-	return FeatureFlags::init()->has_user_enabled( $feature_key );
+	return FeatureFlags::init()->has_user_enabled_flag( $flag_key );
 
+}
+
+/**
+ * Check if a user has enabled a flag via a group.
+ *
+ * @param string $flag_key The key of the flag we're checking.
+ *
+ * @return bool
+ */
+function has_user_enabled_via_group( $flag_key = '' ) {
+	return FeatureFlags::init()->user_enabled_key_via_group( $flag_key );
 }
 
 if ( ! function_exists( 'is_enabled' ) ) {
@@ -95,10 +104,10 @@ if ( ! function_exists( 'is_enabled' ) ) {
 	/**
 	 * Check if a a flag is enabled.
 	 *
-	 * @param string $feature_key The key for the flag we're after.
+	 * @param string $flag_key The key for the flag we're after.
 	 * @return bool
 	 */
-	function is_enabled( $feature_key = '' ) {
-		return FeatureFlags::init()->is_enabled( $feature_key );
+	function is_enabled( $flag_key = '' ) {
+		return FeatureFlags::init()->is_enabled( $flag_key );
 	}
 }

@@ -1,12 +1,19 @@
 <?php
 /**
- * api.shortcode.php
+ * A home for all our short codes.
  *
- * @package feature-flags
+ * @package wp-feature-flags
  */
 
 use FeatureFlags\FeatureFlags;
 
+/**
+ * Register the wp-feature-flags debug short code.
+ *
+ * @param array $atts Array of arguments for the short code.
+ *
+ * @return string
+ */
 function shortcode_debug( $atts ) {
 	$args = shortcode_atts(
 		[
