@@ -53,7 +53,6 @@ add_action(
  * @param string $hook The Hook string.
  */
 function feature_flags_admin_imports( $hook ) {
-
 	if ( 'tools_page_feature-flags' !== $hook ) {
 		return;
 	}
@@ -85,7 +84,6 @@ function feature_flags_admin_imports( $hook ) {
 
 	wp_localize_script( 'feature-flags-script', 'ffwp', $params );
 	wp_enqueue_script( 'feature-flags-script' );
-
 }
 
 add_action( 'admin_enqueue_scripts', 'feature_flags_admin_imports' );
@@ -105,32 +103,25 @@ add_action( 'wp_ajax_toggleFeatureFlag', 'feature_flag_enable' );
  * Enable a feature Flag
  */
 function feature_flag_enable() {
-
 	if (
 		isset( $_POST['featureKey'] ) &&
 		check_ajax_referer( 'featureFlagNonce', 'security' )
 	) {
-
 		$response = [];
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
 		if ( ! empty( $feature_key ) ) {
-
 			$response['response'] = $feature_key;
 
 			FeatureFlags::init()->toggle_feature_preview( $feature_key );
-
 		} else {
-
 			header( 'HTTP/1.1 500 Internal Server Error' );
 			$response['response'] = 'no feature key';
-
 		}
 	}
 
 	exit();
-
 }
 
 /**
@@ -142,22 +133,16 @@ add_action( 'wp_ajax_togglePublishedFeature', 'feature_flag_publish' );
  * Publish a feature flag to be publicly visible.
  */
 function feature_flag_publish() {
-
 	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) {
-
 		$response = [];
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
 		if ( ! empty( $feature_key ) ) {
-
 			$response['response'] = FeatureFlags::init()->toggle_feature_publication( $feature_key );
-
 		} else {
-
 			header( 'HTTP/1.1 500 Internal Server Error' );
 			$response['response'] = 'no feature key';
-
 		}
 
 		header( 'Content-Type: application/json' );
@@ -175,7 +160,6 @@ add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' )
  * Create group admin hook handler.
  */
 function feature_flag_create_group() {
-
 	$validation                  = [];
 	$validation['group-nonce']   = check_admin_referer( 'register-group' );
 	$validation['group-key']     = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false );
@@ -186,11 +170,9 @@ function feature_flag_create_group() {
 	$validation = array_filter( $validation );
 
 	if ( $validation ) {
-
 		$result = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'], $validation['group-private'] );
 
 		feature_flag_operation_redirect( $result );
-
 	}
 }
 
@@ -202,7 +184,6 @@ add_action( 'admin_post_nopriv_ff_delete_group', 'feature_flag_delete_group' );
  * Delete group admin hook handler.
  */
 function feature_flag_delete_group() {
-
 	if ( ! empty( $_GET['key'] ) && check_admin_referer( 'ff_delete_group' ) ) {
 		$key = sanitize_text_field( wp_unslash( $_GET['key'] ) );
 	} else {
@@ -212,7 +193,6 @@ function feature_flag_delete_group() {
 	$result = FeatureFlags::init()->delete_group( $key );
 
 	feature_flag_operation_redirect( $result );
-
 }
 
 add_action( 'admin_post_ff_preview_group', 'feature_flag_toggle_group_preview' );
@@ -222,7 +202,6 @@ add_action( 'admin_post_nopriv_ff_preview_group', 'feature_flag_toggle_group_pre
  * Toggle group preview handler.
  */
 function feature_flag_toggle_group_preview() {
-
 	if ( ! empty( $_GET['group_key'] ) && check_admin_referer( 'ff_preview_group' ) ) {
 		$group_key = sanitize_text_field( wp_unslash( $_GET['group_key'] ) );
 	} else {
@@ -242,7 +221,6 @@ add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
  * Add to group admin hook handler.
  */
 function feature_flag_add_to_group() {
-
 	if (
 		! empty( $_GET['selected-flag'] ) &&
 		! empty( $_GET['selected-group'] ) &&
@@ -289,7 +267,6 @@ add_action( 'template_redirect', 'feature_flag_redirect_with_key' );
  * flag query string while logged out.
  */
 function feature_flag_redirect_with_key() {
-
 	$query = find_query_string();
 
 	if (
@@ -297,7 +274,6 @@ function feature_flag_redirect_with_key() {
 		isset( $_SERVER['HTTP_HOST'] ) &&
 		! empty( $query ) && ! is_user_logged_in()
 	) {
-
 		if ( FeatureFlags::init()->is_private( $query ) ) {
 			$destination = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) );
 
@@ -321,12 +297,9 @@ function find_query_string() {
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
 	if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {
-
 		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
 		return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) );
-
 	} else {
-
 		return false;
 	}
 }
@@ -342,7 +315,6 @@ function find_query_string() {
  * @return null|string Depending on $redirect.
  */
 function feature_flag_operation_redirect( $error_code = false, $redirect = true ) {
-
 	$redirect_url = ( wp_get_referer() ?: get_home_url() );
 
 	if ( false !== $error_code && ! empty( $error_code ) ) {

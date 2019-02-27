@@ -38,7 +38,6 @@ function shortcode_debug( $atts ) {
 	$html = '';
 
 	if ( 'all' !== $args['flag'] ) {
-
 		$string = str_replace( ' ', '', $args['flag'] );
 		$keys   = explode( ',', $string );
 
@@ -48,13 +47,11 @@ function shortcode_debug( $atts ) {
 			$valid_keys[] = FeatureFlags::init()->find_flag( $key );
 		}
 		$keys = array_filter( $valid_keys );
-
 	} else {
 		$keys = FeatureFlags::init()->get_flags( $args['enforced'] );
 	}
 
 	foreach ( $keys as $key ) {
-
 		$status = ( $key->is_enabled() ? 'Enabled' : 'Disabled' );
 
 		$html = $html . '<tr><td>' . $key->get_name( false ) . '</td><td><code>' . $key->get_key( false ) . '</code></td><td>' . $status . '</td><td>' . $key->is_enabled( true ) . '</td></tr>';

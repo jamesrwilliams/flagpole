@@ -15,5 +15,8 @@
   ],
   "require": {
     "composer/installers": "~1.0"
+  },
+  "require-dev": {
+    "phpcompatibility/phpcompatibility-wp": "*"
   }
 }

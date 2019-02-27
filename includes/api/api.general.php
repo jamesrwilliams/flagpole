@@ -17,7 +17,6 @@ use FeatureFlags\FeatureFlags;
  * @return void
  */
 function register_feature_flag( $args ) {
-
 	$defaults = [
 
 		'enforced'    => false,
@@ -27,49 +26,36 @@ function register_feature_flag( $args ) {
 	];
 
 	if ( isset( $args[0] ) && is_array( $args[0] ) ) {
-
 		foreach ( $args as $declaration ) {
-
 			$args = wp_parse_args( $declaration, $defaults );
 
 			if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
-
 				FeatureFlags::init()->add_flag( $args );
-
 			} else {
-
 				add_action(
 					'admin_notices',
 					function() {
-
 						$class   = 'notice notice-error';
 						$message = 'Malformed featureFlag - Need to supply a key and a title.';
 
 						printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
-
 					}
 				);
 			}
 		}
 	} else {
-
 		$args = wp_parse_args( $args, $defaults );
 
 		if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
-
 			FeatureFlags::init()->add_flag( $args );
-
 		} else {
-
 			add_action(
 				'admin_notices',
 				function() {
-
 					$class   = 'notice notice-error';
 					$message = 'Malformed featureFlag - Need to supply a key and a title.';
 
 					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
-
 				}
 			);
 		}
@@ -83,9 +69,7 @@ function register_feature_flag( $args ) {
  * @return mixed
  */
 function has_user_enabled( $flag_key = '' ) {
-
 	return FeatureFlags::init()->has_user_enabled_flag( $flag_key );
-
 }
 
 /**

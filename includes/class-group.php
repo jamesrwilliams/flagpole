@@ -65,13 +65,11 @@ class Group {
 	 * @param bool   $_private Is the group private.
 	 */
 	public function __construct( $_key, $_name, $_description = '', $_private = true ) {
-
 		$this->name        = ( $_name ? $_name : $_key );
 		$this->key         = $_key;
 		$this->flags       = [];
 		$this->private     = $_private;
 		$this->description = $_description;
-
 	}
 
 	/**
@@ -127,7 +125,6 @@ class Group {
 	 * @return bool Result has the flag been added.
 	 */
 	public function add_flag( $flag ) {
-
 		if ( false === $this->has_flag( $flag ) ) {
 			$this->flags[] = $flag;
 			return true;
@@ -144,7 +141,6 @@ class Group {
 	 * @return bool The result of the search.
 	 */
 	public function has_flag( $flag_key ) {
-
 		foreach ( $this->flags as $flag ) {
 			if ( $flag_key === $flag ) {
 				return true;
@@ -162,7 +158,6 @@ class Group {
 	 * @return bool Response if successful.
 	 */
 	public function remove_flag( $flag_key ) {
-
 		$index = $this->has_flag( $flag_key );
 
 		if ( false !== $index ) {
@@ -179,7 +174,6 @@ class Group {
 	 * @return bool
 	 */
 	public function in_preview() {
-
 		$meta_key = FeatureFlags::init()->get_options_key() . 'groups';
 		$user_id  = get_current_user_id();
 		$response = false;
@@ -191,7 +185,6 @@ class Group {
 
 			// Other.
 			$response = ( isset( $user_settings[ $this->key ] ) ? $user_settings[ $this->key ] : false );
-
 		}
 
 		return $response;
