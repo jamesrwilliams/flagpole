@@ -10,7 +10,7 @@ notifications:
 
 branches:
   only:
-    - master
+    - feat/automated-tests
 
 cache:
   directories:
