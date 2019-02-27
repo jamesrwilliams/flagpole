@@ -248,14 +248,6 @@ class FeatureFlags {
 			}
 		} else {
 
-			/**
-			 * We want to display an error if WP_DEBUG is enabled to highlight an
-			 * unregistered flag key is being checked.
-			 */
-
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-			trigger_error( 'Feature not registered.', E_USER_WARNING );
-
 			return false;
 
 		}
