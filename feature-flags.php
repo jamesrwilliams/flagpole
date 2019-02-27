@@ -13,6 +13,7 @@
  * Description:       Easily register and work with feature flags in your theme.
  * Version:           1.0.0
  * Author:            James Williams
+ * Requires PHP:      5.6
  * Text Domain:       featureFlags
  * Author URI:        https://jamesrwilliams.ca/
  */
