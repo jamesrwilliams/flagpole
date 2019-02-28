@@ -141,9 +141,7 @@ class Group {
 	 * @return bool The result of the search.
 	 */
 	public function has_flag( $flag_key ) {
-
 		foreach ( $this->flags as $index => $flag_id ) {
-
 			if ( $flag_key === $flag_id ) {
 				return $index;
 			}
