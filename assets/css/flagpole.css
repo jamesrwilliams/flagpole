@@ -1,0 +1,9 @@
+.tools_page_flagpole pre { margin: 0; }
+.tools_page_flagpole textarea { display: block; resize: vertical; }
+.tools_page_flagpole table tr ul { margin-top: 0; list-style: disc; padding-left: 20px; }
+.tools_page_flagpole table td.has-icon { padding: 7px 0 3px 10px; }
+.tools_page_flagpole .ff-badge { -webkit-font-smoothing: antialiased; padding: 0 0 0 7px; margin-bottom: 5px; display: inline-block; border-radius: 3px; background: #777777; font-weight: bold; font-size: 11px; color: white; overflow: hidden }
+.tools_page_flagpole .ff-badge button { background: none; color: white; border: 0; padding: 5px; }
+.tools_page_flagpole .ff-badge button:hover { background: rgba(255,0,0,0.3); }
+
+form#add-to-group:target { background: #fff; }

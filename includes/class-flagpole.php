@@ -4,26 +4,26 @@
  *
  * Used for creating feature flags.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlags;
+namespace Flagpole;
 
 require_once 'class-flag.php';
 require_once 'class-group.php';
 
-use FeatureFlag\Flag;
-use FeatureFlag\Group;
+use Flagpole\Flag;
+use Flagpole\Group;
 
 /**
  * Class FeatureFlags
  *
  * @package FeatureFlags
  */
-class FeatureFlags {
+class Flagpole {
 
 	/**
 	 * The class instance. Only need one of these.
@@ -37,7 +37,7 @@ class FeatureFlags {
 	 *
 	 * @var string $user_meta_key
 	 */
-	private static $meta_prefix = 'feature_flags_';
+	private static $meta_prefix = 'flagpole_';
 
 	/**
 	 * Current Feature Flags
@@ -68,8 +68,13 @@ class FeatureFlags {
 	 * FeatureFlags constructor.
 	 */
 	public function __construct() {
+		self::load_groups();
+	}
 
-		// Initialise the groups wp_options row for future use.
+	/**
+	 * Load the groups data from the DB.
+	 */
+	private function load_groups() {
 		$key         = self::get_options_key() . 'groups';
 		$flag_groups = maybe_unserialize( get_option( $key ) );
 		$type        = gettype( $flag_groups );
@@ -221,7 +226,7 @@ class FeatureFlags {
 			} else {
 				if ( self::check_query_string( $flag_key ) ) {
 					return ( $reason ? 'Using a group query string' : true );
-				} elseif ( has_user_enabled( $flag_key ) ) {
+				} elseif ( flagpole_user_enabled( $flag_key ) ) {
 					return ( $reason ? 'User previewing flag' : true );
 				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
 					return ( $reason ? 'User preview enabled via group' : true );
@@ -448,7 +453,7 @@ class FeatureFlags {
 	 * @return bool Is there a query string for this flag currently?
 	 */
 	public function check_query_string( $flag_key ) {
-		$query = find_query_string();
+		$query = flagpole_find_query_string();
 
 		if ( ! empty( $query ) && $query ) {
 			$group = $this->get_group( $query );
@@ -541,13 +546,15 @@ class FeatureFlags {
 	 * @return string
 	 */
 	public function remove_flag_from_group( $flag_key, $group_key ) {
-		$flag   = empty( $flag );
-		$group  = self::get_group( $group_key, false, true );
-		$groups = self::get_groups();
+		$group_index = self::get_group( $group_key, false, true );
+		$groups      = self::get_groups();
 
-		if ( false !== $flag && false !== $group ) {
-			$groups[ $group ]->remove_flag( $flag_key );
+		if ( false !== $flag_key && false !== $group_index ) {
+
+			// Get group index and remove it from the groups array.
+			$groups[ $group_index ]->remove_flag( $flag_key );
 			self::save_groups( $groups );
+
 			return 'fgd';
 		} else {
 			return 'fgde';

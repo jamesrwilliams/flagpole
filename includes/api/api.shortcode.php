@@ -5,7 +5,7 @@
  * @package wp-feature-flags
  */
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 /**
  * Register the wp-feature-flags debug short code.
@@ -14,7 +14,7 @@ use FeatureFlags\FeatureFlags;
  *
  * @return string
  */
-function shortcode_debug( $atts ) {
+function flagpole_shortcode_debug( $atts ) {
 	$args = shortcode_atts(
 		[
 			'flag'     => 'all',
@@ -44,11 +44,11 @@ function shortcode_debug( $atts ) {
 		// TODO: Check the keys provided are valid before proceeding.
 		$valid_keys = [];
 		foreach ( $keys as $key ) {
-			$valid_keys[] = FeatureFlags::init()->find_flag( $key );
+			$valid_keys[] = Flagpole::init()->find_flag( $key );
 		}
 		$keys = array_filter( $valid_keys );
 	} else {
-		$keys = FeatureFlags::init()->get_flags( $args['enforced'] );
+		$keys = Flagpole::init()->get_flags( $args['enforced'] );
 	}
 
 	foreach ( $keys as $key ) {

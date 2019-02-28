@@ -4,15 +4,15 @@
  *
  * Used for creating feature flags.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlag;
+namespace Flagpole;
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 /**
  * Class Flag
@@ -157,7 +157,7 @@ class Flag {
 	 * @return bool Is the flag published?
 	 */
 	public function is_published() {
-		$meta_key = FeatureFlags::init()->get_options_key() . 'flags';
+		$meta_key = Flagpole::init()->get_options_key() . 'flags';
 
 		/* Get options */
 		$published_flags = maybe_unserialize( get_option( $meta_key ) );
@@ -185,7 +185,7 @@ class Flag {
 	 * @return bool
 	 */
 	public function is_enabled( $reason = false ) {
-		return FeatureFlags::init()->is_enabled( $this->key, $reason );
+		return Flagpole::init()->is_enabled( $this->key, $reason );
 	}
 
 	/**

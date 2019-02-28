@@ -4,15 +4,15 @@
  *
  * Used for creating feature flags.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlag;
+namespace Flagpole;
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 /**
  * Class Group
@@ -134,16 +134,18 @@ class Group {
 	}
 
 	/**
-	 * Check if this group has this flag enabled.
+	 * Check if this group has this flag.
 	 *
 	 * @param string $flag_key The flag key we're checking.
 	 *
 	 * @return bool The result of the search.
 	 */
 	public function has_flag( $flag_key ) {
-		foreach ( $this->flags as $flag ) {
-			if ( $flag_key === $flag ) {
-				return true;
+
+		foreach ( $this->flags as $index => $flag_id ) {
+
+			if ( $flag_key === $flag_id ) {
+				return $index;
 			}
 		}
 
@@ -158,7 +160,7 @@ class Group {
 	 * @return bool Response if successful.
 	 */
 	public function remove_flag( $flag_key ) {
-		$index = $this->has_flag( $flag_key );
+		$index = $this->has_flag( $flag_key, false, true );
 
 		if ( false !== $index ) {
 			unset( $this->flags[ $index ] );
@@ -174,14 +176,14 @@ class Group {
 	 * @return bool
 	 */
 	public function in_preview() {
-		$meta_key = FeatureFlags::init()->get_options_key() . 'groups';
+		$meta_key = Flagpole::init()->get_options_key() . 'groups';
 		$user_id  = get_current_user_id();
 		$response = false;
 
 		if ( $user_id ) {
 
 			// We have a user.
-			$user_settings = FeatureFlags::init()->get_user( $user_id, $meta_key, true );
+			$user_settings = Flagpole::init()->get_user( $user_id, $meta_key, true );
 
 			// Other.
 			$response = ( isset( $user_settings[ $this->key ] ) ? $user_settings[ $this->key ] : false );

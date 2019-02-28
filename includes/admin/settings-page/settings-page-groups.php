@@ -5,16 +5,16 @@
  * @package feature-flags
  */
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
-	$available_groups = FeatureFlags::init()->get_groups();
-	$available_flags  = FeatureFlags::init()->get_flags();
+	$flagpole_available_groups = Flagpole::init()->get_groups();
+	$flagpole_available_flags  = Flagpole::init()->get_flags();
 
 ?>
 
 <h2>Groups</h2>
 
-<?php if ( count( $available_groups ) === 0 ) { ?>
+<?php if ( count( $flagpole_available_groups ) === 0 ) { ?>
 
 	<h1>No groups - You should add one, they're great.</h1>
 
@@ -33,36 +33,36 @@ use FeatureFlags\FeatureFlags;
 		</thead>
 		<tbody>
 
-		<?php foreach ( $available_groups as $key => $group ) { ?>
-			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
+		<?php foreach ( $flagpole_available_groups as $flagpole_key => $flagpole_group ) { ?>
+			<tr class="<?php echo( 0 === $flagpole_key % 2 ? 'alternate' : null ); ?>">
 				<td class="has-icon">
-					<?php $img_path = FM_PLUGIN_URL . 'assets/images/' . ( $group->is_private() ? 'private' : 'public' ) . '.icon.svg'; ?>
+					<?php $flagpole_img_path = FLAGPOLE_PLUGIN_URL . 'assets/images/' . ( $flagpole_group->is_private() ? 'private' : 'public' ) . '.icon.svg'; ?>
 
 					<img
-						src="<?php echo esc_url( $img_path ); ?>"
-						alt="<?php echo wp_kses_post( $group->is_private() ? 'This group is private.' : 'This group is public.' ); ?>">
+						src="<?php echo esc_url( $flagpole_img_path ); ?>"
+						alt="<?php echo wp_kses_post( $flagpole_group->is_private() ? 'This group is private.' : 'This group is public.' ); ?>">
 				</td>
 				<td class="row-title">
-					<strong><?php echo wp_kses_post( $group->get_name() ); ?></strong>
+					<strong><?php echo wp_kses_post( $flagpole_group->get_name() ); ?></strong>
 				</td>
-				<td><code><?php echo wp_kses_post( $group->get_key() ); ?></code></td>
-				<td><?php echo wp_kses_post( $group->get_description() ); ?></td>
+				<td><code><?php echo wp_kses_post( $flagpole_group->get_key() ); ?></code></td>
+				<td><?php echo wp_kses_post( $flagpole_group->get_description() ); ?></td>
 				<td>
-					<?php if ( count( $group->get_flags() ) > 0 ) { ?>
+					<?php if ( count( $flagpole_group->get_flags() ) > 0 ) { ?>
 
-						<?php foreach ( $group->get_flags() as $flag ) { ?>
+						<?php foreach ( $flagpole_group->get_flags() as $flagpole_flag_id ) { ?>
 
 							<div class="ff-badge">
 								<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-									<?php $flag_obj = FeatureFlags::init()->find_flag( $flag ); ?>
+									<?php $flagpole_flag_object = Flagpole::init()->find_flag( $flagpole_flag_id ); ?>
 									<?php wp_nonce_field( 'ff_remove_flag_from_group' ); ?>
 									<input type="hidden" name="action" value="ff_remove_flag_from_group">
-									<input type="hidden" name="flag" value="<?php echo wp_kses_post( $flag_obj->key ); ?>">
-									<input type="hidden" name="group" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
-									<span class="ff_group-flag-label" title="Key: <?php echo wp_kses_post( $flag_obj->key ); ?>">
-										<?php echo wp_kses_post( $flag_obj->get_name() ); ?>
+									<input type="hidden" name="flag" value="<?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
+									<input type="hidden" name="group" value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>">
+									<span class="ff_group-flag-label" title="Key: <?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
+										<?php echo wp_kses_post( $flagpole_flag_object->get_name() ); ?>
 									</span>
-									<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flag_obj->name ); ?>' from '<?php echo wp_kses_post( $group->name ); ?>'">&#10005;</button>
+									<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flagpole_flag_object->name ); ?>' from '<?php echo wp_kses_post( $flagpole_group->name ); ?>'">&#10005;</button>
 								</form>
 							</div>
 
@@ -76,10 +76,10 @@ use FeatureFlags\FeatureFlags;
 				<td>
 					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="ff_preview_group">
-						<input type="hidden" name="group_key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
+						<input type="hidden" name="group_key" value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>">
 						<?php wp_nonce_field( 'ff_preview_group' ); ?>
 						<?php
-						if ( $group->in_preview() ) {
+						if ( $flagpole_group->in_preview() ) {
 							submit_button(
 								'Disable preview',
 								'small',
@@ -110,7 +110,7 @@ use FeatureFlags\FeatureFlags;
 				<td>
 					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="ff_delete_group">
-						<input type="hidden" name="key" value="<?php echo wp_kses_post( $group->get_key() ); ?>">
+						<input type="hidden" name="key" value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>">
 						<?php wp_nonce_field( 'ff_delete_group' ); ?>
 						<?php
 							submit_button(
@@ -130,8 +130,6 @@ use FeatureFlags\FeatureFlags;
 		</tbody>
 	</table>
 
-<?php } ?>
-
 <h2>Add flag to group</h2>
 
 <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="add-to-group">
@@ -140,19 +138,21 @@ use FeatureFlags\FeatureFlags;
 	<label for="selected-flag">Add flag</label>
 	<select name="selected-flag" id="selected-flag">
 		<option disabled selected>Select flag...</option>
-		<?php foreach ( $available_flags as $flag ) { ?>
-			<option value="<?php echo wp_kses_post( $flag->get_key() ); ?>"><?php echo wp_kses_post( $flag->get_name() ); ?></option>
+		<?php foreach ( $flagpole_available_flags as $flagpole_flag_id ) { ?>
+			<option value="<?php echo wp_kses_post( $flagpole_flag_id->get_key() ); ?>"><?php echo wp_kses_post( $flagpole_flag_id->get_name() ); ?></option>
 		<?php } ?>
 	</select>
 	<label for="selected-group">to group</label>
 	<select name="selected-group" id="selected-group">
 		<option disabled selected>Select group...</option>
-		<?php foreach ( $available_groups as $group ) { ?>
-			<option value="<?php echo wp_kses_post( $group->get_key() ); ?>"><?php echo wp_kses_post( $group->get_name() ); ?></option>
+		<?php foreach ( $flagpole_available_groups as $flagpole_group ) { ?>
+			<option value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>"><?php echo wp_kses_post( $flagpole_group->get_name() ); ?></option>
 		<?php } ?>
 	</select>
 	<input class="button-primary" type="submit" value="Add">
 </form>
+
+<?php } ?>
 
 <h2>Add New Group</h2>
 

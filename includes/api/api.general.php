@@ -5,10 +5,10 @@
  * These are all the functions that people can
  * use directly within their theme code.
  *
- * @package wp-feature-flags
+ * @package flagpole
  */
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 /**
  * Register a feature flag with the plugin.
@@ -16,7 +16,7 @@ use FeatureFlags\FeatureFlags;
  * @param array $args Settings and options for each flag.
  * @return void
  */
-function register_feature_flag( $args ) {
+function flagpole_register_flag( $args ) {
 	$defaults = [
 
 		'enforced'    => false,
@@ -30,13 +30,13 @@ function register_feature_flag( $args ) {
 			$args = wp_parse_args( $declaration, $defaults );
 
 			if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
-				FeatureFlags::init()->add_flag( $args );
+				Flagpole::init()->add_flag( $args );
 			} else {
 				add_action(
 					'admin_notices',
 					function() {
 						$class   = 'notice notice-error';
-						$message = 'Malformed featureFlag - Need to supply a key and a title.';
+						$message = 'Malformed flag - Need to supply a key and a title.';
 
 						printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 					}
@@ -47,13 +47,13 @@ function register_feature_flag( $args ) {
 		$args = wp_parse_args( $args, $defaults );
 
 		if ( isset( $args['title'] ) && isset( $args['key'] ) ) {
-			FeatureFlags::init()->add_flag( $args );
+			Flagpole::init()->add_flag( $args );
 		} else {
 			add_action(
 				'admin_notices',
 				function() {
 					$class   = 'notice notice-error';
-					$message = 'Malformed featureFlag - Need to supply a key and a title.';
+					$message = 'Malformed flag - Need to supply a key and a title.';
 
 					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 				}
@@ -68,8 +68,8 @@ function register_feature_flag( $args ) {
  * @param string $flag_key The key for the flag we're after.
  * @return mixed
  */
-function has_user_enabled( $flag_key = '' ) {
-	return FeatureFlags::init()->has_user_enabled_flag( $flag_key );
+function flagpole_user_enabled( $flag_key = '' ) {
+	return Flagpole::init()->has_user_enabled_flag( $flag_key );
 }
 
 /**
@@ -79,11 +79,11 @@ function has_user_enabled( $flag_key = '' ) {
  *
  * @return bool
  */
-function has_user_enabled_via_group( $flag_key = '' ) {
-	return FeatureFlags::init()->user_enabled_key_via_group( $flag_key );
+function flagpole_enabled_in_group( $flag_key = '' ) {
+	return Flagpole::init()->user_enabled_key_via_group( $flag_key );
 }
 
-if ( ! function_exists( 'is_enabled' ) ) {
+if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
 
 	/**
 	 * Check if a a flag is enabled.
@@ -91,7 +91,7 @@ if ( ! function_exists( 'is_enabled' ) ) {
 	 * @param string $flag_key The key for the flag we're after.
 	 * @return bool
 	 */
-	function is_enabled( $flag_key = '' ) {
-		return FeatureFlags::init()->is_enabled( $flag_key );
+	function flagpole_flag_enabled( $flag_key = '' ) {
+		return Flagpole::init()->is_enabled( $flag_key );
 	}
 }

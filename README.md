@@ -1,12 +1,14 @@
-# Feature Flags for WordPress themes
-
-![Screenshot of the admin interface](./docs/assets/images/wp-feature-flags-screenshot.jpg)
+# Flagpole
 
 [![Build Status](https://travis-ci.org/jamesrwilliams/wp-feature-flags.svg?branch=feat%2Fautomated-tests)](https://travis-ci.org/jamesrwilliams/wp-feature-flags) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) 
+
+## About
 
 This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags. 
 It adds an admin interface where users can enable and disable features for testing, and also be enabled 
 using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/feature-flags/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
+
+![Screenshot of the admin interface](./docs/assets/images/wp-feature-flags-screenshot.jpg)
 
 ## Contents
 
@@ -23,8 +25,8 @@ using query strings. For planned development work and features see [issues label
 Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to the your theme to catch any errors that may occur if the feature-flags plugin is disabled for any reason.
 
 ```php
-if ( ! function_exists( 'is_enabled' ) ) {
-	function is_enabled() {
+if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
+	function flagpole_flag_enabled() {
 		return false;
 	}
 }
@@ -33,14 +35,14 @@ if ( ! function_exists( 'is_enabled' ) ) {
 ### Register a flag
 
 ```php
-register_feature_flag( $args );
+flagpole_register_flag( $args );
 ```
 When registering a flag it is a good idea to wrap them in a function exists block to avoid any errors if the plugin is disabled for any reason. In your templates you can then check the feature status using:
 
 ```php
-if ( function_exists( 'register_feature_flag' ) ) {
+if ( function_exists( 'flagpole_register_flag' ) ) {
 
-    register_feature_flag([
+    flagpole_register_flag([
         
         'title'       => 'My awesome new feature',
         'key'         => 'correct-horse-battery-staple',
@@ -55,7 +57,7 @@ if ( function_exists( 'register_feature_flag' ) ) {
 Alternatively features can be declared as an nested array to avoid large blocks of feature calls:
 
 ```php
-register_feature_flag([
+flagpole_register_flag([
     [       
         'title'       => 'Listed Feature #1',
         'key'         => 'listed-feature-1',
@@ -67,7 +69,7 @@ register_feature_flag([
 ]);
 ```
 
-### Feature arguments
+### Flag arguments
 
 | Parameter              | Type      | Default | Description |
 |------------------------|-----------|---------|---|
@@ -80,7 +82,7 @@ register_feature_flag([
 
 ## Enabling your flags
 
-There are four ways to have a flag enabled with WP-Feature-Flags. These are as follows:
+There are four ways to have a flag enabled with Flagpole. These are as follows:
 
 - **[Previewed](#previewing-a-flag)** - Enable a flag only for the current logged in user.
 - **[Published](#publishing-a-flag)** - Enable a flag for every visitor on the site.
@@ -88,7 +90,7 @@ There are four ways to have a flag enabled with WP-Feature-Flags. These are as f
 
 ### Previewing a flag
 
-Any flag can be previewed. This can be done via the Feature Flags admin screen and pressing the "Enabled Preview" button. This will enable a flag for the current logged in user, which is great for previewing a feature while limiting it's exposure to users. This can then be turned off again by pressing the "disable preview" button. Users can preview any number of flags at any one time.
+Any flag can be previewed. This can be done via the Flagpole admin screen and pressing the "Enabled Preview" button. This will enable a flag for the current logged in user, which is great for previewing a feature while limiting it's exposure to users. This can then be turned off again by pressing the "disable preview" button. Users can preview any number of flags at any one time.
 
 ### Publishing a flag
 
@@ -100,7 +102,7 @@ Enforcing a flag is where a developer can force a flag to be published. This all
 
 ## Checking the status of a feature flag
 
-Use the `is_enabled()` function in your PHP theme code to toggle features based on the status of your flags:
+Use the `flagpole_flag_enabled()` function in your PHP theme code to toggle features based on the status of your flags:
 
 ```php
 is_enabled( 'feature-key' );
@@ -110,30 +112,29 @@ Replace `feature-key` with the key used in the register function to check if it 
 **Example** - If my feature key was `foo`:
 
 ```php
-if ( is_enabled( 'foo' ) ) {
+if ( flagpole_flag_enabled( 'foo' ) ) {
     /* Flagged feature */
 }
 ```
 
 ## The Shortcode
 
-This plugin adds a utility shortcode to help to debug the use of feature flags. 
+This plugin adds a utility shortcode to help to debug the use of Flagpole flags. 
 
 ```php
-echo do_shortcode('[debugFeatureFlags]');
+echo do_shortcode('[debugFlagpole]');
 ```
 
-The shortcode by default shows all feature flags that are not enforced found in your theme. You can also specify which flags you're looking to debug specifically using the flag parameter like so with either a single key or a comma separated list:
+The shortcode by default shows all flags that are not enforced found in your theme. You can also specify which flags you're looking to debug specifically using the flag parameter like so with either a single key or a comma separated list:
 
 ```php
 // Single Key
-echo do_shortcode('[debugFeatureFlags flag="key-1"]');
+echo do_shortcode('[debugFlagpole flag="key-1"]');
 
 // Mutliple keys
-echo do_shortcode('[debugFeatureFlags flag="key-1,key-2,key-3"]');
+echo do_shortcode('[debugFlagpole flag="key-1,key-2,key-3"]');
 ```
 
 ## Contributing
 
 Any PRs and suggestions are very welcome, along with ideas and discussions on issues. 
-This project uses the [WordPress VIP](https://github.com/Automattic/VIP-Coding-Standards) coding standards.
