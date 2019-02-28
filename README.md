@@ -20,7 +20,7 @@ using query strings. For planned development work and features see [issues label
 
 ### Required theme changes
 
-Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to the your theme to catch any errors that may occur if the feature-flags plugin is disabled for any reason.
+Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to the your theme to catch any errors that may occur if the Flagpole plugin is disabled for any reason.
 
 ```php
 if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
