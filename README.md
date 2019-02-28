@@ -6,9 +6,7 @@
 
 This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags. 
 It adds an admin interface where users can enable and disable features for testing, and also be enabled 
-using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/feature-flags/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
-
-![Screenshot of the admin interface](./docs/assets/images/wp-feature-flags-screenshot.jpg)
+using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
 
 ## Contents
 
@@ -105,7 +103,7 @@ Enforcing a flag is where a developer can force a flag to be published. This all
 Use the `flagpole_flag_enabled()` function in your PHP theme code to toggle features based on the status of your flags:
 
 ```php
-is_enabled( 'feature-key' );
+flagpole_flag_enabled( 'feature-key' );
 ```
 Replace `feature-key` with the key used in the register function to check if it is enabled.
 
