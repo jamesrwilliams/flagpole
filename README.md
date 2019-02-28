@@ -1,6 +1,6 @@
 # Flagpole
 
-[![Build Status](https://travis-ci.org/jamesrwilliams/wp-feature-flags.svg?branch=feat%2Fautomated-tests)](https://travis-ci.org/jamesrwilliams/wp-feature-flags) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) 
+[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) 
 
 ## About
 
