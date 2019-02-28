@@ -1,19 +1,20 @@
 <?php
 /**
- * Feature Flags for WordPress.
- * Include things in your WordPress theme using Feature Flags.
+ * Flagpole
+ * Easily register and work with feature flags in your themes.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://jamesrwilliams.ca/
+ * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  *
  * @wordpress-plugin
- * Plugin Name:       Feature Flags
+ * Plugin Name:       Flagpole
  * Description:       Easily register and work with feature flags in your theme.
  * Version:           1.0.0
  * Author:            James Williams
- * Text Domain:       featureFlags
+ * Requires PHP:      5.6
+ * Text Domain:       flagpole
  * Author URI:        https://jamesrwilliams.ca/
  */
 
@@ -22,12 +23,12 @@ if ( ! defined( 'WPINC' ) ) {
 	wp_die();
 }
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 // Define plugin paths and url for global usage.
-define( 'FF_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'FM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'FF_VERSION', '1.0.0' );
+define( 'FLAGPOLE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'FLAGPOLE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'FLAGPOLE_VERSION', '1.0.0' );
 
 // Register admin page.
 add_action(
@@ -52,30 +53,29 @@ add_action(
  *
  * @param string $hook The Hook string.
  */
-function feature_flags_admin_imports( $hook ) {
-
-	if ( 'tools_page_feature-flags' !== $hook ) {
+function flagpole_admin_imports( $hook ) {
+	if ( 'tools_page_flagpole' !== $hook ) {
 		return;
 	}
 
 	wp_enqueue_style(
-		'feature-flags-styles',
+		'flagpole-styles',
 		plugins_url(
-			'/assets/css/feature-flags.css',
+			'/assets/css/flagpole.css',
 			__FILE__
 		),
 		[],
-		FF_VERSION
+		FLAGPOLE_VERSION
 	);
 
 	wp_register_script(
-		'feature-flags-script',
+		'flagpole-script',
 		plugins_url(
-			'/assets/js/feature-flags.js',
+			'/assets/js/flagpole.js',
 			__FILE__
 		),
 		[],
-		FF_VERSION,
+		FLAGPOLE_VERSION,
 		false
 	);
 
@@ -83,15 +83,14 @@ function feature_flags_admin_imports( $hook ) {
 		'ajax_nonce' => wp_create_nonce( 'featureFlagNonce' ),
 	];
 
-	wp_localize_script( 'feature-flags-script', 'ffwp', $params );
-	wp_enqueue_script( 'feature-flags-script' );
-
+	wp_localize_script( 'flagpole-script', 'ffwp', $params );
+	wp_enqueue_script( 'flagpole-script' );
 }
 
-add_action( 'admin_enqueue_scripts', 'feature_flags_admin_imports' );
+add_action( 'admin_enqueue_scripts', 'flagpole_admin_imports' );
 
 // Includes.
-require plugin_dir_path( __FILE__ ) . 'includes/class-featureflags.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-flagpole.php';
 require plugin_dir_path( __FILE__ ) . 'includes/admin/settings-page.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.shortcode.php';
@@ -99,65 +98,52 @@ require plugin_dir_path( __FILE__ ) . 'includes/api/api.shortcode.php';
 /**
  * AJAX Action toggling features from the WP admin area.
  */
-add_action( 'wp_ajax_toggleFeatureFlag', 'feature_flag_enable' );
+add_action( 'wp_ajax_toggleFeatureFlag', 'flagpole_enable' );
 
 /**
  * Enable a feature Flag
  */
-function feature_flag_enable() {
-
+function flagpole_enable() {
 	if (
 		isset( $_POST['featureKey'] ) &&
 		check_ajax_referer( 'featureFlagNonce', 'security' )
 	) {
-
 		$response = [];
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
 		if ( ! empty( $feature_key ) ) {
-
 			$response['response'] = $feature_key;
 
-			FeatureFlags::init()->toggle_feature_preview( $feature_key );
-
+			Flagpole::init()->toggle_feature_preview( $feature_key );
 		} else {
-
 			header( 'HTTP/1.1 500 Internal Server Error' );
 			$response['response'] = 'no feature key';
-
 		}
 	}
 
 	exit();
-
 }
 
 /**
  * AJAX Action toggling features from the WP admin area.
  */
-add_action( 'wp_ajax_togglePublishedFeature', 'feature_flag_publish' );
+add_action( 'wp_ajax_togglePublishedFeature', 'flagpole_flag_publish' );
 
 /**
  * Publish a feature flag to be publicly visible.
  */
-function feature_flag_publish() {
-
+function flagpole_flag_publish() {
 	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) {
-
 		$response = [];
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
 		if ( ! empty( $feature_key ) ) {
-
-			$response['response'] = FeatureFlags::init()->toggle_feature_publication( $feature_key );
-
+			$response['response'] = Flagpole::init()->toggle_feature_publication( $feature_key );
 		} else {
-
 			header( 'HTTP/1.1 500 Internal Server Error' );
 			$response['response'] = 'no feature key';
-
 		}
 
 		header( 'Content-Type: application/json' );
@@ -168,14 +154,13 @@ function feature_flag_publish() {
 }
 
 // Groups - Create.
-add_action( 'admin_post_ff_register_group', 'feature_flag_create_group' );
-add_action( 'admin_post_nopriv_ff_register_group', 'feature_flag_create_group' );
+add_action( 'admin_post_ff_register_group', 'flagpole_create_group' );
+add_action( 'admin_post_nopriv_ff_register_group', 'flagpole_create_group' );
 
 /**
  * Create group admin hook handler.
  */
-function feature_flag_create_group() {
-
+function flagpole_create_group() {
 	$validation                  = [];
 	$validation['group-nonce']   = check_admin_referer( 'register-group' );
 	$validation['group-key']     = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false );
@@ -186,63 +171,57 @@ function feature_flag_create_group() {
 	$validation = array_filter( $validation );
 
 	if ( $validation ) {
+		$result = Flagpole::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'], $validation['group-private'] );
 
-		$result = FeatureFlags::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'], $validation['group-private'] );
-
-		feature_flag_operation_redirect( $result );
-
+		flagpole_operation_redirect( $result );
 	}
 }
 
 // Groups - Delete.
-add_action( 'admin_post_ff_delete_group', 'feature_flag_delete_group' );
-add_action( 'admin_post_nopriv_ff_delete_group', 'feature_flag_delete_group' );
+add_action( 'admin_post_ff_delete_group', 'flagpole_delete_group' );
+add_action( 'admin_post_nopriv_ff_delete_group', 'flagpole_delete_group' );
 
 /**
  * Delete group admin hook handler.
  */
-function feature_flag_delete_group() {
-
+function flagpole_delete_group() {
 	if ( ! empty( $_GET['key'] ) && check_admin_referer( 'ff_delete_group' ) ) {
 		$key = sanitize_text_field( wp_unslash( $_GET['key'] ) );
 	} else {
 		$key = false;
 	}
 
-	$result = FeatureFlags::init()->delete_group( $key );
+	$result = Flagpole::init()->delete_group( $key );
 
-	feature_flag_operation_redirect( $result );
-
+	flagpole_operation_redirect( $result );
 }
 
-add_action( 'admin_post_ff_preview_group', 'feature_flag_toggle_group_preview' );
-add_action( 'admin_post_nopriv_ff_preview_group', 'feature_flag_toggle_group_preview' );
+add_action( 'admin_post_ff_preview_group', 'flagpole_toggle_group_preview' );
+add_action( 'admin_post_nopriv_ff_preview_group', 'flagpole_toggle_group_preview' );
 
 /**
  * Toggle group preview handler.
  */
-function feature_flag_toggle_group_preview() {
-
+function flagpole_toggle_group_preview() {
 	if ( ! empty( $_GET['group_key'] ) && check_admin_referer( 'ff_preview_group' ) ) {
 		$group_key = sanitize_text_field( wp_unslash( $_GET['group_key'] ) );
 	} else {
 		$group_key = false;
 	}
 
-	$result = FeatureFlags::init()->toggle_group_preview( $group_key );
+	$result = Flagpole::init()->toggle_group_preview( $group_key );
 
-	feature_flag_operation_redirect( $result );
+	flagpole_operation_redirect( $result );
 }
 
 // Groups - Add too group.
-add_action( 'admin_post_ff_add_to_group', 'feature_flag_add_to_group' );
-add_action( 'admin_post_nopriv_ff_add_to_group', 'feature_flag_add_to_group' );
+add_action( 'admin_post_ff_add_to_group', 'flagpole_add_to_group' );
+add_action( 'admin_post_nopriv_ff_add_to_group', 'flagpole_add_to_group' );
 
 /**
  * Add to group admin hook handler.
  */
-function feature_flag_add_to_group() {
-
+function flagpole_add_to_group() {
 	if (
 		! empty( $_GET['selected-flag'] ) &&
 		! empty( $_GET['selected-group'] ) &&
@@ -251,21 +230,21 @@ function feature_flag_add_to_group() {
 		$flag  = sanitize_text_field( wp_unslash( $_GET['selected-flag'] ) );
 		$group = sanitize_text_field( wp_unslash( $_GET['selected-group'] ) );
 
-		$response = FeatureFlags::init()->add_flag_to_group( $flag, $group );
+		$response = Flagpole::init()->add_flag_to_group( $flag, $group );
 
-		feature_flag_operation_redirect( $response );
+		flagpole_operation_redirect( $response );
 	} else {
-		feature_flag_operation_redirect( 'fgae' );
+		flagpole_operation_redirect( 'fgae' );
 	}
 }
 
-add_action( 'admin_post_ff_remove_flag_from_group', 'feature_flag_remove_from_group' );
-add_action( 'admin_post_nopriv_remove_flag_from_group', 'feature_flag_remove_from_group' );
+add_action( 'admin_post_ff_remove_flag_from_group', 'flagpole_remove_from_group' );
+add_action( 'admin_post_nopriv_remove_flag_from_group', 'flagpole_remove_from_group' );
 
 /**
  * Admin Post handler for removing a flag from a group.
  */
-function feature_flag_remove_from_group() {
+function flagpole_remove_from_group() {
 	if (
 		! empty( $_GET['flag'] ) &&
 		! empty( $_GET['group'] ) &&
@@ -274,31 +253,29 @@ function feature_flag_remove_from_group() {
 		$flag  = sanitize_text_field( wp_unslash( $_GET['flag'] ) );
 		$group = sanitize_text_field( wp_unslash( $_GET['group'] ) );
 
-		$response = FeatureFlags::init()->remove_flag_from_group( $flag, $group );
+		$response = Flagpole::init()->remove_flag_from_group( $flag, $group );
 
-		feature_flag_operation_redirect( $response );
+		flagpole_operation_redirect( $response );
 	} else {
-		feature_flag_operation_redirect( 'fgae' );
+		flagpole_operation_redirect( 'fgae' );
 	}
 }
 
-add_action( 'template_redirect', 'feature_flag_redirect_with_key' );
+add_action( 'template_redirect', 'flagpole_redirect_with_key' );
 
 /**
  * Redirect the user to the login form if they attempt to use a
  * flag query string while logged out.
  */
-function feature_flag_redirect_with_key() {
-
-	$query = find_query_string();
+function flagpole_redirect_with_key() {
+	$query = flagpole_find_query_string();
 
 	if (
 		isset( $_SERVER['REQUEST_URI'] ) &&
 		isset( $_SERVER['HTTP_HOST'] ) &&
 		! empty( $query ) && ! is_user_logged_in()
 	) {
-
-		if ( FeatureFlags::init()->is_private( $query ) ) {
+		if ( Flagpole::init()->is_private( $query ) ) {
 			$destination = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) );
 
 			if ( filter_var( $destination, FILTER_VALIDATE_URL ) ) {
@@ -314,19 +291,16 @@ function feature_flag_redirect_with_key() {
  *
  * @return bool|string False if there isn't one, the flag string if found.
  */
-function find_query_string() {
+function flagpole_find_query_string() {
 
 	/* TODO: #21 - Make this a configurable key */
 	$query_string_key = 'flag';
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
 	if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {
-
 		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
 		return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) );
-
 	} else {
-
 		return false;
 	}
 }
@@ -341,8 +315,7 @@ function find_query_string() {
  *
  * @return null|string Depending on $redirect.
  */
-function feature_flag_operation_redirect( $error_code = false, $redirect = true ) {
-
+function flagpole_operation_redirect( $error_code = false, $redirect = true ) {
 	$redirect_url = ( wp_get_referer() ?: get_home_url() );
 
 	if ( false !== $error_code && ! empty( $error_code ) ) {
@@ -361,4 +334,4 @@ function feature_flag_operation_redirect( $error_code = false, $redirect = true 
 	}
 }
 
-add_shortcode( 'debugFeatureFlags', 'shortcode_debug' );
+add_shortcode( 'debugFlagpole', 'flagpole_shortcode_debug' );

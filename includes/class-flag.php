@@ -4,15 +4,15 @@
  *
  * Used for creating feature flags.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlag;
+namespace Flagpole;
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 /**
  * Class Flag
@@ -80,13 +80,11 @@ class Flag {
 	 * @param bool   $_stable Allow this flag to be published or not.
 	 */
 	public function __construct( $_key, $_name, $_enforced, $_description, $_stable ) {
-
 		$this->enforced    = $_enforced;
 		$this->name        = ( $_name ? $_name : '' );
 		$this->key         = $_key;
 		$this->description = $_description;
 		$this->stable      = $_stable;
-
 	}
 
 	/**
@@ -96,7 +94,6 @@ class Flag {
 	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_key( $echo = true ) {
-
 		$key = $this->key;
 
 		if ( $echo ) {
@@ -113,7 +110,6 @@ class Flag {
 	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_name( $echo = true ) {
-
 		$name = $this->name;
 
 		if ( $echo ) {
@@ -121,7 +117,6 @@ class Flag {
 		} else {
 			return $name;
 		}
-
 	}
 
 	/**
@@ -131,19 +126,13 @@ class Flag {
 	 * @return null|string Current flag key if $echo is false.
 	 */
 	public function get_description( $echo = true ) {
-
 		$description = $this->description;
 
 		if ( $echo ) {
-
 			echo wp_kses_post( $description );
-
 		} else {
-
 			return $description;
-
 		}
-
 	}
 
 	/**
@@ -156,13 +145,9 @@ class Flag {
 		$stable = $this->stable;
 
 		if ( $echo ) {
-
 			echo wp_kses_post( $stable ? 'Stable' : 'Unstable' );
-
 		} else {
-
 			return $stable;
-
 		}
 	}
 
@@ -172,8 +157,7 @@ class Flag {
 	 * @return bool Is the flag published?
 	 */
 	public function is_published() {
-
-		$meta_key = FeatureFlags::init()->get_options_key() . 'flags';
+		$meta_key = Flagpole::init()->get_options_key() . 'flags';
 
 		/* Get options */
 		$published_flags = maybe_unserialize( get_option( $meta_key ) );
@@ -191,7 +175,6 @@ class Flag {
 		} else {
 			return true;
 		}
-
 	}
 
 	/**
@@ -202,9 +185,7 @@ class Flag {
 	 * @return bool
 	 */
 	public function is_enabled( $reason = false ) {
-
-		return FeatureFlags::init()->is_enabled( $this->key, $reason );
-
+		return Flagpole::init()->is_enabled( $this->key, $reason );
 	}
 
 	/**
@@ -213,9 +194,7 @@ class Flag {
 	 * @return bool The status of if a flag is enforced or not.
 	 */
 	public function get_enforced() {
-
 		return $this->enforced;
-
 	}
 
 }

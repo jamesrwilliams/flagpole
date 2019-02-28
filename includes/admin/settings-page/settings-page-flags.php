@@ -2,14 +2,14 @@
 /**
  * Settings page partial for the Flags page.
  *
- * @package feature-flags
+ * @package flagpole
  */
 
 ?>
 
-<?php if ( $available_flags ) { ?>
+<?php if ( $flagpole_available_flags ) { ?>
 
-	<h2>Available feature flags</h2>
+	<h2>Available flags</h2>
 
 	<table class="widefat flags_table">
 		<thead>
@@ -23,23 +23,23 @@
 		</thead>
 		<tbody>
 
-		<?php foreach ( $available_flags as $key => $flag ) { ?>
+		<?php foreach ( $flagpole_available_flags as $flagpole_key => $flagpole_flag ) { ?>
 
-			<?php $enabled = has_user_enabled( $flag->get_key( false ) ); ?>
-			<?php $published = $flag->is_published(); ?>
+			<?php $flagpole_enabled = flagpole_user_enabled( $flagpole_flag->get_key( false ) ); ?>
+			<?php $flagpole_published = $flagpole_flag->is_published(); ?>
 
-			<tr class="<?php echo( 0 === $key % 2 ? null : 'alternate' ); ?>">
+			<tr class="<?php echo( 0 === $flagpole_key % 2 ? null : 'alternate' ); ?>">
 				<td class="title">
-					<strong><?php wp_kses_post( $flag->get_name() ); ?></strong>
+					<strong><?php wp_kses_post( $flagpole_flag->get_name() ); ?></strong>
 				</td>
 				<td>
-					<code><?php $flag->get_key(); ?></code>
+					<code><?php $flagpole_flag->get_key(); ?></code>
 				</td>
-				<td><?php $flag->get_description(); ?></td>
+				<td><?php $flagpole_flag->get_description(); ?></td>
 				<td>
 					<?php
 
-					if ( $enabled ) {
+					if ( $flagpole_enabled ) {
 						submit_button(
 							'Disable preview',
 							'small',
@@ -69,26 +69,26 @@
 				</td><td>
 					<?php
 
-					$stable       = $flag->is_stable( false );
-					$button_style = ( $stable ? 'primary small' : 'small' );
-					$button_text  = ( $published ? 'Unpublish' : 'Publish' );
-					$button_name  = ( $published ? 'featureFlagsBtn_unpublish' : 'featureFlagsBtn_publish' );
-					$other_args   = [
+					$flagpole_stable       = $flagpole_flag->is_stable( false );
+					$flagpole_button_style = ( $flagpole_stable ? 'primary small' : 'small' );
+					$flagpole_button_text  = ( $flagpole_published ? 'Unpublish' : 'Publish' );
+					$flagpole_button_name  = ( $flagpole_published ? 'featureFlagsBtn_unpublish' : 'featureFlagsBtn_publish' );
+					$flagpole_other_args   = [
 						'data-action' => 'togglePublishedFeature',
 					];
 
-					if ( ! $stable ) {
-						$other_args['disabled'] = true;
-						$button_text            = 'Disabled';
-						$other_args['title']    = 'Feature is marked as unstable.';
+					if ( ! $flagpole_stable ) {
+						$flagpole_other_args['disabled'] = true;
+						$flagpole_button_text            = 'Disabled';
+						$flagpole_other_args['title']    = 'Feature is marked as unstable.';
 					}
 
 					submit_button(
-						$button_text,
-						$button_style,
-						$button_name,
+						$flagpole_button_text,
+						$flagpole_button_style,
+						$flagpole_button_name,
 						false,
-						$other_args
+						$flagpole_other_args
 					);
 
 					?>
@@ -103,9 +103,9 @@
 
 <?php } ?>
 
-<?php if ( $enforced_flags ) { ?>
-	<h2>Enforced feature flags</h2>
-	<p>Features listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will likely be removed from the website source code soon.</p>
+<?php if ( $flagpole_enforced_flags ) { ?>
+	<h2>Enforced flags</h2>
+	<p>Flags that are listed below are currently configured to be <code>enforced</code> by default by the developers. These are flags that will likely be removed from the website source code soon.</p>
 
 	<table class="widefat">
 		<thead>
@@ -117,14 +117,14 @@
 		</thead>
 		<tbody>
 
-		<?php foreach ( $enforced_flags as $key => $flag ) { ?>
+		<?php foreach ( $flagpole_enforced_flags as $flagpole_key => $flagpole_flag ) { ?>
 
-			<tr class="<?php echo( 0 === $key % 2 ? 'alternate' : null ); ?>">
-				<td class="row-title"><?php $flag->get_name(); ?></td>
+			<tr class="<?php echo( 0 === $flagpole_key % 2 ? 'alternate' : null ); ?>">
+				<td class="row-title"><?php $flagpole_flag->get_name(); ?></td>
 				<td>
-					<pre><?php $flag->get_key(); ?></pre>
+					<code><?php $flagpole_flag->get_key(); ?></code>
 				</td>
-				<td><?php $flag->get_description(); ?></td>
+				<td><?php $flagpole_flag->get_description(); ?></td>
 			</tr>
 
 		<?php } ?>

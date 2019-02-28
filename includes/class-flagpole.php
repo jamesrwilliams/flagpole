@@ -4,26 +4,26 @@
  *
  * Used for creating feature flags.
  *
- * @package   wp-feature-flags
+ * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
  * @link      https://github.com/jamesrwilliams/wp-feature-flags
  * @copyright 2019 James Williams
  */
 
-namespace FeatureFlags;
+namespace Flagpole;
 
 require_once 'class-flag.php';
 require_once 'class-group.php';
 
-use FeatureFlag\Flag;
-use FeatureFlag\Group;
+use Flagpole\Flag;
+use Flagpole\Group;
 
 /**
  * Class FeatureFlags
  *
  * @package FeatureFlags
  */
-class FeatureFlags {
+class Flagpole {
 
 	/**
 	 * The class instance. Only need one of these.
@@ -37,7 +37,7 @@ class FeatureFlags {
 	 *
 	 * @var string $user_meta_key
 	 */
-	private static $meta_prefix = 'feature_flags_';
+	private static $meta_prefix = 'flagpole_';
 
 	/**
 	 * Current Feature Flags
@@ -57,21 +57,24 @@ class FeatureFlags {
 	 * Static function to create an instance if none exists
 	 */
 	public static function init() {
-
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 
 		return self::$instance;
-
 	}
 
 	/**
 	 * FeatureFlags constructor.
 	 */
 	public function __construct() {
+		self::load_groups();
+	}
 
-		// Initialise the groups wp_options row for future use.
+	/**
+	 * Load the groups data from the DB.
+	 */
+	private function load_groups() {
 		$key         = self::get_options_key() . 'groups';
 		$flag_groups = maybe_unserialize( get_option( $key ) );
 		$type        = gettype( $flag_groups );
@@ -82,7 +85,6 @@ class FeatureFlags {
 		}
 
 		$this->groups = $flag_groups;
-
 	}
 
 	/**
@@ -102,7 +104,6 @@ class FeatureFlags {
 	 * @return string The error message associated with the $index.
 	 */
 	public function get_admin_error_message( $index = 0 ) {
-
 		$messages = [
 			0                       => 'An unknown error occurred. Please check the error logs for more information.',
 			'group-created'         => 'Flag group created successfully.',
@@ -152,9 +153,7 @@ class FeatureFlags {
 	 * @return void
 	 */
 	public function add_flag( $flag ) {
-
 		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'] );
-
 	}
 
 	/**
@@ -166,7 +165,6 @@ class FeatureFlags {
 	 * @return \FeatureFlag\Flag|bool.
 	 */
 	public function find_flag( $key_key, $check = false ) {
-
 		$flag  = false;
 		$flags = $this->flags;
 
@@ -178,7 +176,6 @@ class FeatureFlags {
 		}
 
 		return ( $check ? true : $flag );
-
 	}
 
 	/**
@@ -189,31 +186,25 @@ class FeatureFlags {
 	 * @return array All available flags if $enforced is false, else only returns 'enforced' features.
 	 */
 	public function get_flags( $enforced = false ) {
-
 		$flags = $this->flags;
 
 		if ( $enforced ) {
-
 			$filtered_flags = array_filter(
 				$flags,
 				function ( $value ) {
 					return $value->get_enforced();
 				}
 			);
-
 		} else {
-
 			$filtered_flags = array_filter(
 				$flags,
 				function( $value ) {
 					return ! $value->get_enforced();
 				}
 			);
-
 		}
 
 		return $filtered_flags;
-
 	}
 
 	/**
@@ -225,20 +216,17 @@ class FeatureFlags {
 	 * @return boolean Is the flag enabled or not.
 	 */
 	public function is_enabled( $flag_key, $reason = false ) {
-
 		$flag = $this->find_flag( $flag_key );
 
 		if ( $flag ) {
-
 			if ( $flag->is_published() ) {
 				return ( $reason ? 'Published' : true );
 			} elseif ( $flag->get_enforced() ) {
 				return ( $reason ? 'Enforced' : true );
 			} else {
-
 				if ( self::check_query_string( $flag_key ) ) {
 					return ( $reason ? 'Using a group query string' : true );
-				} elseif ( has_user_enabled( $flag_key ) ) {
+				} elseif ( flagpole_user_enabled( $flag_key ) ) {
 					return ( $reason ? 'User previewing flag' : true );
 				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
 					return ( $reason ? 'User preview enabled via group' : true );
@@ -247,19 +235,8 @@ class FeatureFlags {
 				}
 			}
 		} else {
-
-			/**
-			 * We want to display an error if WP_DEBUG is enabled to highlight an
-			 * unregistered flag key is being checked.
-			 */
-
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-			trigger_error( 'Feature not registered.', E_USER_WARNING );
-
 			return false;
-
 		}
-
 	}
 
 	/**
@@ -268,19 +245,13 @@ class FeatureFlags {
 	 * @return bool|array The current user's settings array.
 	 */
 	public function get_user_settings() {
-
 		$user_id = get_current_user_id();
 
 		if ( ! empty( $user_id ) ) {
-
 			return self::get_user( $user_id, self::$meta_prefix, true );
-
 		} else {
-
 			return false;
-
 		}
-
 	}
 
 	/**
@@ -291,7 +262,6 @@ class FeatureFlags {
 	 * @return bool
 	 */
 	public function has_user_enabled_flag( $flag_key ) {
-
 		$user_id  = get_current_user_id();
 		$response = false;
 
@@ -302,11 +272,9 @@ class FeatureFlags {
 
 			// Other.
 			$response = ( isset( $user_settings[ $flag_key ] ) ? $user_settings[ $flag_key ] : false );
-
 		}
 
 		return $response;
-
 	}
 
 	/**
@@ -332,11 +300,9 @@ class FeatureFlags {
 			$groups = self::get_user( $user_id, $meta_key, true );
 
 			foreach ( $groups as $group => $index ) {
-
 				$group_obj = self::get_group( $group );
 
 				if ( false !== $group_obj ) {
-
 					$result = $group_obj->has_flag( $flag_key );
 
 					if ( false !== $result ) {
@@ -368,29 +334,21 @@ class FeatureFlags {
 	 * @return void
 	 */
 	public function toggle_feature_preview( $flag_key ) {
-
 		$user_id = get_current_user_id();
 
 		if ( $user_id ) {
-
 			$user_settings = self::get_user( $user_id, self::$meta_prefix, true );
 
 			$enabled = ( $user_settings ?: [] );
 
 			if ( $enabled[ $flag_key ] ) {
-
 				$enabled[ $flag_key ] = ! $enabled[ $flag_key ];
-
 			} else {
-
 				$enabled[ $flag_key ] = true;
-
 			}
 
 			self::update_user( $user_id, self::$meta_prefix, $enabled );
-
 		}
-
 	}
 
 	/**
@@ -399,28 +357,21 @@ class FeatureFlags {
 	 * @param string $group_key The key for the group we're toggling.
 	 */
 	public function toggle_group_preview( $group_key ) {
-
 		$user_id  = get_current_user_id();
 		$meta_key = self::$meta_prefix . 'groups';
 
 		if ( $user_id ) {
-
 			$user_settings = self::get_user( $user_id, $meta_key, true );
 
 			$enabled = ( $user_settings ?: [] );
 
 			if ( $enabled[ $group_key ] ) {
-
 				$enabled[ $group_key ] = ! $enabled[ $group_key ];
-
 			} else {
-
 				$enabled[ $group_key ] = true;
-
 			}
 
 			self::update_user( $user_id, $meta_key, $enabled );
-
 		}
 	}
 
@@ -432,7 +383,6 @@ class FeatureFlags {
 	 * @return void|string JSON response if error.
 	 */
 	public function toggle_feature_publication( $flag_key ) {
-
 		$meta_key        = self::$meta_prefix . 'flags';
 		$published_flags = maybe_unserialize( get_option( $meta_key ) );
 		$options_type    = gettype( $published_flags );
@@ -440,13 +390,11 @@ class FeatureFlags {
 		if ( 'array' !== $options_type ) {
 			$published_flags = [];
 			add_option( $meta_key, maybe_serialize( $published_flags ) );
-
 		}
 
 		$found_in_options = array_search( $flag_key, $published_flags, true );
 
 		if ( false === $found_in_options || - 1 === $found_in_options ) {
-
 			if ( self::find_flag( $flag_key )->stable !== true ) {
 				return wp_json_encode( 'This feature is unstable.' );
 			} else {
@@ -457,7 +405,6 @@ class FeatureFlags {
 		}
 
 		update_option( $meta_key, $published_flags, true );
-
 	}
 
 	/**
@@ -470,14 +417,12 @@ class FeatureFlags {
 	 * @return mixed
 	 */
 	public function get_user( $user_id, $key, $single = true ) {
-
 		if ( function_exists( 'get_user_attribute' ) ) {
 			return get_user_attribute( $user_id, $key );
 		} else {
 			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
 			return get_user_meta( $user_id, $key, $single );
 		}
-
 	}
 
 	/**
@@ -491,14 +436,12 @@ class FeatureFlags {
 	 * @return bool|int
 	 */
 	private function update_user( $user_id, $meta_key, $meta_value, $prev_value = '' ) {
-
 		if ( function_exists( 'update_user_attribute' ) ) {
 			return update_user_attribute( $user_id, $meta_key, $meta_value );
 		} else {
 			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
 			return update_user_meta( $user_id, $meta_key, $meta_value, $prev_value );
 		}
-
 	}
 
 	/**
@@ -510,11 +453,9 @@ class FeatureFlags {
 	 * @return bool Is there a query string for this flag currently?
 	 */
 	public function check_query_string( $flag_key ) {
-
-		$query = find_query_string();
+		$query = flagpole_find_query_string();
 
 		if ( ! empty( $query ) && $query ) {
-
 			$group = $this->get_group( $query );
 
 			if ( false !== $group ) {
@@ -538,7 +479,6 @@ class FeatureFlags {
 	 * @return string Error response message key.
 	 */
 	public function create_group( $group_key, $name, $description = '', $private = false ) {
-
 		$sanitised_key = sanitize_title( $group_key );
 
 		$group_exists = self::get_group( $sanitised_key, true );
@@ -546,7 +486,6 @@ class FeatureFlags {
 		if ( true === $group_exists ) {
 			return 'group-with-key-exists';
 		} else {
-
 			$status = ( 'true' === $private ? true : false );
 
 			$new_group = new Group( $sanitised_key, $name, $description, $status );
@@ -559,7 +498,6 @@ class FeatureFlags {
 
 			return 'group-created';
 		}
-
 	}
 
 	/**
@@ -581,13 +519,11 @@ class FeatureFlags {
 	 * @return int|string
 	 */
 	public function add_flag_to_group( $flag_key, $group_key ) {
-
 		$flag   = self::find_flag( $flag_key );
 		$group  = self::get_group( $group_key, false, true );
 		$groups = self::get_groups();
 
 		if ( false !== $flag && false !== $group ) {
-
 			$result = $groups[ $group ]->add_flag( $flag_key );
 
 			if ( $result ) {
@@ -610,14 +546,15 @@ class FeatureFlags {
 	 * @return string
 	 */
 	public function remove_flag_from_group( $flag_key, $group_key ) {
+		$group_index = self::get_group( $group_key, false, true );
+		$groups      = self::get_groups();
 
-		$flag   = empty( $flag );
-		$group  = self::get_group( $group_key, false, true );
-		$groups = self::get_groups();
+		if ( false !== $flag_key && false !== $group_index ) {
 
-		if ( false !== $flag && false !== $group ) {
-			$groups[ $group ]->remove_flag( $flag_key );
+			// Get group index and remove it from the groups array.
+			$groups[ $group_index ]->remove_flag( $flag_key );
 			self::save_groups( $groups );
+
 			return 'fgd';
 		} else {
 			return 'fgde';
@@ -632,7 +569,6 @@ class FeatureFlags {
 	 * @return string Result code.
 	 */
 	public function delete_group( $group_key ) {
-
 		$index  = self::get_group( $group_key, false, true );
 		$groups = self::get_groups();
 
@@ -643,7 +579,6 @@ class FeatureFlags {
 		} else {
 			return 0;
 		}
-
 	}
 
 	/**
@@ -652,7 +587,6 @@ class FeatureFlags {
 	 * @return array|mixed
 	 */
 	public function get_groups() {
-
 		$key    = self::get_options_key() . 'groups';
 		$groups = maybe_unserialize( get_option( $key ) );
 
@@ -673,7 +607,6 @@ class FeatureFlags {
 	 * @return \FeatureFlag\Group|bool.
 	 */
 	public function get_group( $group_key, $check = false, $pos = false ) {
-
 		$group    = false;
 		$groups   = $this->groups;
 		$position = false;

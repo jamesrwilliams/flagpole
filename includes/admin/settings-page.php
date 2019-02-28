@@ -5,7 +5,7 @@
  * @package wp-feature-flags
  */
 
-use FeatureFlags\FeatureFlags;
+use Flagpole\Flagpole;
 
 // Settings page.
 add_action(
@@ -13,20 +13,20 @@ add_action(
 	function () {
 		add_submenu_page(
 			'tools.php',
-			'Feature Flags',
-			'Feature Flags',
+			'Flagpole',
+			'Flagpole',
 			'edit_posts',
-			'feature-flags',
+			'flagpole',
 			function () {
 
 				// TODO Add nonce to admin pages for tab and flags.
-				$active_tab      = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'flags';
-				$available_flags = FeatureFlags::init()->get_flags();
-				$enforced_flags  = FeatureFlags::init()->get_flags( true );
+				$flagpole_active_tab      = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'flags';
+				$flagpole_available_flags = Flagpole::init()->get_flags();
+				$flagpole_enforced_flags  = Flagpole::init()->get_flags( true );
 
 				?>
 
-					<?php if ( ! $enforced_flags && ! $available_flags ) { ?>
+					<?php if ( ! $flagpole_enforced_flags && ! $flagpole_available_flags ) { ?>
 
 						<div class="notice notice-success is-dismissible">
 							<p><strong>Heads Up!</strong> No feature flags have been detected in your theme.</p>
@@ -40,14 +40,14 @@ add_action(
 
 					<div class="wrap">
 
-						<h1>Feature Flags</h1>
+						<h1>Flagpole</h1>
 
 						<?php if ( isset( $_GET['error'] ) ) { ?>
 
-							<?php $error_key = sanitize_text_field( wp_unslash( $_GET['error'] ) ); ?>
+							<?php $flagpole_error_key = sanitize_text_field( wp_unslash( $_GET['error'] ) ); ?>
 
-							<div class="notice notice-<?php echo wp_kses_post( FeatureFlags::init()->get_admin_message_class( $error_key ) ); ?> is-dismissible">
-								<p><?php echo wp_kses_post( FeatureFlags::init()->get_admin_error_message( $error_key ) ); ?></p>
+							<div class="notice notice-<?php echo wp_kses_post( Flagpole::init()->get_admin_message_class( $flagpole_error_key ) ); ?> is-dismissible">
+								<p><?php echo wp_kses_post( Flagpole::init()->get_admin_error_message( $flagpole_error_key ) ); ?></p>
 								<button type="button" class="notice-dismiss">
 									<span class="screen-reader-text">Dismiss this notice.</span>
 								</button>
@@ -56,15 +56,15 @@ add_action(
 					<?php } ?>
 
 						<h2 class="nav-tab-wrapper">
-							<a href="?page=feature-flags&tab=flags" class="nav-tab <?php echo wp_kses_post( 'flags' === $active_tab ? 'nav-tab-active' : '' ); ?>">Flags</a>
-							<a href="?page=feature-flags&tab=groups" class="nav-tab <?php echo wp_kses_post( 'groups' === $active_tab ? 'nav-tab-active' : '' ); ?>">Groups</a>
+							<a href="?page=flagpole&tab=flags" class="nav-tab <?php echo wp_kses_post( 'flags' === $flagpole_active_tab ? 'nav-tab-active' : '' ); ?>">Flags</a>
+							<a href="?page=flagpole&tab=groups" class="nav-tab <?php echo wp_kses_post( 'groups' === $flagpole_active_tab ? 'nav-tab-active' : '' ); ?>">Groups</a>
 						</h2>
 
 						<div class="notice-container"></div>
 
 						<?php
 
-						include_once plugin_dir_path( __FILE__ ) . '/settings-page/settings-page-' . $active_tab . '.php';
+						include_once plugin_dir_path( __FILE__ ) . '/settings-page/settings-page-' . $flagpole_active_tab . '.php';
 
 						?>
 
