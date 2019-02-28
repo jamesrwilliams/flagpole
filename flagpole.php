@@ -11,7 +11,7 @@
  * @wordpress-plugin
  * Plugin Name:       Flagpole
  * Description:       Easily register and work with feature flags in your theme.
- * Version:           1.0.0
+ * Version:           0.1.0
  * Author:            James Williams
  * Requires PHP:      5.6
  * Text Domain:       flagpole
@@ -28,7 +28,7 @@ use Flagpole\Flagpole;
 // Define plugin paths and url for global usage.
 define( 'FLAGPOLE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FLAGPOLE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'FLAGPOLE_VERSION', '1.0.0' );
+define( 'FLAGPOLE_VERSION', '0.1.0' );
 
 // Register admin page.
 add_action(
