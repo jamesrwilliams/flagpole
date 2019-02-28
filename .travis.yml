@@ -8,10 +8,6 @@ notifications:
     on_success: never
     on_failure: change
 
-branches:
-  only:
-    - feat/automated-tests
-
 cache:
   directories:
     - $HOME/.composer/cache
