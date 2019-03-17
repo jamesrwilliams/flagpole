@@ -299,6 +299,10 @@ class Flagpole {
 			// We have a user.
 			$groups = self::get_user( $user_id, $meta_key, true );
 
+			if ( ! is_array( $groups ) ) {
+				return $response;
+			}
+
 			foreach ( $groups as $group => $index ) {
 				$group_obj = self::get_group( $group );
 
