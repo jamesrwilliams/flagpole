@@ -1,6 +1,6 @@
 # Flagpole
 
-[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) 
+[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![Beerpay](https://beerpay.io/jamesrwilliams/flagpole/badge.svg?style=flat)](https://beerpay.io/jamesrwilliams/flagpole)
 
 ## About
 
@@ -20,7 +20,7 @@ using query strings. For planned development work and features see [issues label
 
 ### Required theme changes
 
-Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to the your theme to catch any errors that may occur if the feature-flags plugin is disabled for any reason.
+Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to the your theme to catch any errors that may occur if the Flagpole plugin is disabled for any reason.
 
 ```php
 if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
