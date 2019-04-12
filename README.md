@@ -45,7 +45,7 @@ if ( function_exists( 'flagpole_register_flag' ) ) {
         'title'       => 'My awesome new feature',
         'key'         => 'correct-horse-battery-staple',
         'enforced'    => false,
-        'description' => 'An example feature definition'
+        'description' => 'An example feature definition',
         'stable'      => false,
     
     ]);
