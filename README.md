@@ -1,6 +1,6 @@
 # Flagpole
 
-[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![Beerpay](https://beerpay.io/jamesrwilliams/flagpole/badge.svg?style=flat)](https://beerpay.io/jamesrwilliams/flagpole)
+[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) [![Beerpay](https://beerpay.io/jamesrwilliams/flagpole/badge.svg?style=flat)](https://beerpay.io/jamesrwilliams/flagpole)
 
 ## About
 
@@ -45,7 +45,7 @@ if ( function_exists( 'flagpole_register_flag' ) ) {
         'title'       => 'My awesome new feature',
         'key'         => 'correct-horse-battery-staple',
         'enforced'    => false,
-        'description' => 'An example feature definition'
+        'description' => 'An example feature definition',
         'stable'      => false,
     
     ]);
