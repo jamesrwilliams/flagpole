@@ -421,10 +421,27 @@ class Flagpole {
 	 * @return mixed
 	 */
 	public function get_user( $user_id, $key, $single = true ) {
-		if ( function_exists( 'get_user_attribute' ) ) {
+		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+			/**
+			 * On VIP GO sites debug logs get filled with deprecation notices when get_user_attribute() is used.
+			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
+			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 *
+			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
+			 */
+			return get_user_meta( $user_id, $key, $single );
+		} elseif ( function_exists( 'get_user_attribute' ) ) {
+			/**
+			 * On wordpress.com we must use get_user_attribute() as per
+			 * https://lobby.vip.wordpress.com/wordpress-com-documentation/user_meta-vs-user_attributes/
+			 */
 			return get_user_attribute( $user_id, $key );
 		} else {
-			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
+			/**
+			 * On self-hosted/wordpress.org sites we can use get_user_meta()
+			 *
+			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
+			 */
 			return get_user_meta( $user_id, $key, $single );
 		}
 	}
@@ -440,10 +457,27 @@ class Flagpole {
 	 * @return bool|int
 	 */
 	private function update_user( $user_id, $meta_key, $meta_value, $prev_value = '' ) {
-		if ( function_exists( 'update_user_attribute' ) ) {
+		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+			/**
+			 * On VIP GO sites debug logs get filled with deprecation notices when update_user_attribute() is used.
+			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
+			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 *
+			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
+			 */
+			return update_user_meta( $user_id, $meta_key, $meta_value, $prev_value );
+		} elseif ( function_exists( 'update_user_attribute' ) ) {
+			/**
+			 * On wordpress.com we must use update_user_attribute() as per
+			 * https://lobby.vip.wordpress.com/wordpress-com-documentation/user_meta-vs-user_attributes/
+			 */
 			return update_user_attribute( $user_id, $meta_key, $meta_value );
 		} else {
-			// phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
+			/**
+			 * On self-hosted/wordpress.org sites we can use update_user_meta()
+			 *
+			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
+			 */
 			return update_user_meta( $user_id, $meta_key, $meta_value, $prev_value );
 		}
 	}
