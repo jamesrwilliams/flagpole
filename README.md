@@ -1,11 +1,11 @@
 # Flagpole
 
-[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) [![Beerpay](https://beerpay.io/jamesrwilliams/flagpole/badge.svg?style=flat)](https://beerpay.io/jamesrwilliams/flagpole)
+[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls)
 
 ## About
 
-This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags. 
-It adds an admin interface where users can enable and disable features for testing, and also be enabled 
+This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags.
+It adds an admin interface where users can enable and disable features for testing, and also be enabled
 using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
 
 ## Contents
@@ -16,7 +16,7 @@ using query strings. For planned development work and features see [issues label
 4. [Shortcode](#the-shortcode)
 5. [Contributing](#contributing)
 
-## Installation 
+## Installation
 
 ### Required theme changes
 
@@ -41,13 +41,13 @@ When registering a flag it is a good idea to wrap them in a function exists bloc
 if ( function_exists( 'flagpole_register_flag' ) ) {
 
     flagpole_register_flag([
-        
+
         'title'       => 'My awesome new feature',
         'key'         => 'correct-horse-battery-staple',
         'enforced'    => false,
         'description' => 'An example feature definition',
         'stable'      => false,
-    
+
     ]);
 }
 ```
@@ -56,14 +56,14 @@ Alternatively features can be declared as an nested array to avoid large blocks 
 
 ```php
 flagpole_register_flag([
-    [       
+    [
         'title'       => 'Listed Feature #1',
         'key'         => 'listed-feature-1',
     ],
-    [       
+    [
         'title'       => 'Listed Feature #2',
         'key'         => 'listed-feature-2',
-    ] 
+    ]
 ]);
 ```
 
@@ -117,7 +117,7 @@ if ( flagpole_flag_enabled( 'foo' ) ) {
 
 ## The Shortcode
 
-This plugin adds a utility shortcode to help to debug the use of Flagpole flags. 
+This plugin adds a utility shortcode to help to debug the use of Flagpole flags.
 
 ```php
 echo do_shortcode('[debugFlagpole]');
@@ -135,4 +135,4 @@ echo do_shortcode('[debugFlagpole flag="key-1,key-2,key-3"]');
 
 ## Contributing
 
-Any PRs and suggestions are very welcome, along with ideas and discussions on issues. 
+Any PRs and suggestions are very welcome, along with ideas and discussions on issues.
