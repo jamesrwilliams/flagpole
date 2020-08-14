@@ -287,14 +287,14 @@ function flagpole_redirect_with_key() {
 }
 
 /**
- * Check if there is a flag query string.
+ * Check if there is a group query string.
  *
- * @return bool|string False if there isn't one, the flag string if found.
+ * @return bool|string False if there isn't one, the group key if found.
  */
 function flagpole_find_query_string() {
 
 	/* TODO: #21 - Make this a configurable key */
-	$query_string_key = 'flag';
+	$query_string_key = 'group';
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
 	if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {
@@ -336,3 +336,4 @@ function flagpole_operation_redirect( $error_code = false, $redirect = true ) {
 
 add_shortcode( 'debugFlagpole_flags', 'flagpole_shortcode_debug_flags' );
 add_shortcode( 'debugFlagpole_groups', 'flagpole_shortcode_debug_groups' );
+add_shortcode( 'debugFlagpole_db', 'flagpole_shortcode_debug_db' );

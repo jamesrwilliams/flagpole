@@ -24,6 +24,24 @@ function flagpole_shortcode_debug_flags( $atts ) {
 	);
 
 	$title  = '
+<style>
+.status-badge {
+	padding: 2px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	text-transform: uppercase;
+	color: white;
+	display: inline-block;
+}
+
+.status-badge-enabled {
+	background-color: #67CFA2;
+}
+
+.status-badge-disabled {
+	background-color: #FF81A3;
+}
+</style>
 <table class="table table-sm">
 	<thead>
 		<tr>
@@ -56,7 +74,8 @@ function flagpole_shortcode_debug_flags( $atts ) {
 	}
 
 	foreach ( $keys as $key ) {
-		$status = ( $key->is_enabled() ? 'Enabled' : 'Disabled' );
+
+		$status = ( $key->is_enabled() ? "<span class='status-badge status-badge-enabled'>Enabled</span>" : "<span class='status-badge status-badge-disabled'>Disabled</span>" );
 
 		$html = $html . '<tr><td>' . $key->get_name( false ) . '</td><td><code>' . $key->get_key( false ) . '</code></td><td>' . $status . '</td><td>' . $key->is_enabled( true ) . '</td></tr>';
 	}
@@ -76,6 +95,7 @@ function flagpole_shortcode_debug_groups( $atts ) {
 			<th>Key</th>
 			<th>Flags</th>
 			<th>Private</th>
+			<th>Preview</th>
 		</tr>
 	</thead><tbody>';
 	$footer = '</tbody></table>';
@@ -83,10 +103,29 @@ function flagpole_shortcode_debug_groups( $atts ) {
 	$html = '';
 
 	foreach ($groups as $group) {
-		$html = $html . '<tr><td>' . $group->name . '</td><td><code>' . $group->key . '</code></td><td>' . renderFlagList($group->flags, true) . '</td><td>' . ( $group->private ? 'Private' : 'Public' ) . '</td></tr>';
+		$html = $html . '<tr>
+			<td>' . $group->name . '</td>
+			<td><code>' . $group->key . '</code></td>
+			<td>' . renderFlagList($group->flags, true) . '</td>
+			<td>' . ( $group->private ? 'Private' : 'Public' ) . '</td>
+			<td><a href="./?group=' . $group->key . '">Preview</a></td>
+		</tr>';
 	}
 
 	return '<div class="ff-debug">' . $title . $html . $footer . '</div>';
+}
+
+function flagpole_shortcode_debug_db( $atts ) {
+
+	$groups_key         = Flagpole::init()->get_options_key() . 'groups';
+	$flag_groups = maybe_unserialize( get_option( $groups_key ) );
+
+	var_dump($flag_groups);
+
+	$flags_key         = Flagpole::init()->get_options_key() . 'flags';
+	$flags = maybe_unserialize( get_option( $flags_key ) );
+
+	var_dump($flags);
 }
 
 function renderFlagList($items) {

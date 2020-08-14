@@ -229,9 +229,9 @@ class Flagpole {
 				} elseif ( flagpole_user_enabled( $flag_key ) ) {
 					return ( $reason ? 'User preview' : true );
 				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
-					return ( $reason ? 'User preview via group' : true );
+					return ( $reason ? 'User preview with group' : true );
 				} else {
-					return ( $reason ? 'Not published, enforced, in group query, previewed, or previewed via group.' : false );
+					return ( $reason ? '' : false );
 				}
 			}
 		} else {
