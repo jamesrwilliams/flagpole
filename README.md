@@ -1,21 +1,19 @@
 # Flagpole
 
-[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls)
-
-![Packagist Downloads](https://img.shields.io/packagist/dm/jamesrwilliams/wp-feature-flags)
+[![Build Status](https://travis-ci.org/jamesrwilliams/flagpole.svg?branch=develop)](https://travis-ci.org/jamesrwilliams/flagpole) [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) ![Packagist Downloads](https://img.shields.io/packagist/dm/jamesrwilliams/wp-feature-flags)
 
 ## About
 
-This plugin is for theme developers who wish to add simple feature flags to their themes. These flags can be enabled via an admin interface, previewed on a per-user, or group basis, and even enabled via QueryString for those without accounts.
+This plugin is for WordPress theme developers who wish to add simple feature flags to their themes. These flags can be enabled via an admin interface, previewed on a per-user, or group basis, and even enabled via QueryString for those without accounts.
 
-For planned development work please see the [roadmaps](https://github.com/jamesrwilliams/flagpole/projects) or [issues labeled with "enhancement"](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
+For planned development work please see the [roadmaps](https://github.com/jamesrwilliams/flagpole/projects) or issues labeled with [enhancement](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
 
-You can find an example WordPress theme using Flagpole [here](https://github.com/jamesrwilliams/flagpole-demo-theme) or the .
+You can find an example WordPress theme using Flagpole [here](https://github.com/jamesrwilliams/flagpole-demo-theme).
 
 ## Contents
 
 1. [Installation](#installation)
-2. [Enabling flags](#enabling-your-flags)
+2. [Enabling flags](#enabling-flags)
 3. [Using flags in your theme](#checking-the-status-of-a-feature-flag)
 1. [Using QueryStrings](#query-strings)
 4. [Shortcodes](#shortcodes)
@@ -25,7 +23,7 @@ You can find an example WordPress theme using Flagpole [here](https://github.com
 
 ### Required theme changes
 
-Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to block to your theme to catch any errors that may occur if the Flagpole plugin is disabled for any reason.
+Due to the nature of this plugin requiring theme changes, it is a good idea to add the following to block to your theme to catch any errors if the plugin is disabled for any reason.
 
 ```php
 if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
@@ -72,7 +70,7 @@ flagpole_register_flag([
 ]);
 ```
 
-### Flag arguments
+#### Flag arguments
 
 | Parameter              | Type      | Default | Description |
 |------------------------|-----------|---------|---|
@@ -81,64 +79,62 @@ flagpole_register_flag([
 | enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
 | description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
 | stable (optional)      | `boolean` | `false` | Allows users to publish features from the admin area. Has to be enabled. Features default to "unstable". |
-| queryable (optional)   | `boolean` | `false` | Allows users to preview the flag using query strings.
 
-## Enabling your flags
+## Enabling flags
 
-There are four ways to have a flag enabled with Flagpole. These are as follows:
+There are three ways to have a flag enabled with Flagpole. These are:
 
-- **[Previewed](#previewing-a-flag)** - Enable a flag only for the current logged in user.
-- **[Published](#publishing-a-flag)** - Enable a flag for every visitor on the site.
-- **[Enforced](#enforcing-a-flag)** - Flags which are enabled by default by developers.
+- **[Previewing](#previewing)** - Enable a flag only for the current logged in user.
+- **[Publishing](#publishing)** - Enable a flag for every visitor on the site.
+- **[Enforcing](#enforcing)** - Flags which are enabled by default by developers.
 
-### Previewing a flag
+### Previewing
 
-Any flag can be previewed. This can be done via the Flagpole admin screen and pressing the "Enabled Preview" button. Selecting this will enable that flag for the current logged in user, which is great for previewing a feature while limiting its exposure to users. This can be turned off again by pressing the "disable preview" button. Users can preview any number of flags at any one time. You can also preview groups of flags using Groups.
+A flag can be previewed for the current user by enabling the preview in the Flagpole admin screen. This will enable this flag for this user only. For previewing multiple flags at the same time check out [Flag Groups](#flag-groups).
 
-### Publishing a flag
+Any flag can be previewed. This can be done via the Flagpole admin screen and pressing the "Enabled Preview" button.
+
+This can be turned off again by pressing the "disable preview" button.
+
+Users can preview any number of flags at any one time. You can also preview groups of flags using Groups.
+
+### Publishing
 
 Publishing a flag enables it for every user that visits your site, this includes logged out users. Any user can publish a feature as long as it has been marked as stable in the flag options like so: `['stable' => true]`. This acts as a safety net letting developers mark features ready for publication.
 
-### Enforcing a flag
+### Enforcing
 
 Enforcing a flag is where a developer can force a flag to be published. This allows them to toggle a flag via their source code by setting the 'enforced' option to true in the flag options. These are displayed in a separate list in the admin area and are not interactive to users in the admin area.
 
-## Checking the status of a feature flag
+## Flag Groups
+
+Flag groups are a way to manage multiple flags at a time. You can preview Flag groups like you can a single flag and by using the `group` URL parameter, and the group key you wish to enable.
+A `private` group will require users to login to the site prior to activating the flags for them.
+
+## Theme Logic
+
+Flagpole provides a simple method for checking the status of a feature flag allowing for easy conditional theme logic.
 
 Use the `flagpole_flag_enabled()` function in your PHP theme code to toggle features based on the status of your flags:
 
 ```php
-flagpole_flag_enabled( 'feature-key' );
-```
-Replace `feature-key` with the key used in the register function to check if it is enabled.
-
-**Example** - If my feature key was `foo`:
-
-```php
-if ( flagpole_flag_enabled( 'foo' ) ) {
-    /* Flagged feature */
+if ( flagpole_flag_enabled( 'flag_key' ) ) {
+    /* flag_key is enabled! */
+} else {
+    /* flag_key is not enabled */
 }
 ```
-
-## Query Strings
-
-You can also enable Flag groups using the `group` URL parameter, and the group key you wish to enable.
-
-### Using groups
-
-Flag groups are a way to manage multiple groups at a time.
+Replace `flag_key` with the key used in the register function to check if it is enabled.
 
 ## Shortcodes
 
-This plugin adds a utility shortcode to help to debug the use of Flagpole flags.
+This plugin adds a number of utility shortcodes to help to debug the use of Flagpole flags.
 
-```php
-echo do_shortcode('[debugFlagpole_flags]');
+- [debugFlagpole_flags](#debugFlagpole_flags)
+- [debugFlagpole_groups](#debugFlagpole_groups)
+- [debugFlagpole_db](#debugFlagpole_db)
 
-echo do_shortcode('[debugFlagpole_groups]');
-```
-
-### Flags
+### debugFlagpole_flags
 
 The shortcode by default shows all flags that are not enforced found in your theme. You can also specify which flags you're looking to debug specifically using the flag parameter like so with either a single key or a comma separated list:
 
