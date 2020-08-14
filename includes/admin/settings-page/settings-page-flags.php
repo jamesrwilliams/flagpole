@@ -79,8 +79,8 @@
 
 					if ( ! $flagpole_stable ) {
 						$flagpole_other_args['disabled'] = true;
-						$flagpole_button_text            = 'Disabled';
-						$flagpole_other_args['title']    = 'Feature is marked as unstable.';
+						$flagpole_button_text            = 'Publish';
+						$flagpole_other_args['title']    = 'Feature is marked as unstable and is not allowed to be published.';
 					}
 
 					submit_button(

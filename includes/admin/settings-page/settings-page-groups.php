@@ -114,8 +114,8 @@ use Flagpole\Flagpole;
 						<?php wp_nonce_field( 'ff_delete_group' ); ?>
 						<?php
 							submit_button(
-								'Delete',
-								'small',
+								'Delete group',
+								'danger small',
 								'featureFlagsBtn_delete_group',
 								false,
 								[

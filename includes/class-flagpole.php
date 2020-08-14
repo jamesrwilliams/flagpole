@@ -225,17 +225,17 @@ class Flagpole {
 				return ( $reason ? 'Enforced' : true );
 			} else {
 				if ( self::check_query_string( $flag_key ) ) {
-					return ( $reason ? 'Using a group query string' : true );
+					return ( $reason ? 'Group query string' : true );
 				} elseif ( flagpole_user_enabled( $flag_key ) ) {
-					return ( $reason ? 'User previewing flag' : true );
+					return ( $reason ? 'User preview' : true );
 				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
-					return ( $reason ? 'User preview enabled via group' : true );
+					return ( $reason ? 'User preview via group' : true );
 				} else {
-					return ( $reason ? '' : null );
+					return ( $reason ? 'Not published, enforced, in group query, previewed, or previewed via group.' : false );
 				}
 			}
 		} else {
-			return false;
+			return ( $reason ? 'Not configured' : false );
 		}
 	}
 
@@ -327,7 +327,13 @@ class Flagpole {
 	 * @return bool Is the feature private or not.
 	 */
 	public function is_private( $group_key ) {
-		return self::get_group( $group_key )->private;
+		$group = self::get_group($group_key);
+		if($group) {
+			return self::get_group( $group_key )->private;
+		} else {
+			return false;
+		}
+
 	}
 
 	/**

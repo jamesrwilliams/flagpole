@@ -5,15 +5,16 @@
 ## About
 
 This plugin is for developers. The aim is to simplify/speed up the process of working with feature flags.
-It adds an admin interface where users can enable and disable features for testing, and also be enabled
-using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
+It adds an admin interface where users can enable and disable features for testing, and, also be enabled
+using query strings. For planned development work and features see [issues labeled with "enhancement"](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). You can find an example WordPress theme using Flagpole [here](https://github.com/jamesrwilliams/flagpole-demo-theme).
 
 ## Contents
 
 1. [Installation](#installation)
 2. [Enabling flags](#enabling-your-flags)
 3. [Using flags in your theme](#checking-the-status-of-a-feature-flag)
-4. [Shortcode](#the-shortcode)
+1. [Using QueryStrings](#query-strings)
+4. [Shortcodes](#shortcodes)
 5. [Contributing](#contributing)
 
 ## Installation
@@ -76,7 +77,7 @@ flagpole_register_flag([
 | enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
 | description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
 | stable (optional)      | `boolean` | `false` | Allows users to publish features from the admin area. Has to be enabled. Features default to "unstable". |
-
+| queryable (optional)   | `boolean` | `false` | Allows users to preview the flag using query strings.
 
 ## Enabling your flags
 
@@ -115,22 +116,36 @@ if ( flagpole_flag_enabled( 'foo' ) ) {
 }
 ```
 
-## The Shortcode
+## Query Strings
+
+You can also enable Flag groups using the `flag` URL parameter, and the group key you wish to enable.
+
+## Shortcodes
 
 This plugin adds a utility shortcode to help to debug the use of Flagpole flags.
 
 ```php
-echo do_shortcode('[debugFlagpole]');
+echo do_shortcode('[debugFlagpole_flags]');
+
+echo do_shortcode('[debugFlagpole_groups]');
 ```
+
+### Flags
 
 The shortcode by default shows all flags that are not enforced found in your theme. You can also specify which flags you're looking to debug specifically using the flag parameter like so with either a single key or a comma separated list:
 
 ```php
 // Single Key
-echo do_shortcode('[debugFlagpole flag="key-1"]');
+echo do_shortcode('[debugFlagpole_flags flag="key-1"]');
 
 // Mutliple keys
-echo do_shortcode('[debugFlagpole flag="key-1,key-2,key-3"]');
+echo do_shortcode('[debugFlagpole_flags flag="key-1,key-2,key-3"]');
+```
+
+### Groups
+
+```php
+echo do_shortcode('[debugFlagpole_groups]');
 ```
 
 ## Contributing

@@ -334,4 +334,5 @@ function flagpole_operation_redirect( $error_code = false, $redirect = true ) {
 	}
 }
 
-add_shortcode( 'debugFlagpole', 'flagpole_shortcode_debug' );
+add_shortcode( 'debugFlagpole_flags', 'flagpole_shortcode_debug_flags' );
+add_shortcode( 'debugFlagpole_groups', 'flagpole_shortcode_debug_groups' );
