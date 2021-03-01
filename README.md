@@ -13,11 +13,11 @@ You can find an example WordPress theme using Flagpole [here](https://github.com
 ## Contents
 
 1. [Installation](#installation)
-2. [Enabling flags](#enabling-flags)
-3. [Using flags in your theme](#checking-the-status-of-a-feature-flag)
-1. [Using QueryStrings](#query-strings)
-4. [Shortcodes](#shortcodes)
-5. [Contributing](#contributing)
+2. [Adding flags to themes](#checking-the-status-of-a-feature-flag)
+3. [Enabling flags](#enabling-flags)
+4. [Using QueryStrings](#query-strings)
+5. [Shortcodes](#shortcodes)
+6. [Contributing](#contributing)
 
 ## Installation
 
@@ -44,18 +44,16 @@ When registering a flag it is a good idea to wrap them in a function exists bloc
 if ( function_exists( 'flagpole_register_flag' ) ) {
 
     flagpole_register_flag([
-
         'title'       => 'My awesome new feature',
         'key'         => 'correct-horse-battery-staple',
         'enforced'    => false,
         'description' => 'An example feature definition',
         'stable'      => false,
-
     ]);
 }
 ```
 
-Alternatively features can be declared as an nested array to avoid large blocks of feature calls:
+Alternatively features can be declared as a nested array to avoid large blocks of feature calls:
 
 ```php
 flagpole_register_flag([
@@ -73,12 +71,12 @@ flagpole_register_flag([
 #### Flag arguments
 
 | Parameter              | Type      | Default | Description |
-|------------------------|-----------|---------|---|
-| key                    | `string`  | N/A     |  The unique key used in the template to check if a feature is enabled. |
+|------------------------|-----------|---------|-------------|
+| key                    | `string`  | -       | The unique key used in the template to check if a feature is enabled. |
 | title                  | `string`  | ""      | The human readable feature name. |
-| enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be true for every user. Useful for deploying a flag before removing it from the codebase. |
-| description (optional) | `string`  | ""      | A description displayed in the admin screen. Use to tell users what they are enabling and other information. |
-| stable (optional)      | `boolean` | `false` | Allows users to publish features from the admin area. Has to be enabled. Features default to "unstable". |
+| description (optional) | `string`  | ""      | A description displayed in the admin screen. |
+| stable (optional)      | `boolean` | `false` | If true allows users to publish features from the admin area. |
+| enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be enabled for every user. Useful for deploying a flag before removing it from the codebase. |
 
 ## Enabling flags
 
@@ -110,6 +108,12 @@ Enforcing a flag is where a developer can force a flag to be published. This all
 
 Flag groups are a way to manage multiple flags at a time. You can preview Flag groups like you can a single flag and by using the `group` URL parameter, and the group key you wish to enable.
 A `private` group will require users to login to the site prior to activating the flags for them.
+
+Example:
+
+```
+./group=battery-horse-staple
+```
 
 ## Theme Logic
 
@@ -169,3 +173,19 @@ echo do_shortcode('[debugFlagpole_groups]');
 ## Contributing
 
 Any PRs and suggestions are very welcome, along with ideas and discussions on issues.
+
+---
+
+## Installation
+## Registering Flags
+You register flags in using the `flagpole_register_flag()` function.
+## Using flags to your theme
+
+## Flags
+
+### Previewing
+
+There are currently two different ways to preview a flag
+
+### Enforcing
+### Publishing

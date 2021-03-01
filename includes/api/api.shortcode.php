@@ -106,7 +106,7 @@ function flagpole_shortcode_debug_groups( $atts ) {
 		$html = $html . '<tr>
 			<td>' . $group->name . '</td>
 			<td><code>' . $group->key . '</code></td>
-			<td>' . renderFlagList($group->flags, true) . '</td>
+			<td>' . renderFlagList($group->flags) . '</td>
 			<td>' . ( $group->private ? 'Private' : 'Public' ) . '</td>
 			<td><a href="./?group=' . $group->key . '">Preview</a></td>
 		</tr>';
@@ -114,6 +114,7 @@ function flagpole_shortcode_debug_groups( $atts ) {
 
 	return '<div class="ff-debug">' . $title . $html . $footer . '</div>';
 }
+
 
 function flagpole_shortcode_debug_db( $atts ) {
 

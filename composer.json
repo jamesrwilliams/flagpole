@@ -4,6 +4,7 @@
   "description": "Easily register and work with feature flags in your theme.",
   "keywords": ["wordpress","feature flags"],
   "homepage": "https://github.com/jamesrwilliams/flagpole",
+  "readme": "./README.md",
   "license": "MIT",
   "authors": [
     {
