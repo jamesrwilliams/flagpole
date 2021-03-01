@@ -1,6 +1,6 @@
 # Flagpole
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) ![Packagist Downloads](https://img.shields.io/packagist/dm/jamesrwilliams/flagpole)
+[![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) ![Packagist Downloads](https://img.shields.io/packagist/dm/jamesrwilliams/flagpole) [![Known Vulnerabilities](https://snyk.io/test/github/jamesrwilliams/flagpole/badge.svg?targetFile=composer.lock)](https://snyk.io/test/github/jamesrwilliams/flagpole?targetFile=composer.lock)
 
 ## About
 
