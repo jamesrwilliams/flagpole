@@ -7,12 +7,12 @@
  * @subpackage flagpole/flagpole
  * @author     "James Williams <james@jamesrwilliams.ca>"
  * @link       https://github.com/jamesrwilliams/flagpole
- * @copyright  2019-2020 James Williams
+ * @copyright  2019-2021 James Williams
  *
  * @wordpress-plugin
  * Plugin Name:       Flagpole
  * Description:       Easily register and work with feature flags in your theme.
- * Version:           0.1.0
+ * Version:           0.1.3-beta
  * Author:            James Williams
  * Requires PHP:      5.6
  * Text Domain:       flagpole
