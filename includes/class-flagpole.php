@@ -153,7 +153,7 @@ class Flagpole {
 	 * @return void
 	 */
 	public function add_flag( $flag ) {
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'], $flag['label'] );
 	}
 
 	/**
@@ -688,6 +688,24 @@ class Flagpole {
 		}
 
 		update_option( $key, maybe_serialize( $groups ) );
+	}
+
+	/**
+	 * Returns an alphabetically sorted array of unique labels.
+	 *
+	 * @return array
+	 */
+	public function get_unique_labels() {
+		$flags = $this->flags;
+		$all_labels = [];
+
+		foreach( $flags as $flag ) {
+			$all_labels[] = $flag->label;
+		}
+
+		$unique_labels = array_unique( $all_labels );
+		asort( $unique_labels );
+		return $unique_labels;
 	}
 }
 
