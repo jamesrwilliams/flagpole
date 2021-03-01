@@ -98,8 +98,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/admin/settings-page.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.shortcode.php';
 
-require plugin_dir_path( __FILE__ ) . 'includes/admin/contextual-help.php';
-
 /**
  * AJAX Action toggling features from the WP admin area.
  */
