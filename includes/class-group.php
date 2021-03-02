@@ -6,8 +6,8 @@
  *
  * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/wp-feature-flags
- * @copyright 2019 James Williams
+ * @link      https://github.com/jamesrwilliams/flagpole
+ * @copyright 2021 James Williams
  */
 
 namespace Flagpole;
@@ -136,14 +136,16 @@ class Group {
 	/**
 	 * Check if this group has this flag.
 	 *
-	 * @param string $flag_key The flag key we're checking.
+	 * @param string $search_key The flag key we're checking.
+	 * @param bool $return Return the index or bool
 	 *
 	 * @return bool The result of the search.
 	 */
-	public function has_flag( $flag_key ) {
-		foreach ( $this->flags as $index => $flag_id ) {
-			if ( $flag_key === $flag_id ) {
-				return $index;
+	public function has_flag( $search_key , $return = false) {
+
+		foreach ( $this->get_flags() as $index => $flag_key ) {
+			if ($search_key === $flag_key ) {
+				return $return ? $index : true;
 			}
 		}
 
@@ -158,7 +160,7 @@ class Group {
 	 * @return bool Response if successful.
 	 */
 	public function remove_flag( $flag_key ) {
-		$index = $this->has_flag( $flag_key, false, true );
+		$index = $this->has_flag( $flag_key );
 
 		if ( false !== $index ) {
 			unset( $this->flags[ $index ] );

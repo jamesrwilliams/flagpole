@@ -1,22 +1,29 @@
 {
-  "name": "jamesrwilliams/flagpole",
-  "type": "wordpress-plugin",
-  "description": "Easily register and work with feature flags in your theme.",
-  "keywords": ["wordpress","feature flags"],
-  "homepage": "https://github.com/jamesrwilliams/flagpole",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "James Williams",
-      "email": "james@jamesrwilliams.ca",
-      "homepage": "https://jamesrwilliams.ca",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "composer/installers": "~1.0"
-  },
-  "require-dev": {
-    "phpcompatibility/phpcompatibility-wp": "*"
-  }
+	"name": "jamesrwilliams/flagpole",
+	"type": "wordpress-plugin",
+	"description": "Easily register and work with feature flags in your theme.",
+	"keywords": [
+		"wordpress",
+		"feature flags"
+	],
+	"homepage": "https://github.com/jamesrwilliams/flagpole",
+	"readme": "./README.md",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "James Williams",
+			"email": "james@jamesrwilliams.ca",
+			"homepage": "https://jamesrwilliams.ca",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"composer/installers": "~1.0"
+	},
+	"require-dev": {
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"squizlabs/php_codesniffer": "^3.5",
+		"wp-coding-standards/wpcs": "^2.3",
+		"phpunit/phpunit": "^7"
+	}
 }

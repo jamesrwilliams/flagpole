@@ -14,23 +14,5 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-# PHP http://make.wordpress.org/core/handbook/coding-standards/php/
-[*.php]
-indent_style = tab
-indent_size = 4
-
-# HTML http://make.wordpress.org/core/handbook/coding-standards/html/
-[*.html]
-indent_style = tab
-indent_size = 4
-
-# CSS http://make.wordpress.org/core/handbook/coding-standards/css/
-[*.css, *.scss]
-indent_style = tab
-indent_size = 4
-
-[*.js,*.json]
-# JavaScript http://make.wordpress.org/core/handbook/coding-standards/javascript/
 indent_style = tab
 indent_size = 4
