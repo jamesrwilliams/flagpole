@@ -2,7 +2,7 @@
 /**
  * Settings page that is used to render admin UI.
  *
- * @package wp-feature-flags
+ * @package flagpole
  */
 
 use Flagpole\Flagpole;

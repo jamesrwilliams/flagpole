@@ -2,13 +2,13 @@
 /**
  * A home for all our short codes.
  *
- * @package wp-feature-flags
+ * @package flagpole
  */
 
 use Flagpole\Flagpole;
 
 /**
- * Register the wp-feature-flags debug short code.
+ * Register the flagpole debug short code.
  *
  * @param array $atts Array of arguments for the short code.
  *
@@ -16,10 +16,10 @@ use Flagpole\Flagpole;
  */
 function flagpole_shortcode_debug_flags( $atts ) {
 	$args = shortcode_atts(
-		[
+		array(
 			'flag'     => 'all',
 			'enforced' => false,
-		],
+		),
 		$atts
 	);
 
@@ -59,8 +59,7 @@ function flagpole_shortcode_debug_flags( $atts ) {
 		$string = str_replace( ' ', '', $args['flag'] );
 		$keys   = explode( ',', $string );
 
-		// TODO: Check the keys provided are valid before proceeding.
-		$valid_keys = [];
+		$valid_keys = array();
 		foreach ( $keys as $key ) {
 			$valid_keys[] = Flagpole::init()->find_flag( $key );
 		}
@@ -69,7 +68,7 @@ function flagpole_shortcode_debug_flags( $atts ) {
 		$keys = Flagpole::init()->get_flags( $args['enforced'] );
 	}
 
-	if(!$keys) {
+	if ( ! $keys ) {
 		return '<div class="ff-debug"><p>No flags found in current theme.</p></div>';
 	}
 
@@ -83,7 +82,12 @@ function flagpole_shortcode_debug_flags( $atts ) {
 	return '<div class="ff-debug">' . $title . $html . $footer . '</div>';
 }
 
-function flagpole_shortcode_debug_groups( $atts ) {
+/**
+ * Return debug output for groups.
+ *
+ * @return string
+ */
+function flagpole_shortcode_debug_groups() {
 
 	$groups = Flagpole::init()->get_groups();
 
@@ -102,11 +106,11 @@ function flagpole_shortcode_debug_groups( $atts ) {
 
 	$html = '';
 
-	foreach ($groups as $group) {
+	foreach ( $groups as $group ) {
 		$html = $html . '<tr>
 			<td>' . $group->name . '</td>
 			<td><code>' . $group->key . '</code></td>
-			<td>' . renderFlagList($group->flags) . '</td>
+			<td>' . render_flag_list( $group->flags ) . '</td>
 			<td>' . ( $group->private ? 'Private' : 'Public' ) . '</td>
 			<td><a href="./?group=' . $group->key . '">Preview</a></td>
 		</tr>';
@@ -115,28 +119,53 @@ function flagpole_shortcode_debug_groups( $atts ) {
 	return '<div class="ff-debug">' . $title . $html . $footer . '</div>';
 }
 
+/**
+ * A complete debug output for Flagpole
+ *
+ * @return string - HTML Output of the shortcode summarising the DB.
+ */
+function flagpole_shortcode_debug_db() {
 
-function flagpole_shortcode_debug_db( $atts ) {
+	$output = '';
 
-	$groups_key         = Flagpole::init()->get_options_key() . 'groups';
+	$groups_key  = Flagpole::init()->get_options_key() . 'groups';
 	$flag_groups = maybe_unserialize( get_option( $groups_key ) );
 
-	var_dump($flag_groups);
+	// phpcs:ignore
+	$output = $output . print_r($flag_groups, true);
 
-	$flags_key         = Flagpole::init()->get_options_key() . 'flags';
-	$flags = maybe_unserialize( get_option( $flags_key ) );
+	$flags_key = Flagpole::init()->get_options_key() . 'flags';
+	$flags     = maybe_unserialize( get_option( $flags_key ) );
 
-	var_dump($flags);
+	// phpcs:ignore
+	$output = $output . print_r($flags, true);
+
+	return '<pre>' . $output . '</pre>';
+
 }
 
-function renderFlagList($items) {
+/**
+ * Utility method for generating a list of flags as badges for debug output.
+ *
+ * @param array $items The flags we're displaying.
+ *
+ * @return string - HTML output of the shortcode.
+ */
+function render_flag_list( $items ) {
 	$return = '';
-	if(!$items) {
+	if ( ! $items ) {
 		return '0';
 	}
-	forEach( $items as $item ) {
-		$flag = Flagpole::init()->find_flag($item);
-		$return = $return . '<span style="display: inline-block; margin-right: 3px;' . ( $flag->is_enabled(false) ? 'font-weight: bold;' : '' ) . '">' . '<code title="' . $flag->get_name(false) . '">' . $flag->get_key(false) . '</code></span>';
+	foreach ( $items as $item ) {
+		$flag = Flagpole::init()->find_flag( $item );
+		if ( $flag ) {
+
+			$flag_enabled = $flag->is_enabled( false );
+			$flag_name    = $flag->get_name( false );
+			$flag_key     = $flag->get_key( false );
+
+			$return = $return . '<span style="display: inline-block; margin-right: 3px;' . ( $flag_enabled ? 'font-weight: bold;' : '' ) . '"><code title="' . $flag_name . '">' . $flag_key . '</code></span>';
+		}
 	}
 	return $return;
 }

@@ -6,8 +6,8 @@
  *
  * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/wp-feature-flags
- * @copyright 2019 James Williams
+ * @link      https://github.com/jamesrwilliams/flagpole
+ * @copyright 2021 James Williams
  */
 
 namespace Flagpole;
