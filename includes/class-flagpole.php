@@ -427,11 +427,12 @@ class Flagpole {
 	 * @return mixed
 	 */
 	public function get_user( $user_id, $key, $single = true ) {
-		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) ) {
 			/**
 			 * On VIP GO sites debug logs get filled with deprecation notices when get_user_attribute() is used.
-			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
-			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 * Constant WPCOM_IS_VIP_ENV is only defined on VIP platform as per docs available at
+			 *
+			 * @see https://automattic.github.io/vip-go-mu-plugins/#constant_WPCOM_IS_VIP_ENV
 			 *
 			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
 			 */
@@ -463,11 +464,12 @@ class Flagpole {
 	 * @return bool|int
 	 */
 	private function update_user( $user_id, $meta_key, $meta_value, $prev_value = '' ) {
-		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) ) {
 			/**
 			 * On VIP GO sites debug logs get filled with deprecation notices when update_user_attribute() is used.
-			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
-			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 * Constant WPCOM_IS_VIP_ENV is only defined on VIP platform as per docs available at
+			 *
+			 * @see https://automattic.github.io/vip-go-mu-plugins/#constant_WPCOM_IS_VIP_ENV
 			 *
 			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
 			 */
