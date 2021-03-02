@@ -13,8 +13,9 @@ use Flagpole\Flagpole;
 /**
  * Register a feature flag with the plugin.
  *
- * @param array $args Settings and options for each flag.
- * @return void
+ * @param  array $args Settings and options for each flag
+ *
+ * @return  void
  */
 function flagpole_register_flag( $args ) {
 	$defaults = [
@@ -65,8 +66,8 @@ function flagpole_register_flag( $args ) {
 /**
  * Check if a user has enabled a flag.
  *
- * @param string $flag_key The key for the flag we're after.
- * @return mixed
+ *  @param string  $flag_key  The key for the flag we're after.
+ *  @return mixed
  */
 function flagpole_user_enabled( $flag_key = '' ) {
 	return Flagpole::init()->has_user_enabled_flag( $flag_key );
@@ -77,7 +78,7 @@ function flagpole_user_enabled( $flag_key = '' ) {
  *
  * @param string $flag_key The key of the flag we're checking.
  *
- * @return bool
+  * @return boolean
  */
 function flagpole_enabled_in_group( $flag_key = '' ) {
 	return Flagpole::init()->user_enabled_key_via_group( $flag_key );

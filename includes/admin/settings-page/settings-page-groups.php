@@ -52,18 +52,28 @@ use Flagpole\Flagpole;
 
 						<?php foreach ( $flagpole_group->get_flags() as $flagpole_flag_id ) { ?>
 
-							<div class="ff-badge">
-								<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-									<?php $flagpole_flag_object = Flagpole::init()->find_flag( $flagpole_flag_id ); ?>
-									<?php wp_nonce_field( 'ff_remove_flag_from_group' ); ?>
-									<input type="hidden" name="action" value="ff_remove_flag_from_group">
-									<input type="hidden" name="flag" value="<?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
-									<input type="hidden" name="group" value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>">
-									<span class="ff_group-flag-label" title="Key: <?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
-										<?php echo wp_kses_post( $flagpole_flag_object->get_name() ); ?>
+							<?php $flagpole_flag_object = Flagpole::init()->find_flag( $flagpole_flag_id ); ?>
+
+							<?php if(!$flagpole_flag_object) { ?>
+								<div class="ff-badge ff-badge-invalid" title="This flag is not registered, it may have been removed from the source. You can either re-register this flag, or remove it from the group.">
+									<span class="ff_group-flag-label">
+										Invalid flag: <?php echo $flagpole_flag_id ?>
 									</span>
-									<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flagpole_flag_object->name ); ?>' from '<?php echo wp_kses_post( $flagpole_group->name ); ?>'">&#10005;</button>
-								</form>
+									<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flagpole_flag_id ); ?>' from '<?php echo wp_kses_post( $flagpole_group->name ); ?>'">&#10005;</button>
+								</div>
+							<?php } else { ?>
+								<div class="ff-badge">
+									<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+										<?php wp_nonce_field( 'ff_remove_flag_from_group' ); ?>
+										<input type="hidden" name="action" value="ff_remove_flag_from_group">
+										<input type="hidden" name="flag" value="<?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
+										<input type="hidden" name="group" value="<?php echo wp_kses_post( $flagpole_group->get_key() ); ?>">
+										<span class="ff_group-flag-label" title="Key: <?php echo wp_kses_post( $flagpole_flag_object->key ); ?>">
+											<?php  echo wp_kses_post( $flagpole_flag_object->get_name() ); ?>
+										</span>
+										<button class="ff_remove_btn" type="submit" title="Remove '<?php echo wp_kses_post( $flagpole_flag_object->name ); ?>' from '<?php echo wp_kses_post( $flagpole_group->name ); ?>'">&#10005;</button>
+									</form>
+							<?php } ?>
 							</div>
 
 						<?php } // Close Foreach ?>
@@ -114,8 +124,8 @@ use Flagpole\Flagpole;
 						<?php wp_nonce_field( 'ff_delete_group' ); ?>
 						<?php
 							submit_button(
-								'Delete',
-								'small',
+								'Delete group',
+								'danger small',
 								'featureFlagsBtn_delete_group',
 								false,
 								[

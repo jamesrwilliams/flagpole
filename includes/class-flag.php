@@ -6,8 +6,8 @@
  *
  * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/wp-feature-flags
- * @copyright 2019 James Williams
+ * @link      https://github.com/jamesrwilliams/flagpole
+ * @copyright 2021 James Williams
  */
 
 namespace Flagpole;
@@ -71,6 +71,13 @@ class Flag {
 	public $stable;
 
 	/**
+	 * A label for the flag to belong to.
+	 *
+	 * @var string
+	 */
+	public $label;
+
+	/**
 	 * Flag constructor.
 	 *
 	 * @param string $_key The Key for the feature.
@@ -78,13 +85,15 @@ class Flag {
 	 * @param bool   $_enforced Is the key enforced.
 	 * @param string $_description The description to be shown in the admin about the field.
 	 * @param bool   $_stable Allow this flag to be published or not.
+	 * @param string $_label The subsection of the feature flag list. Defaults to 'all'.
 	 */
-	public function __construct( $_key, $_name, $_enforced, $_description, $_stable ) {
+	public function __construct( $_key, $_name, $_enforced, $_description, $_stable, $_label ) {
 		$this->enforced    = $_enforced;
 		$this->name        = ( $_name ? $_name : '' );
 		$this->key         = $_key;
 		$this->description = $_description;
 		$this->stable      = $_stable;
+		$this->label       = ( $_label ? $_label : 'All' );
 	}
 
 	/**
@@ -132,6 +141,22 @@ class Flag {
 			echo wp_kses_post( $description );
 		} else {
 			return $description;
+		}
+	}
+
+	/**
+	 * Display or retrieve the flag label.
+	 *
+	 * @param boolean $echo Echo or return the response.
+	 * @return null|string Current label text if $echo is false.
+	 */
+	public function get_label( $echo = true ) {
+		$label = $this->label;
+
+		if ( $echo ) {
+			echo wp_kses_post( $label );
+		} else {
+			return $label;
 		}
 	}
 

@@ -3,15 +3,16 @@
  * Flagpole
  * Easily register and work with feature flags in your themes.
  *
- * @package   flagpole
- * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/wp-feature-flags
- * @copyright 2019 James Williams
+ * @package    flagpole
+ * @subpackage flagpole/flagpole
+ * @author     "James Williams <james@jamesrwilliams.ca>"
+ * @link       https://github.com/jamesrwilliams/flagpole
+ * @copyright  2019-2021 James Williams
  *
  * @wordpress-plugin
  * Plugin Name:       Flagpole
  * Description:       Easily register and work with feature flags in your theme.
- * Version:           0.1.0
+ * Version:           0.1.3-beta
  * Author:            James Williams
  * Requires PHP:      5.6
  * Text Domain:       flagpole
@@ -40,8 +41,10 @@ add_action(
 			function ( $posted_data ) {
 				if ( ! $posted_data ) {
 					add_settings_error( 'ff_client_secret', 'ff_updated', 'Error Message', 'error' );
+
 					return false;
 				}
+
 				return $posted_data;
 			}
 		);
@@ -64,7 +67,7 @@ function flagpole_admin_imports( $hook ) {
 			'/assets/css/flagpole.css',
 			__FILE__
 		),
-		[],
+		array(),
 		FLAGPOLE_VERSION
 	);
 
@@ -74,16 +77,18 @@ function flagpole_admin_imports( $hook ) {
 			'/assets/js/flagpole.js',
 			__FILE__
 		),
-		[],
+		array(),
 		FLAGPOLE_VERSION,
 		false
 	);
 
-	$params = [
-		'ajax_nonce' => wp_create_nonce( 'featureFlagNonce' ),
-	];
-
-	wp_localize_script( 'flagpole-script', 'ffwp', $params );
+	wp_localize_script(
+		'flagpole-script',
+		'ffwp',
+		array(
+			'ajax_nonce' => wp_create_nonce( 'featureFlagNonce' ),
+		)
+	);
 	wp_enqueue_script( 'flagpole-script' );
 }
 
@@ -108,7 +113,7 @@ function flagpole_enable() {
 		isset( $_POST['featureKey'] ) &&
 		check_ajax_referer( 'featureFlagNonce', 'security' )
 	) {
-		$response = [];
+		$response = array();
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
@@ -135,7 +140,7 @@ add_action( 'wp_ajax_togglePublishedFeature', 'flagpole_flag_publish' );
  */
 function flagpole_flag_publish() {
 	if ( isset( $_POST['featureKey'] ) && check_ajax_referer( 'featureFlagNonce', 'security' ) ) {
-		$response = [];
+		$response = array();
 
 		$feature_key = sanitize_text_field( wp_unslash( $_POST['featureKey'] ) );
 
@@ -161,7 +166,7 @@ add_action( 'admin_post_nopriv_ff_register_group', 'flagpole_create_group' );
  * Create group admin hook handler.
  */
 function flagpole_create_group() {
-	$validation                  = [];
+	$validation                  = array();
 	$validation['group-nonce']   = check_admin_referer( 'register-group' );
 	$validation['group-key']     = ( ! empty( $_GET['group-key'] ) ? sanitize_text_field( wp_unslash( $_GET['group-key'] ) ) : false );
 	$validation['group-name']    = ( ! empty( $_GET['group-name'] ) ? sanitize_text_field( wp_unslash( $_GET['group-name'] ) ) : false );
@@ -171,7 +176,8 @@ function flagpole_create_group() {
 	$validation = array_filter( $validation );
 
 	if ( $validation ) {
-		$result = Flagpole::init()->create_group( $validation['group-key'], $validation['group-name'], $validation['group-desc'], $validation['group-private'] );
+		$result = Flagpole::init()->create_group( $validation['group-key'], $validation['group-name'],
+			$validation['group-desc'], $validation['group-private'] );
 
 		flagpole_operation_redirect( $result );
 	}
@@ -287,18 +293,18 @@ function flagpole_redirect_with_key() {
 }
 
 /**
- * Check if there is a flag query string.
+ * Check if there is a group query string.
  *
- * @return bool|string False if there isn't one, the flag string if found.
+ * @return bool|string False if there isn't one, the group key if found.
  */
 function flagpole_find_query_string() {
 
 	/* TODO: #21 - Make this a configurable key */
-	$query_string_key = 'flag';
+	$query_string_key = 'group';
 
-	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET[ $query_string_key ] ) && '' !== $_GET[ $query_string_key ] ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification, Wordpress.VIP.SuperGlobalInputUsage.AccessDetected
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return sanitize_title( wp_unslash( $_GET[ $query_string_key ] ) );
 	} else {
 		return false;
@@ -311,27 +317,24 @@ function flagpole_find_query_string() {
  * @param bool $error_code The error code string.
  * @param bool $redirect Either safe_redirect or return the URL.
  *
- * @see FeatureFlags::get_admin_error_message() Method for generating error messages.
- *
  * @return null|string Depending on $redirect.
+ * @see FeatureFlags::get_admin_error_message() Method for generating error messages.
  */
 function flagpole_operation_redirect( $error_code = false, $redirect = true ) {
-	$redirect_url = ( wp_get_referer() ?: get_home_url() );
+	$redirect_url = ( wp_get_referer() ? wp_get_referer() : get_home_url() );
 
 	if ( false !== $error_code && ! empty( $error_code ) ) {
 		$redirect_url = add_query_arg(
-			[
+			array(
 				'error' => $error_code,
-			],
+			),
 			$redirect_url
 		);
 	}
 
-	if ( $redirect ) {
-		wp_safe_redirect( $redirect_url );
-	} else {
-		return $redirect_url;
-	}
+	return ( $redirect ? wp_safe_redirect( $redirect_url ) : $redirect_url );
 }
 
-add_shortcode( 'debugFlagpole', 'flagpole_shortcode_debug' );
+add_shortcode( 'debugFlagpole_flags', 'flagpole_shortcode_debug_flags' );
+add_shortcode( 'debugFlagpole_groups', 'flagpole_shortcode_debug_groups' );
+add_shortcode( 'debugFlagpole_db', 'flagpole_shortcode_debug_db' );

@@ -6,8 +6,8 @@
  *
  * @package   flagpole
  * @author    James Williams <james@jamesrwilliams.ca>
- * @link      https://github.com/jamesrwilliams/wp-feature-flags
- * @copyright 2019 James Williams
+ * @link      https://github.com/jamesrwilliams/flagpole
+ * @copyright 2021 James Williams
  */
 
 namespace Flagpole;
@@ -153,7 +153,7 @@ class Flagpole {
 	 * @return void
 	 */
 	public function add_flag( $flag ) {
-		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'] );
+		$this->flags[] = new Flag( $flag['key'], $flag['title'], $flag['enforced'], $flag['description'], $flag['stable'], $flag['label'] );
 	}
 
 	/**
@@ -225,17 +225,17 @@ class Flagpole {
 				return ( $reason ? 'Enforced' : true );
 			} else {
 				if ( self::check_query_string( $flag_key ) ) {
-					return ( $reason ? 'Using a group query string' : true );
+					return ( $reason ? 'Group query string' : true );
 				} elseif ( flagpole_user_enabled( $flag_key ) ) {
-					return ( $reason ? 'User previewing flag' : true );
+					return ( $reason ? 'User preview' : true );
 				} elseif ( self::user_enabled_key_via_group( $flag_key ) ) {
-					return ( $reason ? 'User preview enabled via group' : true );
+					return ( $reason ? 'User preview with group' : true );
 				} else {
-					return ( $reason ? '' : null );
+					return ( $reason ? '' : false );
 				}
 			}
 		} else {
-			return false;
+			return ( $reason ? 'Not configured' : false );
 		}
 	}
 
@@ -327,7 +327,13 @@ class Flagpole {
 	 * @return bool Is the feature private or not.
 	 */
 	public function is_private( $group_key ) {
-		return self::get_group( $group_key )->private;
+		$group = self::get_group($group_key);
+		if($group) {
+			return self::get_group( $group_key )->private;
+		} else {
+			return false;
+		}
+
 	}
 
 	/**
@@ -421,11 +427,12 @@ class Flagpole {
 	 * @return mixed
 	 */
 	public function get_user( $user_id, $key, $single = true ) {
-		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) ) {
 			/**
 			 * On VIP GO sites debug logs get filled with deprecation notices when get_user_attribute() is used.
-			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
-			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 * Constant WPCOM_IS_VIP_ENV is only defined on VIP platform as per docs available at
+			 *
+			 * @see https://automattic.github.io/vip-go-mu-plugins/#constant_WPCOM_IS_VIP_ENV
 			 *
 			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta
 			 */
@@ -457,11 +464,12 @@ class Flagpole {
 	 * @return bool|int
 	 */
 	private function update_user( $user_id, $meta_key, $meta_value, $prev_value = '' ) {
-		if ( defined( 'WPCOM_VIP_CLIENT_MU_PLUGIN_DIR' ) ) {
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) ) {
 			/**
 			 * On VIP GO sites debug logs get filled with deprecation notices when update_user_attribute() is used.
-			 * Constant WPCOM_VIP_CLIENT_MU_PLUGIN_DIR is only defined on VIP GO platform as per docs available at
-			 * https://wpvip.com/documentation/vip-go/managing-plugins/#installing-to-the-client-mu-plugins%c2%a0directory
+			 * Constant WPCOM_IS_VIP_ENV is only defined on VIP platform as per docs available at
+			 *
+			 * @see https://automattic.github.io/vip-go-mu-plugins/#constant_WPCOM_IS_VIP_ENV
 			 *
 			 * phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta
 			 */
@@ -682,6 +690,24 @@ class Flagpole {
 		}
 
 		update_option( $key, maybe_serialize( $groups ) );
+	}
+
+	/**
+	 * Returns an alphabetically sorted array of unique labels.
+	 *
+	 * @return array
+	 */
+	public function get_unique_labels() {
+		$flags = $this->flags;
+		$all_labels = [];
+
+		foreach( $flags as $flag ) {
+			$all_labels[] = $flag->label;
+		}
+
+		$unique_labels = array_unique( $all_labels );
+		asort( $unique_labels );
+		return $unique_labels;
 	}
 }
 
