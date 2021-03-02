@@ -167,12 +167,20 @@ Passing the `enforced` value will display all `enforced` flags instead of the ot
 echo do_shortcode('[debugFlagpole_flags enforced="true"]');
 ```
 
-### Groups
+### debugFlagpole_groups
 
 Use the following shortcode to get a debug output for flag groups.
 
 ```php
 echo do_shortcode('[debugFlagpole_groups]');
+```
+
+### debugFlagpole_db
+
+Use the following shortcode to get a debug output for everything!
+
+```php
+echo do_shortcode('[debugFlagpole_db]');
 ```
 
 ## Contributing
