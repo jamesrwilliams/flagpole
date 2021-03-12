@@ -20,6 +20,10 @@ use Flagpole\Flagpole;
  * @package FeatureFlag
  */
 class Flag {
+	/**
+	 * Default label for flags without a label to be grouped under.
+	 */
+	const DEFAULT_LABEL = 'All';
 
 	/**
 	 * Flags can be enforced. When they are they bypass
@@ -89,11 +93,11 @@ class Flag {
 	 */
 	public function __construct( $_key, $_name, $_enforced, $_description, $_stable, $_label ) {
 		$this->enforced    = $_enforced;
-		$this->name        = ( $_name ? $_name : '' );
+		$this->name        = $_name ?: '';
 		$this->key         = $_key;
 		$this->description = $_description;
 		$this->stable      = $_stable;
-		$this->label       = ( $_label ? $_label : 'All' );
+		$this->label       = $_label ?: self::DEFAULT_LABEL;
 	}
 
 	/**
