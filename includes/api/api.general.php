@@ -8,6 +8,7 @@
  * @package flagpole
  */
 
+use Flagpole\Flag;
 use Flagpole\Flagpole;
 
 /**
@@ -23,6 +24,7 @@ function flagpole_register_flag( $args ) {
 		'enforced'    => false,
 		'description' => '',
 		'stable'      => false,
+		'label'       => Flag::DEFAULT_LABEL
 
 	];
 
