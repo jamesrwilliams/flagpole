@@ -133,6 +133,12 @@ Example:
 https://www.example.com?group=battery-horse-staple
 ```
 
+## Advanced Custom Fields (ACF) Support
+
+ACF field groups can also be set to show or hide based on feature flags.
+
+In the 'Location' section of a field group, 'Feature flags' will be available as an option. This allows you to show a field group depending on whether a feature flag are enabled or not. This can be combined with the and/or rules to display a field group depending on the status of multiple feature flags.
+
 ## Shortcodes
 
 This plugin adds a number of utility shortcodes to help to debug the use of Flagpole flags.
