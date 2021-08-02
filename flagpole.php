@@ -25,6 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 use Flagpole\Flagpole;
+use Flagpole\JavaScript;
 
 // Define plugin paths and url for global usage.
 define( 'FLAGPOLE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
@@ -99,6 +100,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-flagpole.php';
 require plugin_dir_path( __FILE__ ) . 'includes/admin/settings-page.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.general.php';
 require plugin_dir_path( __FILE__ ) . 'includes/api/api.shortcode.php';
+
+$js_path = plugin_dir_path( __FILE__ ) . 'includes/javascript/class-javascript.php';
+include $js_path;
 
 /**
  * AJAX Action toggling features from the WP admin area.
@@ -176,8 +180,12 @@ function flagpole_create_group() {
 	$validation = array_filter( $validation );
 
 	if ( $validation ) {
-		$result = Flagpole::init()->create_group( $validation['group-key'], $validation['group-name'],
-			$validation['group-desc'], $validation['group-private'] );
+		$result = Flagpole::init()->create_group(
+			$validation['group-key'],
+			$validation['group-name'],
+			$validation['group-desc'],
+			$validation['group-private']
+		);
 
 		flagpole_operation_redirect( $result );
 	}
@@ -338,3 +346,5 @@ function flagpole_operation_redirect( $error_code = false, $redirect = true ) {
 add_shortcode( 'debugFlagpole_flags', 'flagpole_shortcode_debug_flags' );
 add_shortcode( 'debugFlagpole_groups', 'flagpole_shortcode_debug_groups' );
 add_shortcode( 'debugFlagpole_db', 'flagpole_shortcode_debug_db' );
+
+( new JavaScript() )->init();
