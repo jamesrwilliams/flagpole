@@ -64,7 +64,7 @@ if ( flagpole_flag_enabled( 'flag_key' ) ) {
 }
 ```
 
-Replace `flag_key` with the key used in the register function to check if it is enabled.
+Replace `flag_key` with the key used in the `flagpole_register_flag` function to check if it is enabled.
 
 #### Flag options/arguments
 
@@ -74,8 +74,8 @@ Replace `flag_key` with the key used in the register function to check if it is 
 | key                    | `string`  | -       | The unique key used in the template to check if a feature is enabled. |
 | title                  | `string`  | ""      | The human readable feature name. |
 | description (optional) | `string`  | ""      | A description displayed in the admin screen. |
-| stable (optional)      | `boolean` | `false` | If true allows users to publish features from the admin area. |
-| enforced (optional)    | `boolean` | `false` | Setting this to true will override any user specific settings and will enforce the flag to be enabled for every user. Useful for deploying a flag before removing it from the codebase. |
+| stable (optional)      | `boolean` | `false` | If `true`, allows users to publish features from the admin area. |
+| enforced (optional)    | `boolean` | `false` | Setting this to `true` will override any user specific settings and will enforce the flag to be enabled for every user. Useful for deploying a flag before removing it from the codebase. |
 | label | `string` | `All` | Using labels lets you group together flags that are similar. Adding a label will separate the flag out in the admin UI.
 
 ## Enabling flags
@@ -96,7 +96,7 @@ This flag will now be enabled for this user until it is toggled again. Users can
 
 ### Publishing
 
-Publishing a flag enables it for every user that visits your site, this includes logged-out users. Any user can publish a feature as long as it has been marked as stable by setting the `stable` property to `true` in the flag registration block. This acts as a safety net allowing theme developers mark features ready for publication.
+Publishing a flag enables it for every user that visits your site, this includes logged-out users. Any user can publish a feature as long as it has been marked as stable by setting the `stable` property to `true` in the flag registration block. This acts as a safety net allowing theme developers to mark features ready for publication.
 
 E.g.
 
@@ -110,7 +110,7 @@ flagpole_register_flag([
 
 ### Enforcing
 
-Enforcing a flag is where a developer can force a flag to be in a published state. This allows them to enable a flag via their source code by setting the 'enforced' option to true in the flag options. The idea behind enforced flags are a stepping stone before removing the flag logic from the theme. Enforced flags are displayed in a separate list in the admin area and are not interactive to users in the admin area.
+Enforcing a flag is where a developer can force a flag to be in a published state. This allows them to enable a flag via their source code by setting the 'enforced' option to `true` in the flag options. The idea behind enforced flags are a stepping stone before removing the flag logic from the theme. Enforced flags are displayed in a separate list in the admin area and are not interactive to users in the admin area.
 
 ```php
 flagpole_register_flag([
@@ -122,10 +122,10 @@ flagpole_register_flag([
 
 ## Flag Groups
 
-Flag groups are a way to manage multiple flags at a time. You can preview Flag groups like you can a single flag and by using the `group` URL parameter, and the group key you wish to enable.
+Flag Groups are a way to manage multiple flags at a time. You can preview Flag Groups like you can a single flag and by using the `group` URL parameter, and the group key you wish to enable.
 A `private` group will require users to login to the site prior to activating the flags for them.
 
-You can either preview a flag group by enabling it in the WP Admin as you would for a single flag, or you can use the query string method to enable a group of flags using the following query string format: `?group={groupKey}`
+You can either preview a Flag Group by enabling it in the WP Admin as you would for a single flag, or you can use the query string method to enable a group of flags using the following query string format: `?group={groupKey}`
 
 Example:
 
@@ -135,7 +135,7 @@ https://www.example.com?group=battery-horse-staple
 
 ## Shortcodes
 
-This plugin adds a number of utility shortcodes to help to debug the use of Flagpole flags.
+This plugin adds a number of utility shortcodes to help debug the use of Flagpole flags.
 
 - [debugFlagpole_flags](#debugFlagpole_flags)
 - [debugFlagpole_groups](#debugFlagpole_groups)
@@ -169,7 +169,7 @@ echo do_shortcode('[debugFlagpole_flags enforced="true"]');
 
 ### debugFlagpole_groups
 
-Use the following shortcode to get a debug output for flag groups.
+Use the following shortcode to get a debug output for Flag Groups.
 
 ```php
 echo do_shortcode('[debugFlagpole_groups]');
