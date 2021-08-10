@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/58e979a1be8d7f7c3d6d/maintainability)](https://codeclimate.com/github/jamesrwilliams/wp-feature-flags/maintainability) [![GitHub release](https://img.shields.io/github/release-pre/jamesrwilliams/flagpole.svg)](https://github.com/jamesrwilliams/flagpole/releases) [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/jamesrwilliams/flagpole/pulls) ![Packagist Downloads](https://img.shields.io/packagist/dm/jamesrwilliams/flagpole) [![Known Vulnerabilities](https://snyk.io/test/github/jamesrwilliams/flagpole/badge.svg?targetFile=composer.lock)](https://snyk.io/test/github/jamesrwilliams/flagpole?targetFile=composer.lock)
 
-This plugin is for WordPress theme developers who wish to add simple feature flags to their themes. These flags can be enabled via an admin interface, previewed on a per-user, or group basis, and even enabled via QueryString for those without accounts.  For planned development work please see the [roadmap](https://github.com/jamesrwilliams/flagpole/projects) or issues labeled with [enhancement](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
+This plugin is for WordPress theme developers who wish to add simple feature flags to their themes. These flags can be enabled via an admin interface, previewed on a per-user, or group basis, and even enabled via a query string for those without accounts.  For planned development work please see the [roadmap](https://github.com/jamesrwilliams/flagpole/projects) or issues labeled with [enhancement](https://github.com/jamesrwilliams/flagpole/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement).
 
 ## Contents
 
@@ -15,7 +15,7 @@ This plugin is for WordPress theme developers who wish to add simple feature fla
 
 ## Installation
 
-Add this project source code to your `wp-content/plugins` directory and enable it like you would any other plugin. It is also available via [Packagist](https://packagist.org/packages/jamesrwilliams/flagpole) to use with [composer](https://getcomposer.org/).
+Add this project's source code to your `wp-content/plugins` directory and enable it like you would any other plugin. It is also available via [Packagist](https://packagist.org/packages/jamesrwilliams/flagpole) to use with [composer](https://getcomposer.org/).
 
 ```bash
 composer require jamesrwilliams/flagpole
@@ -25,7 +25,7 @@ This plugin is currently not available via the WordPress Plugin directory howeve
 
 ### Required theme changes
 
-As this plugin is closely coupled with your theme code it is a good idea to add the following to block to your theme to catch any errors if the Flagpole plugin is disabled for any reason.
+As this plugin is closely coupled with your theme code it is a good idea to add the following block to your theme to catch any errors if the Flagpole plugin is disabled for any reason.
 
 ```php
 if ( ! function_exists( 'flagpole_flag_enabled' ) ) {
