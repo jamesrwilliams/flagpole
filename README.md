@@ -7,9 +7,9 @@ This plugin is for WordPress theme developers who wish to add simple feature fla
 ## Contents
 
 1. [Installation](#installation)
-2. [Adding flags to themes](#checking-the-status-of-a-feature-flag)
+2. [Adding flags to themes](#register-a-flag)
 3. [Enabling flags](#enabling-flags)
-4. [Using QueryStrings](#query-strings)
+4. [Flag Groups](#flag-groups)
 5. [Shortcodes](#shortcodes)
 6. [Contributing](#contributing)
 
