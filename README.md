@@ -56,7 +56,7 @@ Wrapping the registration function call in a `function_exists` helps avoid error
 
 ### Checking the status of a flag
 
-In your templates you can then check the feature status using the `flagpole_flag_enabled()` function in your PHP theme code to toggle features based on the status of your flags:
+In your templates you can then check the feature status using the `flagpole_flag_enabled` function in your PHP theme code to toggle features based on the status of your flags:
 
 ```php
 if ( flagpole_flag_enabled( 'flag_key' ) ) {
