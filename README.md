@@ -66,6 +66,25 @@ if ( flagpole_flag_enabled( 'flag_key' ) ) {
 
 Replace `flag_key` with the key used in the `flagpole_register_flag` function to check if it is enabled.
 
+It is also possible to use the same function in JavaScript and get the same results:
+
+```javascript
+if ( flagpole_flag_enabled( 'flag_key' ) ) {
+	/* flag_key is enabled! */
+}
+```
+
+However, checking the Flagpole function exists before expecting it to return a value is recommended. This prevents JavaScript files from breaking if the plugin is not enabled on your project.
+
+```javascript
+const flagEnabled = typeof( flagpole_flag_enabled ) === 'function' && flagpole_flag_enabled( 'flag_key' );
+
+if ( flagEnabled ) {
+	/* flag_key is enabled! */
+}
+```
+
+
 #### Flag options/arguments
 
 
